@@ -1,0 +1,357 @@
+{
+  "format": "kirin_embedding_slices_v1",
+  "device_tested": true,
+  "device_load_fix_verified": true,
+  "logical_graphs": 25,
+  "physical_graphs": 39,
+  "source_package_manifest_sha256": "0a761c9de537f8519cac624bc33a751a7b88d50275196fceb2bcea67c11bc59f",
+  "source_build_manifest_sha256": "bc91fbad0fa2dc7af43819aa9370ab957efe086fbc64ce82cb2e34a4bba09797",
+  "largest_graph_bytes": 186060124,
+  "embedding_slice_width": 256,
+  "unchanged_non_embedding_graphs": 23,
+  "checks": [
+    {
+      "graph": "embedding_prefill_slice_0",
+      "hidden_start": 0,
+      "hidden_end": 256,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_1",
+      "hidden_start": 256,
+      "hidden_end": 512,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_2",
+      "hidden_start": 512,
+      "hidden_end": 768,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_3",
+      "hidden_start": 768,
+      "hidden_end": 1024,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 0.9999999999999998
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_4",
+      "hidden_start": 1024,
+      "hidden_end": 1280,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 0.9999999999999998
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_5",
+      "hidden_start": 1280,
+      "hidden_end": 1536,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_6",
+      "hidden_start": 1536,
+      "hidden_end": 1792,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      ]
+    },
+    {
+      "graph": "embedding_prefill_slice_7",
+      "hidden_start": 1792,
+      "hidden_end": 2048,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_0",
+      "hidden_start": 0,
+      "hidden_end": 256,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_1",
+      "hidden_start": 256,
+      "hidden_end": 512,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_2",
+      "hidden_start": 512,
+      "hidden_end": 768,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_3",
+      "hidden_start": 768,
+      "hidden_end": 1024,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_4",
+      "hidden_start": 1024,
+      "hidden_end": 1280,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_5",
+      "hidden_start": 1280,
+      "hidden_end": 1536,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_6",
+      "hidden_start": 1536,
+      "hidden_end": 1792,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      ]
+    },
+    {
+      "graph": "embedding_decode_slice_7",
+      "hidden_start": 1792,
+      "hidden_end": 2048,
+      "weights_exact": true,
+      "torch_ort": [
+        {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      ]
+    }
+  ],
+  "cpp_host_replay": {
+    "device_tested": false,
+    "package_config_sha256": "206fb62bf4da7ca0613816d769d084cd268bd350de6958591fa7024868a49a43",
+    "embedding_slice_build_verified": true,
+    "cases": [
+      {
+        "case": "text",
+        "prompt_tokens": 13,
+        "graph_calls": 72,
+        "independent_tensor_checks": 2096,
+        "image_patch_metrics": [],
+        "response": "你好！我是一个多任务智能AI",
+        "passed": true
+      },
+      {
+        "case": "image_0",
+        "prompt_tokens": 168,
+        "graph_calls": 88,
+        "independent_tensor_checks": 2388,
+        "image_patch_metrics": [
+          {
+            "relative_l2": 0.0017182224395274137,
+            "max_abs": 0.023529529571533203,
+            "cosine": 0.9999985276406809
+          }
+        ],
+        "response": "这是一张中国国内多城市间",
+        "passed": true
+      }
+    ]
+  },
+  "cpp_nnrt_call_substitutes_passed": true,
+  "cpp_regression_suites_passed": 5,
+  "hap_build_verified": false,
+  "requires_app_feature": "embedding_slices and single_graph residency",
+  "source_clue": "Public OpenHarmony NNRT Build authenticates models above 200 MiB; private HIAI_F implementation is not confirmed.",
+  "source_url": "https://github.com/openharmony/ai_neural_network_runtime/blob/master/frameworks/native/neural_network_core/neural_network_core.cpp",
+  "publication": {
+    "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+    "started_utc": "2026-10-16T10:56:21.655542+00:00",
+    "status": "complete",
+    "files": 52,
+    "total_bytes": 3411639613,
+    "verified_files": 52,
+    "finished_utc": "2026-10-16T10:56:40.349334+00:00",
+    "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+    "anonymous_downloads_verified": [
+      "config.json",
+      "vision_constants.bin",
+      "tokenizer.mtok",
+      "om/embedding_prefill_slice_0.omc [first 4096 bytes]",
+      "om/embedding_decode_slice_0.omc [first 4096 bytes]"
+    ]
+  },
+  "app_source_integrated": true,
+  "libMNN_changed": false,
+  "phone_operated": false,
+  "latest_device_feedback": {
+    "reported_by": "user",
+    "date": "2026-10-16",
+    "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+    "hiai_version": "109.636.120.010",
+    "physical_graphs_probed_successfully": 39,
+    "logical_graphs": 25,
+    "request_execution_started": true,
+    "request_completed": false,
+    "successful_logical_runs": 14,
+    "successful_llm_prefill_stages": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "failing_graph": "llm_prefill_5",
+    "build_succeeded": true,
+    "failing_step": "OH_NNExecutor_Construct",
+    "result": "nullptr",
+    "prefill_past": 0,
+    "mem_available_kib_at_prefill_0": 4189184,
+    "mem_available_kib_at_prefill_5": 3337216,
+    "inference": "Cumulative device residency/resource pressure or service scheduling limit is suspected; private driver cause is not confirmed."
+  },
+  "execution_residency_followup": {
+    "status": "source_fix_host_verified_device_unverified",
+    "device_fix_verified": false,
+    "phone_operated": false,
+    "model_files_changed": false,
+    "quantization_parameters_changed": false,
+    "kv_cache_layout_changed": false,
+    "libMNN_changed": false,
+    "legacy_execution_modes_changed": false,
+    "app_runtime_source_synced": true,
+    "requires_app_rebuild": true,
+    "requires_model_redownload_for_existing_embsplit_users": false,
+    "residency_policy": "single_graph; destroy old device tensors/executor before the next graph Build",
+    "tradeoff": "LLM graphs are reloaded for every prefill block/decode token; device latency is expected to increase.",
+    "diagnostics": [
+      "resident_evict",
+      "resident_policy=single_graph",
+      "OH_NNExecutor_Construct result and resource snapshots"
+    ],
+    "host_regression": {
+      "nnrt_uses_call_substitutes_not_sdk": true,
+      "executor_limit_in_substitute": 1,
+      "llm_stages": 7,
+      "prefill_blocks": 2,
+      "decode_blocks": 4,
+      "stage_runs": 42,
+      "eviction_before_build_verified": true,
+      "host_outputs_survive_eviction": true,
+      "construction_failure_cleanup_and_retry": true,
+      "embedding_slice_transition_cleanup": true,
+      "negative_control_without_eviction": "fails on consecutive LLM stages",
+      "cpp_suites_passed": 5
+    },
+    "source_url": "https://github.com/openharmony/ai_neural_network_runtime/blob/master/frameworks/native/neural_network_core/neural_network_core.cpp#L1571",
+    "public_source_boundary": "Executor construction includes backend creation and service preparation/scheduling; this does not identify the private HIAI_F failure cause."
+  },
+  "device_inference_verified": false,
+  "original_model_device_feedback": {
+    "reported_by": "user",
+    "result": "model_load_failed",
+    "error": "Offline NNRT build failed: 1",
+    "failing_graph_confirmed": true,
+    "loading_api_step_confirmed": true,
+    "failing_graph": "embedding_decode",
+    "failing_step": "OH_NNCompilation_Build",
+    "return_code": "OH_NN_FAILED(1)",
+    "file_bytes": 622337527,
+    "hiai_version": "109.636.120.010",
+    "compatibility_result": 0,
+    "all_model_setup_options_succeeded": true,
+    "request_execution_started": false
+  }
+}

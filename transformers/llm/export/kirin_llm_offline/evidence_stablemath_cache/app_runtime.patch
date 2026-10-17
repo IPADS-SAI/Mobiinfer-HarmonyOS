@@ -1,0 +1,289 @@
+diff --git a/docs/full-npu.md b/docs/full-npu.md
+index e2fd889..a1b6476 100644
+--- a/docs/full-npu.md
++++ b/docs/full-npu.md
+@@ -1,6 +1,39 @@
+ # 全图 NPU（实验）
+ 
+-## 当前候选：外置 W4 权重与 FP16 KV
++## 2026-10-17：缓存恢复与稳定数学候选
++
++保存的手机请求日志显示，25 tokens 生成耗时 59.17 秒，其中图加载/切换 54.52 秒，
++缓存命中为零。虽然模型配置是四图、2048 MiB 模型预算和 256 MiB KV 池，实际
++表现为单图循环淘汰，每次完整同步 224 MiB KV。最初的退让触发日志没有保留。
++
++修复后的后端在资源失败时逐图淘汰并重试，优先保留整个 decoder；KV 池只在
++释放模型仍不足时才清除。新请求和 prefill→decode 切换恢复配置预算，避免此前
++一次压力永久影响后续请求。张量格式查询失败时禁止跨 executor 共享，但同一个
++executor 的 KV 输入继续增量同步。诊断新增实际预算、KV 格式查询及 sample token ID。
++
++图与权重已经分离：OMC 与独立 `.weight` 文件通过 InitWeights 配对加载。
++主干矩阵保持 W4/group64/GPTQ，KV 为 FP16；设备权重共享没有被假定为已实现。
++
++稳定数学模型候选在 RMSNorm 平方前缩放，在 QK MatMul 前分配缩放，并显式
++稳定 Softmax。对应数学/溢出单元测试通过；其目的是规避 FP16 中间值风险，
++尚未证明已消除手机上的全部数值偏差。需新 App 配合新模型包；旧包不会自动
++得到模型图内的修复。本轮未连接手机，没有安装 App 或执行新模型。
++
++候选模型：
++https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_stablemath_v1
++
++37 个文件（2,785,113,131 字节）已核对远端 SHA256 和大小。请在 App 设置中
++使用该地址并下载到独立目录；需在 DevEco 重新构建 App，源码更新不会自动
++升级手机应用。本轮没有构建 HAP、安装 App 或连接手机。
++
++13 张图完成纯 NPU 编译，301 个主干矩阵的 W4 编码核对通过。35 项 Python/SDK
++测试和九组 C++ 测试通过；实际 App C++ 调度器在三条文本和一张图片的 CPU
++ONNX 回放中通过 2928 项独立张量检查。回放未执行 OMC，端侧速度与正确性未验收。
++新旧 CPU 首 token logits 最大 relative L2 为 0.0929；新候选逐图 Torch/ONNX
++最大 relative L2 为 0.01555，二者比较对象不同。此前 W4 质量和长上下文 FP16 KV
++检查的失败没有被宣称解决。
++
++## 上一版候选：外置 W4 权重与 FP16 KV
+ 
+ ### 首图提示 InitWeights 接口未找到
+ 
+diff --git a/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp b/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp
+index 817015a..26c0d70 100644
+--- a/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp
++++ b/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp
+@@ -496,6 +496,9 @@ bool Runtime::response(const std::string& input, const Cancel& cancel, const Emi
+         std::vector<std::vector<float>> logits;
+         if (!s.run("lm_head", {floats(hidden)}, logits, cancel, error)) return fail();
+         int token = int(std::max_element(logits[0].begin(), logits[0].end()) - logits[0].begin());
++        if (s.debug && s.debug()) s.trace("level=sample step=" + std::to_string(step) +
++            " token_id=" + std::to_string(token) + " logit=" + std::to_string(logits[0][token]) +
++            " past=" + std::to_string(s.cache->length));
+         if (s.tokenizer->is_stop(token)) break;
+         pending += decodePiece(s.tokenizer.get(), token); ++generated;
+         auto piece = takeUtf8(pending);
+diff --git a/entry/src/main/cpp/full_npu/NnrtBackend.cpp b/entry/src/main/cpp/full_npu/NnrtBackend.cpp
+index 41b3818..4426fa3 100644
+--- a/entry/src/main/cpp/full_npu/NnrtBackend.cpp
++++ b/entry/src/main/cpp/full_npu/NnrtBackend.cpp
+@@ -54,7 +54,9 @@ struct Tensor {
+     std::shared_ptr<TensorStorage> storage;
+     Port port;
+     size_t bytes = 0;
+-    bool persistent = false;
++    // An executor's own input storage can receive deltas even when its format
++    // is unavailable and it cannot safely enter the cross-executor pool.
++    bool incremental = false;
+ };
+ struct DeviceGraph {
+     OH_NNExecutor* executor = nullptr;
+@@ -79,9 +81,8 @@ public:
+         if (hiaiLibrary) dlclose(hiaiLibrary);
+     }
+     void configure(const BackendOptions& value) override {
+-        release(); options = value;
+-        effectiveGraphs = std::max(1, value.maxResidentGraphs);
+-        effectiveKvBytes = value.incrementalKv ? value.persistentKvBytes : 0;
++        resident.clear(); kvBuffers.clear(); kvBytes = 0; options = value; configured = true;
++        restorePolicy();
+         if (log) log("[FULL_NPU] level=cache_config max_graphs=" + std::to_string(effectiveGraphs) +
+                      " model_budget_bytes=" + std::to_string(options.residentModelBytes) +
+                      " kv_budget_bytes=" + std::to_string(effectiveKvBytes));
+@@ -97,7 +98,10 @@ public:
+         }
+         return true;
+     }
+-    void releaseGraphs() override { resident.clear(); }
++    void releaseGraphs() override {
++        resident.clear();
++        restorePolicy();
++    }
+     void release() override { releaseGraphs(); kvBuffers.clear(); kvBytes = 0; }
+     bool run(const Graph& g, const std::vector<View>& inputs,
+              std::vector<std::vector<float>>& outputs, std::string& error) override {
+@@ -147,7 +151,7 @@ public:
+             }
+             const auto& src = inputs[i];
+             size_t written = 0;
+-            if (!syncInput(src, g.inputs[i], dst.port.dtype, buffer, dst.persistent && options.incrementalKv,
++            if (!syncInput(src, g.inputs[i], dst.port.dtype, buffer, dst.incremental && options.incrementalKv,
+                            dst.storage->sync, written, error)) return false;
+             if (src.cacheEpoch) { kvWritten += written; kvFull += dst.bytes; }
+         }
+@@ -179,7 +183,9 @@ public:
+         }
+         if (log) log("[FULL_NPU] graph=" + g.name + " level=run_timing input_copy_ms=" + std::to_string(copyMs) +
+                      " run_sync_ms=" + std::to_string(runMs) + " kv_copied_bytes=" + std::to_string(kvWritten) +
+-                     " kv_full_bytes=" + std::to_string(kvFull) + " persistent_kv_bytes=" + std::to_string(kvBytes));
++                     " kv_full_bytes=" + std::to_string(kvFull) + " persistent_kv_bytes=" + std::to_string(kvBytes) +
++                     " effective_max_graphs=" + std::to_string(effectiveGraphs) +
++                     " effective_kv_budget_bytes=" + std::to_string(effectiveKvBytes));
+         return true;
+     }
+ private:
+@@ -190,6 +196,7 @@ private:
+     std::string weightApiEvidence;
+     BackendOptions options;
+     int effectiveGraphs = 1; // A standalone backend remains conservative until configured.
++    bool configured = false;
+     size_t effectiveKvBytes = 0, kvBytes = 0;
+     uint64_t clock = 0;
+     std::map<std::string, std::unique_ptr<DeviceGraph>> resident;
+@@ -242,20 +249,49 @@ private:
+     }
+ 
+     int priority(const Graph& g) const {
+-        if (g.name == "lm_head") return 100000;
+-        if (g.name.find("llm_decode_") == 0 || g.name.find("llm_prefill_") == 0) return 10000 - g.start;
++        // If only two models fit, retain the expensive decoder while cycling
++        // embedding/head. Keeping the head instead reloads the whole decoder.
++        if (g.name == "lm_head") return 10000;
++        if (g.name.find("llm_decode_") == 0 || g.name.find("llm_prefill_") == 0) return 100000 - g.start;
+         return 0;
+     }
++    void restorePolicy() {
++        const int graphs = configured ? std::max(1, options.maxResidentGraphs) : 1;
++        const size_t budget = configured && options.incrementalKv ? options.persistentKvBytes : 0;
++        if (configured && log && (graphs != effectiveGraphs || budget != effectiveKvBytes))
++            log("[FULL_NPU] level=cache_policy_restore max_graphs=" + std::to_string(graphs) +
++                " kv_budget_bytes=" + std::to_string(budget));
++        effectiveGraphs = graphs;
++        effectiveKvBytes = budget;
++    }
++    void evictOne(const Graph& g, const std::string& policy) {
++        auto victim = std::min_element(resident.begin(), resident.end(), [](const auto& a, const auto& b) {
++            return a.second->priority != b.second->priority ? a.second->priority < b.second->priority :
++                   a.second->used < b.second->used;
++        });
++        if (log) log("[FULL_NPU] graph=" + g.name + " level=resident_evict previous_graph=" +
++                     victim->first + " policy=" + policy);
++        resident.erase(victim);
++    }
+     size_t residentBytes() const {
+         size_t bytes = 0;
+         for (const auto& item : resident) bytes += item.second->modelBytes;
+         return bytes;
+     }
+     bool backoff(const Graph& g, const std::string& reason) {
+-        if (resident.empty() && kvBuffers.empty()) return false;
++        // Every retry removes a model or the pool, bounding recovery attempts.
++        // A failed larger working set must not also discard the KV optimization
++        // or poison all subsequent requests/phases with single-model residency.
++        if (!resident.empty()) {
++            effectiveGraphs = std::max(1, std::min(effectiveGraphs, int(resident.size())));
++            evictOne(g, "resource_pressure");
++        } else if (!kvBuffers.empty()) {
++            kvBuffers.clear(); kvBytes = 0; effectiveKvBytes = 0;
++        } else return false;
+         if (log) log("[FULL_NPU] graph=" + g.name + " level=cache_backoff reason=" + reason +
+-                     " max_graphs=1 persistent_kv_bytes=0; retrying_after_release");
+-        release(); effectiveGraphs = 1; effectiveKvBytes = 0;
++                     " max_graphs=" + std::to_string(effectiveGraphs) +
++                     " persistent_kv_bytes=" + std::to_string(kvBytes) +
++                     " kv_budget_bytes=" + std::to_string(effectiveKvBytes) + "; retrying_after_release");
+         return true;
+     }
+ 
+@@ -304,18 +340,15 @@ private:
+         // a pure LRU cache thrashes on a decoder cycle larger than its budget.
+         while (!resident.empty() && (resident.size() >= size_t(effectiveGraphs) ||
+                residentBytes() + modelBytes > options.residentModelBytes)) {
+-            auto victim = std::min_element(resident.begin(), resident.end(), [](const auto& a, const auto& b) {
+-                return a.second->priority != b.second->priority ? a.second->priority < b.second->priority :
+-                       a.second->used < b.second->used;
+-            });
+-            trace("level=resident_evict previous_graph=" + victim->first + " policy=bounded_priority");
+-            resident.erase(victim);
++            evictOne(g, "bounded_priority");
+         }
+         const char* version = HMS_HiAI_GetVersion();
+         trace("level=load_begin path=" + g.path + " file_bytes=" + std::to_string(fileInfo.st_size) +
+               " external_weight_bytes=" + std::to_string(weightBytes) +
+               " hiai_version=" + (version ? version : "unavailable") +
+-              " resident_models=" + std::to_string(resident.size()) + " resident_policy=bounded_priority" + resourceSnapshot());
++              " resident_models=" + std::to_string(resident.size()) + " resident_policy=bounded_priority" +
++              " effective_max_graphs=" + std::to_string(effectiveGraphs) +
++              " effective_kv_budget_bytes=" + std::to_string(effectiveKvBytes) + resourceSnapshot());
+         auto compatibility = HMS_HiAICompatibility_CheckFromFile(g.path.c_str());
+         trace("level=load_step step=HMS_HiAICompatibility_CheckFromFile result=" + std::to_string(int(compatibility)));
+         if (compatibility != HIAI_COMPATIBILITY_COMPATIBLE) {
+@@ -403,6 +436,8 @@ private:
+                 trace("level=error " + error); return nullptr;
+             }
+         }
++        size_t incrementalKvBytes = 0;
++        int unknownKvFormats = 0;
+         for (bool input : {true, false}) {
+             size_t count = 0;
+             ret = input ? OH_NNExecutor_GetInputCount(device->executor, &count) : OH_NNExecutor_GetOutputCount(device->executor, &count);
+@@ -427,28 +462,36 @@ private:
+                 }
+                 if (valid) {
+                     std::string cacheKey;
+-                    if (input && cacheKv && effectiveKvBytes) {
+-                        OH_NN_Format format{};
+-                        bool knownFormat = OH_NNTensorDesc_GetFormat(desc, &format) == OH_NN_SUCCESS;
++                    if (input && cacheKv && options.incrementalKv) {
+                         for (const auto& logical : g.inputs) {
+                             const auto& name = logical.name;
+                             bool kv = name.find("past_key_") == 0 || name.find("past_value_") == 0 ||
+                                       name.find("sink_key_") == 0 || name.find("sink_value_") == 0 ||
+                                       name.find("recent_key_") == 0 || name.find("recent_value_") == 0;
+-                            if (kv && knownFormat && logical.shape.size() == 4 && named(tensor.port.name, name)) {
+-                                auto canonical = tensor.port; canonical.name = name;
+-                                cacheKey = std::to_string(deviceId) + " format=" + std::to_string(int(format)) + " " + description(canonical);
++                            if (kv && logical.shape.size() == 4 && named(tensor.port.name, name)) {
++                                tensor.incremental = true;
++                                incrementalKvBytes += bytes;
++                                OH_NN_Format format{};
++                                auto formatRet = OH_NNTensorDesc_GetFormat(desc, &format);
++                                if (formatRet == OH_NN_SUCCESS && effectiveKvBytes) {
++                                    auto canonical = tensor.port; canonical.name = name;
++                                    cacheKey = std::to_string(deviceId) + " format=" + std::to_string(int(format)) + " " + description(canonical);
++                                } else if (formatRet != OH_NN_SUCCESS) {
++                                    if (!unknownKvFormats) trace("level=kv_format_query ret=" + returnCode(formatRet) +
++                                        " reuse=executor_local cross_executor_reuse=disabled");
++                                    ++unknownKvFormats;
++                                }
+                                 break;
+                             }
+                         }
+                         auto found = kvBuffers.find(cacheKey);
+-                        if (found != kvBuffers.end()) { tensor.storage = found->second; tensor.persistent = true; }
++                        if (found != kvBuffers.end()) tensor.storage = found->second;
+                     }
+                     if (!tensor.storage) {
+                         tensor.storage = std::make_shared<TensorStorage>();
+                         tensor.storage->handle = OH_NNTensor_Create(deviceId, desc);
+                         if (tensor.storage->handle && !cacheKey.empty() && bytes <= effectiveKvBytes - kvBytes) {
+-                            kvBuffers[cacheKey] = tensor.storage; kvBytes += bytes; tensor.persistent = true;
++                            kvBuffers[cacheKey] = tensor.storage; kvBytes += bytes;
+                         }
+                     }
+                 }
+@@ -468,6 +511,8 @@ private:
+         for (const auto& t : device->outputs) outputPorts.push_back(t.port);
+         if (!bindPorts(g.inputs, inputPorts, {}, device->inputMap, error) ||
+             !bindPorts(g.outputs, outputPorts, g.aliases, device->outputMap, error)) return nullptr;
++        if (incrementalKvBytes) trace("level=kv_storage incremental_input_bytes=" + std::to_string(incrementalKvBytes) +
++            " persistent_pool_bytes=" + std::to_string(kvBytes) + " unknown_formats=" + std::to_string(unknownKvFormats));
+         trace("level=graph_ready cpu_fallback=disabled load_ms=" + std::to_string(
+             std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - begin).count()));
+         device->modelBytes = modelBytes; device->used = ++clock; device->priority = priority(g);
+diff --git a/entry/src/main/cpp/full_npu/sources.json b/entry/src/main/cpp/full_npu/sources.json
+index 7ba88cd..5284909 100644
+--- a/entry/src/main/cpp/full_npu/sources.json
++++ b/entry/src/main/cpp/full_npu/sources.json
+@@ -7,7 +7,7 @@
+   {
+     "path": "FullNpuRuntime.cpp",
+     "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.cpp",
+-    "sha256": "594ab32aa238685dc6e39cffdda38b8024cac3515d12df8708098e7901d6ddcd"
++    "sha256": "daf991c71c7677953d8678c5e6115ea64e641c64e1db21c07b52da9634d98968"
+   },
+   {
+     "path": "FullNpuCache.cpp",
+@@ -37,7 +37,7 @@
+   {
+     "path": "NnrtBackend.cpp",
+     "source": "transformers/llm/export/kirin_llm_offline/runtime/NnrtBackend.cpp",
+-    "sha256": "39a5883bdec245ab9a5739d7eb7d68f1a5cbdf7f14cfb646ef5c41de79e8e9bd"
++    "sha256": "55505f5b1c6480109cdb6cdb274141540e01352bc75c8441bac1474c2b5b974d"
+   },
+   {
+     "path": "FullNpuRuntime.hpp",

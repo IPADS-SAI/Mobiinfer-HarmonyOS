@@ -1,0 +1,59 @@
+{
+  "scope": "Compiled graph/weight hashes and paired SDK UINT4/LUT encodings; no device execution",
+  "graphs": [
+    {
+      "graph": "embedding_prefill",
+      "pure_npu": true,
+      "omc_sha256": "99c53e1d23d86ab577d49ce7e695111d0aa38470563e01dd14bfe77d5dd53b7c",
+      "graph_bytes": 7508,
+      "external_weight_bytes": 622330368
+    },
+    {
+      "graph": "embedding_decode",
+      "pure_npu": true,
+      "omc_sha256": "44e0dd4db811bd353df3ef390fc2ad3d429881ea428bb0ee5d8a09adf138636a",
+      "graph_bytes": 7458,
+      "external_weight_bytes": 622330368
+    },
+    {
+      "graph": "llm_prefill_0",
+      "pure_npu": true,
+      "omc_sha256": "597fa384460d18991388325353a7f365fd8f56c65fc1f6d51ab6836c56cb697a",
+      "graph_bytes": 11942944,
+      "external_weight_bytes": 844892672
+    },
+    {
+      "graph": "llm_decode_0",
+      "pure_npu": true,
+      "omc_sha256": "8d4fe928ccadb3245514b3521e893afa3a12f7a790e63d9dee5debf421dcfc06",
+      "graph_bytes": 11442654,
+      "external_weight_bytes": 844663296
+    },
+    {
+      "graph": "lm_head",
+      "pure_npu": true,
+      "omc_sha256": "f9e59172acf7d68442690d593dd73972ee6d45ab7991b3ac4af23a194e0512c8",
+      "graph_bytes": 391309,
+      "external_weight_bytes": 185691648
+    },
+    {
+      "graph": "vision_full",
+      "pure_npu": true,
+      "omc_sha256": "24bbe5e1333220f9e4e7b6acd6c7f8bd7cfaa190bc945196ac093cab6e239f2b",
+      "graph_bytes": 5265008,
+      "external_weight_bytes": 251344384
+    }
+  ],
+  "unique_w4_matrices": 301,
+  "w4_groups": {
+    "llm_0": 196,
+    "head": 1,
+    "vision_full": 104
+  },
+  "graph_weights_external": true,
+  "main_matrix_weight_bits": 4,
+  "kv_dtype": "fp16",
+  "fused_vision": true,
+  "device_tested": false,
+  "max_torch_ort_relative_l2": 0.015545305350311844
+}

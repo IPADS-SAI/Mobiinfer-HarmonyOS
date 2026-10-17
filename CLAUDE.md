@@ -97,11 +97,51 @@ For the following tasks, **read the Skill entry file first** and execute step by
 | Retrospective | `skills/retrospective/SKILL.md` | After any non-trivial task: reflect on mistakes, update relevant skills with lessons learned |
 
 
-## 端侧鸿蒙app代买库
-mobiinfra-oh 这个目录下面是端侧推理的deveco 的项目代码库，主要的程序文件在mobiinfra-oh/entry/src/main/cpp目录下面，这里mobiinfra-oh/entry/libs/arm64-v8a/libMNN.so这个so文件是project/harmony/build_oh/libMNN.so拷贝过去的
+## 端侧鸿蒙 App 源码
+
+本机 App 工程位于 `/home/ma-user/workspace/feh/mobiinfra-oh`，原生入口在
+`entry/src/main/cpp/napi_init.cpp`，界面在 `entry/src/main/ets/`。
+`entry/libs/arm64-v8a/libMNN.so` 来自本仓库的 Harmony 构建。修改本机源码后需要重新编译、安装 App，下载模型不会更新已安装的原生库。
 
 
 ## OMG/OMC 离线 NPU 图编译
+
+### 主要方案：单张 ViT 离线图 + 外置权重 + CPU LLM
+
+**现在“离线NPU”默认指本方案，原“离线NPU-2”按钮已改为“离线NPU”。**
+先阅读 [单图视觉离线 NPU 实现与验证](transformers/llm/export/kirin_hybrid_offline/README.md)。
+
+- ViT、最终 merger 和三路 DeepStack merger 合并为 **一张 `vision_full.omc`**，全部在 NPU 执行。
+- 使用 **图与权重分离**：OMG `--target=omc --save_weights_as_external_data=true`，运行时通过 `HMS_HiAIExecutor_InitWeights` 加载外置 `SubGraph_0.weight`。保持一个视觉 executor，跨图片/请求复用。
+- 视觉沿用 Full NPU 已冻结的 **W4A16/group64**，固定高 608、宽 256，每图 152 个语言图像 token。视觉 layers 5/11/17 的特征经各自 merger 后，注入语言 layers 0/1/2。
+- LLM、文本 embedding、LM head、采样和 KV 全在 **MNN CPU**。当前语言权重沿用用户提供的 AutoRound/GPTQ **W8/group128**，head 为浮点；没有重新量化，不得宣称整包 W4 或完整复现源 AutoRound 的激活量化。
+- 最新完整包：[双模式 v2](https://www.modelscope.cn/models/fengerhu1/mobi_2B_offline_npu2_kirin9030_online_v2)。它额外保留完整 MNN ViT，供在线 NPU/CPU 使用；离线模式不加载这些 MNN 视觉图。
+- App 内部模式标识和模型协议继续使用 **`offline_npu2` / `kirin_offline_npu2_v1`**，不要因为界面改名而更改它们。旧持久化 `offline` 选择迁移到主方案；native 的旧 `offline` 分块分支仍保留为备选，不显示按钮。
+
+复用已验证的单图视觉运行包和 MNN CPU 导出生成完整模型目录：
+
+```bash
+python3 transformers/llm/export/kirin_hybrid_offline/package_runtime.py \
+  --cpu /path/to/mnn_gptq_export \
+  --full-npu /path/to/validated_fusedvision_runtime \
+  --output /path/to/new_offline_npu_package --with-mnn-vision
+```
+
+该打包步骤不重新量化、不执行 OMG；重建冻结视觉图的编译流程见下述 Full NPU 文档的第 4 节，需使用 `--fuse-vision` 与外置权重。不要用旧六段 `build_kirin_offline.py` 代替当前单图构建。
+CPU 参考验证不能代替手机 OMC/HiAI 验证。用户已反馈本模式可正常运行，但回答质量、性能和长期稳定性仍需评估，不能将主方案切换描述为精度或速度问题已全部解决。
+
+### 另行保留：全模型 NPU 实验路径（2026-10-17）
+
+涉及 Qwen3-VL/mobi 的 **全图 NPU**、外置 W4 权重、FP16 KV、CPU 量化对照、
+App 加载或性能排查时，先阅读
+**[Kirin9030 全图 NPU 构建与验证](docs/inference/full-npu-kirin9030.md)**。
+该文档包含单图视觉版本共 6 张 OMC（旧分图版为 13 张）的构建命令、图权重分离与 InitWeights 流程、量化问题及 CPU
+校验方法。当前用户真机反馈精度阶段性对齐，**性能仍然非常非常慢，尚需继续优化**；
+不能将编译或精度通过写成性能问题已解决。它使用 `full_npu` 标识，不是当前“离线NPU”按钮的执行路径。
+
+## 备选：旧六段视觉离线图（保留复现流程）
+
+**以下构建、量化和配置仅用于旧视觉分块方案。它不是默认离线方案，App 已移除对应按钮，但保留 native `offline` 和 `OfflineNpuChunkExecutor` 实现。新模型优先采用上面的单图外置权重方案。**
 
 面向 **Kirin9030 (V311)**。目标产物：6 个视觉 chunk 的离线 NPU 图（`om/visual_blocks_npu_<i>.om`）。
 
@@ -124,9 +164,9 @@ mobiinfra-oh 这个目录下面是端侧推理的deveco 的项目代码库，主
 
 完整模型包：[`fengerhu1/mnn_mobi_2B_visual6_npu_kirin9030_w4a16_g64`](https://www.modelscope.cn/models/fengerhu1/mnn_mobi_2B_visual6_npu_kirin9030_w4a16_g64)。用户在手机运行后反馈能区分不同图片，暂按图文功能可用记录。此次没有提供数值输出或运行日志，不能宣称 NPU 数值与 CPU 参考对齐，也不能宣称 W4A16 的量化精度优于 W8A8。
 
-该版本仅将六张 ViT block 离线图改为 `Quant_act_weight_eco`、W4/group64、signed INT16 输入及逐通道 INT16 输出；LLM 和视觉前后处理保持原样。序列化必须使用 SDK 的 `quant_param_2=True`，并按配套 `fake_quant_weight.pth` 中的 UINT4/LUT 索引重新导出 ONNX；不能只将新参数文件配到旧浮点权重 ONNX。现在可使用 [`build_kirin_offline.py`](transformers/llm/export/plugin_quant_visual_matmul_route_v1/build_kirin_offline.py) 执行该配置的完整流程，参数与分阶段用法见 [README §2.6](README.md#26-kirin9030-完整离线编译vit-w4a16--llm-cpu)。单段导出器保留旧序列化默认值，原生编码需要显式 `--quant_param_2`。发布包的隔离构建、电脑端误差与验证边界见 [`visual-npu-notes.md` §13](docs/inference/visual-npu-notes.md#13-vit-w4a16group64-真机初测可用2026-10-08)。
+该版本仅将六张 ViT block 离线图改为 `Quant_act_weight_eco`、W4/group64、signed INT16 输入及逐通道 INT16 输出；LLM 和视觉前后处理保持原样。序列化必须使用 SDK 的 `quant_param_2=True`，并按配套 `fake_quant_weight.pth` 中的 UINT4/LUT 索引重新导出 ONNX；不能只将新参数文件配到旧浮点权重 ONNX。备选构建入口为 [`build_kirin_offline.py`](transformers/llm/export/plugin_quant_visual_matmul_route_v1/build_kirin_offline.py)，参数见其 `--help` 和本节历史流程。单段导出器保留旧序列化默认值，原生编码需要显式 `--quant_param_2`。发布包的隔离构建、电脑端误差与验证边界见 [`visual-npu-notes.md` §13](docs/inference/visual-npu-notes.md#13-vit-w4a16group64-真机初测可用2026-10-08)。
 
-现有 App 不需要更新。清空旧仓库地址后下载上述独立模型，选择“离线 NPU 图”并重新加载；保留 `visual_blocks_om_deepstack_dup=[2]`。本次每段使用 192 份真实路径 A 输入校准，没有运行完整 CUDA GPTQ/QAT 三段式权重优化。
+此为历史模型与旧入口的复现记录。现在仅保留 native `offline` 分支供备选调试，不再提供旧按钮；当前“离线NPU”按钮要求单图混合模型包，不能直接加载上述六段包。旧分支仍须保留 `visual_blocks_om_deepstack_dup=[2]`。当时每段使用 192 份真实路径 A 输入校准，没有运行完整 CUDA GPTQ/QAT 三段式权重优化。
 
 ### 环境准备
 
@@ -404,3 +444,5 @@ python3 generate_npz_calib.py \
 
 ##环境配置
 查看 @ENV.md 文件
+
+当前主要离线NPU方案（单图外置权重 ViT + MNN CPU LLM；内部标识仍为 `offline_npu2`）的实现、打包及主机精度验证见 @transformers/llm/export/kirin_hybrid_offline/README.md 。不能把 CPU 参考验证描述为 OMC 真机验证。

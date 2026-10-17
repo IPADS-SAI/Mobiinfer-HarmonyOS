@@ -1,0 +1,30 @@
+{
+  "device_tested": false,
+  "omc_executed": false,
+  "scope": "actual portable App C++ scheduler with CPU dequantized ONNX references; tensor transfer checks",
+  "package_config_sha256": "22ece5ef201458d1a191361e920f92ae9bc422ee9c61943e7b7a1e2b624eeb1c",
+  "embedding_slice_build_verified": false,
+  "system_prompt": "You are a helpful assistant.",
+  "cases": [
+    {
+      "case": "multiple_images",
+      "prompt_tokens": 333,
+      "graph_calls": 18,
+      "independent_tensor_checks": 388,
+      "image_patch_metrics": [
+        {
+          "relative_l2": 0.001718222439527411,
+          "max_abs": 0.023529529571533203,
+          "cosine": 0.9999985276406818
+        },
+        {
+          "relative_l2": 0.0006146629916408379,
+          "max_abs": 0.023529529571533203,
+          "cosine": 0.9999998111114128
+        }
+      ],
+      "response": "好的，根据您",
+      "passed": true
+    }
+  ]
+}

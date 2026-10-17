@@ -1,0 +1,10 @@
+{
+  "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_external",
+  "started_utc": "2026-10-16T16:45:27.890586+00:00",
+  "status": "complete",
+  "files": 40,
+  "total_bytes": 2779764092,
+  "verified_files": 40,
+  "finished_utc": "2026-10-16T16:46:03.107058+00:00",
+  "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_external"
+}

@@ -1,0 +1,52 @@
+{
+  "device_tested": false,
+  "omc_executed": false,
+  "scope": "actual portable App C++ scheduler with CPU dequantized ONNX references; tensor transfer checks",
+  "package_config_sha256": "9716dcbbc29a57a82751a21f6b192e2e0e59136eb11f97c9f5a210e145c624c6",
+  "embedding_slice_build_verified": false,
+  "system_prompt": "You are a helpful assistant.",
+  "cases": [
+    {
+      "case": "text_0",
+      "prompt_tokens": 22,
+      "graph_calls": 48,
+      "independent_tensor_checks": 1008,
+      "image_patch_metrics": [],
+      "response": "你好呀！我叫通义千问，是阿里巴巴集团旗下的通义",
+      "passed": true
+    },
+    {
+      "case": "text_1",
+      "prompt_tokens": 36,
+      "graph_calls": 9,
+      "independent_tensor_checks": 189,
+      "image_patch_metrics": [],
+      "response": "56",
+      "passed": true
+    },
+    {
+      "case": "text_2",
+      "prompt_tokens": 32,
+      "graph_calls": 30,
+      "independent_tensor_checks": 630,
+      "image_patch_metrics": [],
+      "response": "There is a blue book on the table.",
+      "passed": true
+    },
+    {
+      "case": "image_0",
+      "prompt_tokens": 179,
+      "graph_calls": 58,
+      "independent_tensor_checks": 1101,
+      "image_patch_metrics": [
+        {
+          "relative_l2": 0.0017182224395274114,
+          "max_abs": 0.023529529571533203,
+          "cosine": 0.9999985276406692
+        }
+      ],
+      "response": "好的，这张图片是深圳到杭州的火车票查询结果页面，展示了",
+      "passed": true
+    }
+  ]
+}

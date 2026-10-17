@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "device_tested": false,
+  "scope": "CPU reference; images excluded from calibration; no OMC accuracy claim",
+  "activation_range_multiplier": 1,
+  "output_range_multiplier": 4.0,
+  "cases": [
+    {
+      "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_AutoExplore_饿了么_20260306-142208_ui-pages_page_0049_2_1.jpg",
+      "image_sha256": "143b4a932a44dfe109b9de5561d85283f303fca1d3576e616b5b55232f41efa5",
+      "prompt": "请描述这张图片的内容。",
+      "first_logits": {
+        "relative_l2": 0.5658472300063555,
+        "max_abs": 10.372302412986755,
+        "cosine": 0.837258903798024
+      },
+      "first_token_agrees": false,
+      "reference_answer": "这是一张在手机应用中查看“我的客服”页面的截图，显示了用户正在处理订单并准备提交评价。页面顶部是“我的客服”标题，下方是“请选择您的订单”的订单列表，其中包含",
+      "w4_fp16_kv_answer": "好的，我看到的是一个订单服务页面，显示了可供选择的订单列表。页面顶部是“我的客服”标题，下方是“请选择您的订单”的列表，包括“美莉奶白”、“CoCo都可"
+    },
+    {
+      "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_14_27.jpg",
+      "image_sha256": "7087946b00cefb8397c04675d8afd61b7d13410c85c1f47951cf75771d8deea4",
+      "prompt": "请描述这张图片的内容。",
+      "first_logits": {
+        "relative_l2": 0.5344030047888269,
+        "max_abs": 9.5018972158432,
+        "cosine": 0.8567311393849765
+      },
+      "first_token_agrees": false,
+      "reference_answer": "这是一张显示中国铁路12306火车票查询结果的手机应用截图。页面顶部显示了出发站“深圳”和到达站“杭州”，并有搜索框和筛选条件。下方是多条火车",
+      "w4_fp16_kv_answer": "好的，这张图片是深圳到杭州的火车票查询结果页面，展示了多趟列车的详细信息。页面顶部显示了出发站“深圳”和到达站“杭州”，下方是列车班次列表。每个班次"
+    },
+    {
+      "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_3_3.jpg",
+      "image_sha256": "a0457a308b9890fffca9390f062e1d6b5bc1138b6e5c2f699d68344fb0865197",
+      "prompt": "请描述这张图片的内容。",
+      "first_logits": {
+        "relative_l2": 0.5671037860433887,
+        "max_abs": 11.284491539001465,
+        "cosine": 0.8342708704613607
+      },
+      "first_token_agrees": false,
+      "reference_answer": "这是一张手机应用的搜索结果截图，显示了在“自动喂食器”主题下进行的搜索。页面顶部是搜索框，其中已输入“自动喂食器”，右侧有一个红色的“搜索”按钮",
+      "w4_fp16_kv_answer": "好的，根据您提供的图片，我将展示其内容。这是一张手机应用的搜索界面截图，主要显示了搜索框和下方的搜索建议列表。"
+    }
+  ]
+}

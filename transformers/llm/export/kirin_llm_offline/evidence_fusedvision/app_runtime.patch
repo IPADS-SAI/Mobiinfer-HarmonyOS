@@ -1,0 +1,210 @@
+diff --git a/docs/full-npu.md b/docs/full-npu.md
+index 845d47e..6c7ac0e 100644
+--- a/docs/full-npu.md
++++ b/docs/full-npu.md
+@@ -1,5 +1,33 @@
+ # 全图 NPU（实验）
+ 
++## 单张视觉图候选 fusedvision_v1（2026-10-17）
++
++模型已发布：
++https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_fusedvision_v1
++
++24 个文件、2,782,486,376 字节已核对远端 SHA256 和大小。请在模型下载地址
++填入新仓库，下载到独立目录；旧仓库保留。
++
++已将 `vision_pre + vision_blocks_0..5 + vision_post` 八图合成 `vision_full` 一张，
++全 VLM 由 13 张变为 6 张 OMC。单张视觉图包含 patch/位置处理、24 层 blocks、
++最终 merger 与三个独立 DeepStack merger；第 5、11、17 层 block 后取值，
++分别投影后按顺序注入语言第 0、1、2 层，顺序和形状保持原协议。
++
++新包使用 `kirin_full_npu_runtime_v3`。本机 App 已增加格式识别、单图调度和
++严格的输入输出/DeepStack 检查，仍兼容旧分图包，并保留此前 16 图、4 GiB
++App 常驻预算及增量 FP16 KV。源码更新后须在 DevEco 重新编译安装；本轮没有
++安装或修改手机 App，也未构建 HAP。
++
++主干矩阵仍是冻结 W4/group64 GPTQ，KV 为 FP16；图与外部 `.weight` 文件分离。
++三张非校准图片的 CPU ONNX 对照中，图像 embedding 与每路 DeepStack 在合并
++前后逐元素一致。六张图完成纯 NPU 编译。真实 App portable C++ 源码的主机
++检查通过，两条文本、三张单图和一组双图的 CPU ONNX 调度回放均通过，共 3112 项独立张量检查。
++
++本轮没有执行真机 OMC，不能据此断言设备加载、峰值内存或速度通过。
++合并减少视觉阶段的图切换，解码时的反复 InitWeights 问题仍需后续优化；
++此前完整模型 W4 质量与长上下文 FP16 KV 验收失败没有被宣称解决。
++
++
+ ## 本地 App 常驻预算调整（2026-10-17）
+ 
+ 当前 App 的全图 NPU 加载入口显式使用 **16 张图、4096 MiB（4 GiB）模型文件预算**，
+diff --git a/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp b/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp
+index 5f4fb8e..fe83b4f 100644
+--- a/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp
++++ b/entry/src/main/cpp/full_npu/FullNpuRuntime.cpp
+@@ -166,10 +166,18 @@ struct Runtime::Impl {
+             patches.push_back((v - .5f) / .5f);
+         }
+         std::vector<std::vector<float>> out, deep;
++        std::vector<float> mask(size_t(gh) * gw * gh * gw, 0);
++        if (p.fusedVision) {
++            // DeepStack taps and their individual mergers are inside this graph.
++            // Output order remains [image_embeddings, projected DeepStack stack].
++            if (!run("vision_full", {floats(patches), {DType::I32, indices.data(), indices.size()},
++                     floats(weights), floats(visionCos), floats(visionSin), floats(mask)}, features, cancel, error)) return false;
++            backend->release();
++            return true;
++        }
+         if (!run("vision_pre", {floats(patches), {DType::I32, indices.data(), indices.size()}, floats(weights)}, out, cancel, error)) return false;
+         backend->release();
+         auto hidden = std::move(out[0]);
+-        std::vector<float> mask(size_t(gh) * gw * gh * gw, 0);
+         for (const auto& name : vision) {
+             if (!run(name, {floats(hidden), floats(visionCos), floats(visionSin), floats(mask)}, out, cancel, error)) return false;
+             hidden = std::move(out[0]);
+@@ -275,7 +283,7 @@ bool Runtime::load(const std::string& configPath, std::string& error, ResidencyB
+     doc.Parse(readText(configPath).c_str());
+     const auto format = stringField(doc, "format");
+     if (doc.HasParseError() || !doc.IsObject() ||
+-        (format != "kirin_full_npu_runtime_v1" && format != "kirin_full_npu_runtime_v2")) {
++        (format != "kirin_full_npu_runtime_v1" && format != "kirin_full_npu_runtime_v2" && format != "kirin_full_npu_runtime_v3")) {
+         error = "Select a dedicated full-NPU model package (config format mismatch)"; return false;
+     }
+     s.root = configPath.substr(0, configPath.find_last_of('/') + 1);
+@@ -288,7 +296,23 @@ bool Runtime::load(const std::string& configPath, std::string& error, ResidencyB
+         auto type = stringField(r, "kv_dtype");
+         if (type != "int8" && type != "fp16") { error = "Invalid KV dtype"; return false; }
+         p.kvType = type == "fp16" ? DType::F16 : DType::I8;
+-    } else if (format == "kirin_full_npu_runtime_v2") { error = "Missing KV dtype"; return false; }
++    } else if (format != "kirin_full_npu_runtime_v1") { error = "Missing KV dtype"; return false; }
++    p.fusedVision = format == "kirin_full_npu_runtime_v3";
++    if (p.fusedVision) {
++        p.visionLayers = number(r, "vision_layers");
++        if (p.visionLayers < 1 || p.visionLayers > 128 || !r.HasMember("vision_deepstack_layers") ||
++            !r["vision_deepstack_layers"].IsArray() || r["vision_deepstack_layers"].Empty() ||
++            r["vision_deepstack_layers"].Size() > unsigned(p.layers)) {
++            error = "Invalid fused visual DeepStack configuration"; return false;
++        }
++        for (const auto& v : r["vision_deepstack_layers"].GetArray()) {
++            if (!v.IsInt() || v.GetInt() < 0 || v.GetInt() >= p.visionLayers ||
++                (!p.visionDeepstack.empty() && v.GetInt() <= p.visionDeepstack.back())) {
++                error = "Invalid fused visual DeepStack layer order"; return false;
++            }
++            p.visionDeepstack.push_back(v.GetInt());
++        }
++    }
+     if (p.kvType == DType::F16 && (p.sink || p.recent)) {
+         error = "FP16 KV must not declare INT8 protected windows"; return false;
+     }
+@@ -405,6 +429,7 @@ bool Runtime::load(const std::string& configPath, std::string& error, ResidencyB
+         s.graphs.emplace(g.name, std::move(g));
+     }
+     for (const char* prefix : {"llm_prefill_", "llm_decode_", "vision_blocks_"}) {
++        if (p.fusedVision && std::string(prefix) == "vision_blocks_") continue;
+         auto& names = std::string(prefix) == "llm_prefill_" ? s.llmPrefill : std::string(prefix) == "llm_decode_" ? s.llmDecode : s.vision;
+         int end = 0;
+         for (int i = 0; s.graphs.count(std::string(prefix) + std::to_string(i)); ++i) {
+@@ -416,8 +441,11 @@ bool Runtime::load(const std::string& configPath, std::string& error, ResidencyB
+         }
+         if (names.empty() || (std::string(prefix) != "vision_blocks_" && end != p.layers)) { error = "Incomplete graph coverage"; return false; }
+     }
+-    for (const char* name : {"vision_pre", "vision_post", "embedding_prefill", "embedding_decode", "lm_head"})
++    for (const char* name : {"embedding_prefill", "embedding_decode", "lm_head"})
+         if (!s.graphs.count(name)) { error = "Missing full model component"; return false; }
++    for (const auto& name : p.fusedVision ? std::vector<std::string>{"vision_full"} :
++                                           std::vector<std::string>{"vision_pre", "vision_post"})
++        if (!s.graphs.count(name)) { error = "Missing visual model component"; return false; }
+     if (!validateRuntimeGraphs(p, s.graphs, s.llmPrefill, s.llmDecode, s.vision, error)) return false;
+     s.backend->configure(p.backend);
+     // Probe sequentially, freeing each graph. Do not retain both LLM phases.
+diff --git a/entry/src/main/cpp/full_npu/FullNpuRuntime.hpp b/entry/src/main/cpp/full_npu/FullNpuRuntime.hpp
+index 1e38a3c..47f4b4f 100644
+--- a/entry/src/main/cpp/full_npu/FullNpuRuntime.hpp
++++ b/entry/src/main/cpp/full_npu/FullNpuRuntime.hpp
+@@ -88,6 +88,9 @@ struct Profile {
+     int group = 0, recent = 0, sink = 0, imageWidth = 0, imageHeight = 0;
+     int patch = 0, merge = 0, temporal = 0, visionHidden = 0, visionHeads = 0, positionSide = 0;
+     int imageToken = 0, padToken = 0, maxNewTokens = 0;
++    bool fusedVision = false;
++    int visionLayers = 0;
++    std::vector<int> visionDeepstack;
+     float ropeTheta = 0, visionTheta = 0;
+     std::vector<int> mrope;
+ };
+diff --git a/entry/src/main/cpp/full_npu/RuntimeContracts.hpp b/entry/src/main/cpp/full_npu/RuntimeContracts.hpp
+index 2c356dc..42afe77 100644
+--- a/entry/src/main/cpp/full_npu/RuntimeContracts.hpp
++++ b/entry/src/main/cpp/full_npu/RuntimeContracts.hpp
+@@ -39,7 +39,7 @@ inline bool validateRuntimeGraphs(const Profile& p, const std::map<std::string,
+         }
+         return true;
+     };
+-    if (graphs.size() != prefill.size() + decode.size() + vision.size() + 5) {
++    if (graphs.size() != prefill.size() + decode.size() + vision.size() + (p.fusedVision ? 4 : 5)) {
+         error = "Unused, missing or nonconsecutive full-NPU graph";
+         return false;
+     }
+@@ -90,6 +90,20 @@ inline bool validateRuntimeGraphs(const Profile& p, const std::map<std::string,
+     }
+     if (!check(head, {{"hidden_states", DType::F32, {1, 1, p.hidden}}},
+                {{"logits", DType::F32, {1, 1, head.outputs[0].shape[2]}}})) return false;
++    if (p.fusedVision) {
++        const auto& g = graphs.at("vision_full");
++        if (g.start != 0 || g.end != p.visionLayers || !vision.empty() || !g.aliases.empty()) {
++            error = "Invalid fused visual graph coverage or aliases"; return false;
++        }
++        return check(g,
++            {{"patches", DType::F32, {n, 3 * p.temporal * p.patch * p.patch}},
++             {"position_indices", DType::I32, {n, 4}}, {"position_weights", DType::F32, {n, 4}},
++             {"rope_cos", DType::F32, {1, 1, n, visionDim}},
++             {"rope_sin", DType::F32, {1, 1, n, visionDim}},
++             {"attention_mask", DType::F32, {1, 1, n, n}}},
++            {{"image_embeddings", DType::F32, {1, imageTokens, p.hidden}},
++             {"deepstack_features", DType::F32, {int(p.visionDeepstack.size()), 1, imageTokens, p.hidden}}});
++    }
+     if (!check(graphs.at("vision_pre"),
+                {{"patches", DType::F32, {n, 3 * p.temporal * p.patch * p.patch}},
+                 {"position_indices", DType::I32, {n, 4}}, {"position_weights", DType::F32, {n, 4}}},
+diff --git a/entry/src/main/cpp/full_npu/sources.json b/entry/src/main/cpp/full_npu/sources.json
+index 06a30f3..5b2db4c 100644
+--- a/entry/src/main/cpp/full_npu/sources.json
++++ b/entry/src/main/cpp/full_npu/sources.json
+@@ -7,7 +7,7 @@
+   {
+     "path": "FullNpuRuntime.cpp",
+     "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.cpp",
+-    "sha256": "a83754a35bfc69de1d018eb52912d692d32b67b98867b69298711bdd4771aa91"
++    "sha256": "489d0bd306d4d30b0669ed15a82a35df73a3d776a60d075a97eef79af76bdaf6"
+   },
+   {
+     "path": "FullNpuCache.cpp",
+@@ -32,7 +32,7 @@
+   {
+     "path": "RuntimeContracts.hpp",
+     "source": "transformers/llm/export/kirin_llm_offline/runtime/RuntimeContracts.hpp",
+-    "sha256": "66121b10727561561711f12f46ae3bb2384ae95b10b7d3f9efcc0adf74c64954"
++    "sha256": "2a4cc5b03aab30058fcb1eb3d17f98b57c426d6723c70f5a6214a3dbad7bb4e7"
+   },
+   {
+     "path": "NnrtBackend.cpp",
+@@ -42,7 +42,7 @@
+   {
+     "path": "FullNpuRuntime.hpp",
+     "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.hpp",
+-    "sha256": "473c4c9899cb6169ae9ca1226b6443fdb9e4c9f974d6e72afbc9e6eabf154964"
++    "sha256": "4a4318f24ab4f0a6f8a649525aef7894b06af671e43ac098587508fe5bae1c3f"
+   },
+   {
+     "path": "PortBinding.hpp",
+diff --git a/entry/src/main/ets/pages/ProfileTest.ets b/entry/src/main/ets/pages/ProfileTest.ets
+index 7927fd5..42bbe54 100644
+--- a/entry/src/main/ets/pages/ProfileTest.ets
++++ b/entry/src/main/ets/pages/ProfileTest.ets
+@@ -149,7 +149,8 @@ struct ProfileTest {
+     try {
+       let config = ArkJSON.parse(this.readTextFile(path)) as JsonMap;
+       return config['format'] === 'kirin_full_npu_runtime_v1' ||
+-        config['format'] === 'kirin_full_npu_runtime_v2';
++        config['format'] === 'kirin_full_npu_runtime_v2' ||
++        config['format'] === 'kirin_full_npu_runtime_v3';
+     } catch (e) {
+       return false;
+     }

@@ -1,0 +1,640 @@
+{
+  "date_utc": "2026-10-16",
+  "source": {
+    "model": "mobi0402_2B_halfimage_rl",
+    "architecture": "Qwen3VLForConditionalGeneration",
+    "config_sha256": "e563efc29a7528567e49cdae55c6eb7b289777146129669a07c9922f1b6c34d7",
+    "weights_sha256": "573cc1807edf146c088e60d09e2a9dbe9028dbaf2e29b38a7f0cc4c0a4066efc"
+  },
+  "tools": {
+    "ddk": "DDK-tools-next-6.1.1.0",
+    "torch": "2.6.0",
+    "transformers": "5.16.1",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.23.2",
+    "calibration_torch": "2.6.0+cu124",
+    "calibration_device": "CUDA A100"
+  },
+  "profile": {
+    "source_model": "/temp/models/mobi0402_2B_halfimage_rl",
+    "source_config_sha256": "e563efc29a7528567e49cdae55c6eb7b289777146129669a07c9922f1b6c34d7",
+    "platform": "kirin9030",
+    "context": 2048,
+    "prefill_tokens": 128,
+    "layers_per_chunk": 4,
+    "vision_tokens": 608,
+    "vision_layers_per_chunk": 4,
+    "precision": "w4a16",
+    "group_size": 64,
+    "head_bit": 4,
+    "weight_method": "gptq",
+    "gptq_damping": 0.01,
+    "gptq_block_size": 128
+  },
+  "precision": {
+    "linear_weight_bits": 4,
+    "linear_activation_bits": 16,
+    "activation_dtype": "INT16",
+    "group_size": 64,
+    "head_bits": 4,
+    "encoding": "SDK UINT4/LUT",
+    "embedding": "floating point",
+    "kv_quantized": false,
+    "cpu_execution": "separate dequantized reference graphs"
+  },
+  "cache": {
+    "layout": "[1, kv_heads, capacity, head_dim] per layer and K/V",
+    "capacity": 2048,
+    "fp16_bytes": 234881024,
+    "reference_float32_bytes": 469762048,
+    "update": "host appends only real delta KV; no sliding-window eviction"
+  },
+  "calibration": {
+    "config_sha256": "505288162fad5edae5bea377914425f92ce982093aec50efe4aa485070706eb7",
+    "checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+    "samples": 64,
+    "image_samples": 32,
+    "unique_images": 32,
+    "text_samples": 32,
+    "unique_text_prompts": 8,
+    "decode_steps_per_sample": 4,
+    "validation_images_excluded": true,
+    "linear_count": 301,
+    "weight_method": "GPTQ with frozen SDK INT4/group64 scales",
+    "qat_or_distillation_training": false,
+    "gptq_loss_ratio_median": 0.08191049734307723,
+    "gptq_loss_ratio_min": 0.0042193555620076255,
+    "gptq_loss_ratio_max": 0.4927296273198012,
+    "rtn_fallback_layers": 0,
+    "loss_metric_scope": "per-matrix calibration reconstruction; not full-model accuracy",
+    "floating_weight_audit": {
+      "model.language_model.embed_tokens.weight": {
+        "shape": [
+          151936,
+          2048
+        ],
+        "unchanged_from_original_float32": true
+      },
+      "model.visual.patch_embed.proj.weight": {
+        "shape": [
+          1024,
+          3,
+          2,
+          16,
+          16
+        ],
+        "unchanged_from_original_float32": true
+      },
+      "model.visual.pos_embed.weight": {
+        "shape": [
+          2304,
+          1024
+        ],
+        "unchanged_from_original_float32": true
+      },
+      "head_untied": true,
+      "head_differs_from_embedding": true
+    },
+    "metadata_recovered_after_ascii_locale_write_failure": true
+  },
+  "per_graph_reference_torch_ort": {
+    "count": 25,
+    "max_relative_l2": 0.0120431507813994,
+    "scope": "separate dequantized W4/A16 CPU references; native LUT graphs are not evaluated by ORT"
+  },
+  "host_validation": {
+    "weight_only_strict": {
+      "report": "host_validation_torch_weight_only.json",
+      "sha256": "6e83665727bcecf2ed2ebb622b072ac6f4f52ba32311f0f52fc6e16ad801b940",
+      "reference": "full HF architecture with calibrated W4 weights; activation requantization bypassed",
+      "device_execution": false,
+      "relative_l2_tolerance": 0.0002,
+      "strict_greedy": true,
+      "visual": {
+        "image_embeddings": {
+          "relative_l2": 1.132471661222945e-05,
+          "max_abs": 0.0009107589721679688,
+          "cosine": 0.9999999999359848
+        },
+        "deepstack_features": {
+          "relative_l2": 3.2157942821683436e-06,
+          "max_abs": 7.343292236328125e-05,
+          "cosine": 0.999999999994829
+        }
+      },
+      "cases": [
+        {
+          "name": "text",
+          "prefill_tokens": 13,
+          "prefill_blocks": 1,
+          "tail_real_tokens": 13,
+          "decode_steps": 8,
+          "max_logits_relative_l2": 2.2529593048265826e-06,
+          "max_hidden_relative_l2": 1.965153150084789e-06,
+          "kv_max_relative_l2": 2.0125353829186187e-06,
+          "all_greedy_tokens_equal": true,
+          "greedy_token_agreement": 1.0,
+          "generation_mode": "greedy"
+        },
+        {
+          "name": "image",
+          "prefill_tokens": 168,
+          "prefill_blocks": 2,
+          "tail_real_tokens": 40,
+          "decode_steps": 8,
+          "max_logits_relative_l2": 4.656992678554493e-06,
+          "max_hidden_relative_l2": 2.1445252436273127e-05,
+          "kv_max_relative_l2": 2.949034390543601e-05,
+          "all_greedy_tokens_equal": true,
+          "greedy_token_agreement": 1.0,
+          "generation_mode": "greedy"
+        }
+      ]
+    },
+    "torch_w4a16": {
+      "report": "host_validation_torch.json",
+      "sha256": "f182647e4cbccf89d88f2e73e81a38131dcf381cc3323eeb780d453fe77c18e0",
+      "reference": "full HF architecture with calibrated SDK W4A16 fake quantization; eager attention",
+      "device_execution": false,
+      "relative_l2_tolerance": 0.05,
+      "strict_greedy": false,
+      "visual": {
+        "image_embeddings": {
+          "relative_l2": 0.004888864909193485,
+          "max_abs": 0.3623991012573242,
+          "cosine": 0.9999882469126736
+        },
+        "deepstack_features": {
+          "relative_l2": 0.0026829125011482557,
+          "max_abs": 0.05991983413696289,
+          "cosine": 0.9999964012573671
+        }
+      },
+      "cases": [
+        {
+          "name": "text",
+          "prefill_tokens": 13,
+          "prefill_blocks": 1,
+          "tail_real_tokens": 13,
+          "decode_steps": 8,
+          "max_logits_relative_l2": 0.01354050426954517,
+          "max_hidden_relative_l2": 0.012890411988394267,
+          "kv_max_relative_l2": 0.024828940013647518,
+          "all_greedy_tokens_equal": true,
+          "greedy_token_agreement": 1.0,
+          "generation_mode": "greedy"
+        },
+        {
+          "name": "image",
+          "prefill_tokens": 168,
+          "prefill_blocks": 2,
+          "tail_real_tokens": 40,
+          "decode_steps": 8,
+          "max_logits_relative_l2": 0.02963719520610263,
+          "max_hidden_relative_l2": 0.021590078286868816,
+          "kv_max_relative_l2": 0.023133763838860084,
+          "all_greedy_tokens_equal": true,
+          "greedy_token_agreement": 1.0,
+          "generation_mode": "greedy"
+        }
+      ]
+    },
+    "onnx_reference_w4a16": {
+      "report": "host_validation_onnx.json",
+      "sha256": "0e549d0a509cfe3faa998706013a38173c9b80f0fd96c6e3f5eed3b89f67d633",
+      "reference": "full HF architecture with calibrated SDK W4A16 fake quantization; eager attention",
+      "device_execution": false,
+      "relative_l2_tolerance": 0.05,
+      "strict_greedy": false,
+      "visual": {
+        "image_embeddings": {
+          "relative_l2": 0.011431469260484434,
+          "max_abs": 0.9284229278564453,
+          "cosine": 0.9999349607859073
+        },
+        "deepstack_features": {
+          "relative_l2": 0.003285589352016963,
+          "max_abs": 0.07159256935119629,
+          "cosine": 0.9999946063710824
+        }
+      },
+      "cases": [
+        {
+          "name": "text",
+          "prefill_tokens": 13,
+          "prefill_blocks": 1,
+          "tail_real_tokens": 13,
+          "decode_steps": 8,
+          "max_logits_relative_l2": 0.018580487074345814,
+          "max_hidden_relative_l2": 0.014590768268321955,
+          "kv_max_relative_l2": 0.034030816663267,
+          "all_greedy_tokens_equal": true,
+          "greedy_token_agreement": 1.0,
+          "generation_mode": "greedy"
+        },
+        {
+          "name": "image",
+          "prefill_tokens": 168,
+          "prefill_blocks": 2,
+          "tail_real_tokens": 40,
+          "decode_steps": 8,
+          "max_logits_relative_l2": 0.03279628098390099,
+          "max_hidden_relative_l2": 0.03091108928606731,
+          "kv_max_relative_l2": 0.031132182259454102,
+          "all_greedy_tokens_equal": true,
+          "greedy_token_agreement": 1.0,
+          "generation_mode": "greedy"
+        }
+      ]
+    }
+  },
+  "quality": {
+    "report_sha256": "4bf03c76429ee702b255e454c36f79116bb9a10a942591143a9aed172e640598",
+    "generation_limit_tokens": 48,
+    "cases": [
+      {
+        "name": "text_0",
+        "image": null,
+        "prompt": "请简单介绍一下你自己。",
+        "logits": {
+          "relative_l2": 0.29601000953573703,
+          "max_abs": 8.039222717285156,
+          "cosine": 0.9555015772168242
+        },
+        "answers": {
+          "original": "您好！我是一个大型语言模型，名为通义千问。我能够回答问题、创作文本、进行逻辑推理和编程等任务。我支持多种语言，可以与您进行多轮对话。请问您需要我帮",
+          "w4a16": "你好！我是一个多任务智能AI，可以提供各种任务的智能支持。我能够进行文本生成、多任务回答、翻译、总结、分析、计算、排序、分类、推荐、逻辑推导、回答问题、",
+          "w4a16_static_kv": "你好！我是一个多任务智能AI，可以提供各种任务的智能支持。我能够进行文本生成、多任务回答、翻译、总结、分析、计算、排序、分类、推荐、逻辑推导、回答问题、"
+        }
+      },
+      {
+        "name": "text_1",
+        "image": null,
+        "prompt": "请计算 23 加 19，并说明结果。",
+        "logits": {
+          "relative_l2": 0.29159885115079404,
+          "max_abs": 5.9507341384887695,
+          "cosine": 0.9649543179106067
+        },
+        "answers": {
+          "original": "我们来一步一步计算：\n\n题目是：**23 + 19**\n\n### 第一步：对齐数位\n```\n  23\n+ 19\n----\n```\n\n### 第二步：从个位",
+          "w4a16": "我们来一步一步计算：\n\n23 + 19\n\n我们可以先加个数，再加个数，或者使用更简单地进位的方式：\n\n1. 23 + 19\n\n先加个位上的数",
+          "w4a16_static_kv": "我们来一步一步计算：\n\n23 + 19\n\n我们可以先加个数，再加个数，或者使用更简单地进位的方式：\n\n1. 23 + 19\n\n先加个位上的数"
+        }
+      },
+      {
+        "name": "image_0",
+        "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_AutoExplore_饿了么_20260306-142208_ui-pages_page_0049_2_1.jpg",
+        "prompt": "请描述这张图片的内容。",
+        "logits": {
+          "relative_l2": 0.4556902807287955,
+          "max_abs": 6.192443132400513,
+          "cosine": 0.8953883917748936
+        },
+        "answers": {
+          "original": "这是一张在手机应用中操作的截图，显示的是“我的客服”页面。页面顶部有“02:54”和“我的客服”标题，下方是“请选择您的订单”的标题。页面中列",
+          "w4a16": "这是一张手机应用的屏幕截图，显示的是“智能客服务”页面。页面整体为深灰色，顶部是“智能客”标题，下方是“请选择您的单”列表，包括“美奶奶白",
+          "w4a16_static_kv": "这是一张手机应用的屏幕截图，显示的是“智能客服务”页面。页面整体为深灰色，顶部是“智能客”标题，下方是“请选择您的单”列表，包括“美奶奶白"
+        },
+        "image_sha256": "143b4a932a44dfe109b9de5561d85283f303fca1d3576e616b5b55232f41efa5"
+      },
+      {
+        "name": "image_1",
+        "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_14_27.jpg",
+        "prompt": "请描述这张图片的内容。",
+        "logits": {
+          "relative_l2": 0.36784665698566144,
+          "max_abs": 5.527539968490601,
+          "cosine": 0.9372490439509763
+        },
+        "answers": {
+          "original": "这是一张手机应用的行程查询结果截图，显示了从深圳到杭州的航班信息。页面顶部有“深圳 - 杭州”的出发地和目的地，以及“01:00”的出发时间。下方",
+          "w4a16": "这是一张中国国内多点城市间短程航线的搜索结果列表图片，截图于2023年1月10日。页面顶部显示“01:00”和“深圳 - 杠州",
+          "w4a16_static_kv": "这是一张中国国内多点城市间短程航线的搜索结果列表图片，截图于2023年1月10日01:00。页面顶部显示“深 在 — 杠州”"
+        },
+        "image_sha256": "7087946b00cefb8397c04675d8afd61b7d13410c85c1f47951cf75771d8deea4"
+      },
+      {
+        "name": "image_2",
+        "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_3_3.jpg",
+        "prompt": "请描述这张图片的内容。",
+        "logits": {
+          "relative_l2": 0.3434510918385604,
+          "max_abs": 5.899019241333008,
+          "cosine": 0.9458584266842976
+        },
+        "answers": {
+          "original": "这是一张在移动设备上运行的搜索应用界面的截图，显示了搜索结果列表。页面顶部是搜索框，其中包含“自动喂食器”的搜索关键词，右侧有一个红色的“搜索”按钮。搜索",
+          "w4a16": "这是一张手机应用的搜索结果页面图片，显示了“自动喂食品”相关的搜索结果。页面的上部是搜索历史或搜索建议列表，列表中包含“自动喂食品”等搜索词。搜索框",
+          "w4a16_static_kv": "这是一张手机应用的搜索结果页面图片，显示了“自动喂食品”相关的搜索结果。页面的上部是搜索历史或搜索建议列表，列表中包含“自动喂食品”等搜索词。搜索框"
+        },
+        "image_sha256": "a0457a308b9890fffca9390f062e1d6b5bc1138b6e5c2f699d68344fb0865197"
+      }
+    ],
+    "observations": [
+      "Self-introduction is coherent; initial RTN candidate repeated phrases.",
+      "Three held-out images produce customer/order, flight-list and search-suggestion descriptions.",
+      "OCR, city, date and product terms still differ; original-model accuracy is not fully matched.",
+      "Flight image full-HF and static-KV quantized greedy continuations diverge later.",
+      "Arithmetic continuation is truncated while explaining steps; final answer is not verified."
+    ],
+    "benchmark_accuracy_claim": false,
+    "device_execution": false
+  },
+  "compilation": {
+    "graphs": [
+      {
+        "name": "llm_prefill_0",
+        "omc_bytes": 122471681,
+        "omc_sha256": "f576c8359de51ac4442214aa73f8657c97dd84f8df6e63687c769ae72d5f781b",
+        "onnx_sha256": "debf99bc18336d6cdcffff56ad3aa6190c44e843498bffc2443fd03de77870c4",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "f13bc4350113c9e15f6870a05e8e594f3452ed33c9e46a35eef162f1e07b11e4",
+        "weight_group": "llm_0"
+      },
+      {
+        "name": "llm_prefill_1",
+        "omc_bytes": 122471753,
+        "omc_sha256": "239f443aae9301c9bf6522a2d75f5870c9f114fc7cc6cd5e6c7cddc6cd2b80e5",
+        "onnx_sha256": "83929fe633405eb373fa9fc973f580d16c433406e0c312df478765ab338ba842",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "206ed58aa8285e8fe7a84ef076c523c74054b3105149a803c01f806fd62130c0",
+        "weight_group": "llm_4"
+      },
+      {
+        "name": "llm_prefill_2",
+        "omc_bytes": 122471701,
+        "omc_sha256": "d4d5e51112fa4648c452464e0b649e3a0ea8e2d6208b5abcf131fb6beac5ac18",
+        "onnx_sha256": "c57c9ec45c3297cb3a574423e996ebea7e1288b66871569d3b9eca5b4749608b",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "11974bd7e6420cb532a5ac0a558908e766bb30f91ab6e1b1e48f98ffede1479c",
+        "weight_group": "llm_8"
+      },
+      {
+        "name": "llm_prefill_3",
+        "omc_bytes": 122471721,
+        "omc_sha256": "0a6e455ffdb502126ec81c10323b9b24d254e9a04b8ebc4848d0ebf1cb0337b9",
+        "onnx_sha256": "65c9af78b407bbe5378a0f5992ca0195c2aed41c92d012a61635acf7ef20fd91",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "707557b9902a08a53e59c1146ff69ea24679939b0626e7499c3720de07748567",
+        "weight_group": "llm_12"
+      },
+      {
+        "name": "llm_prefill_4",
+        "omc_bytes": 122471705,
+        "omc_sha256": "61db9e68c2ea5e6988c075da80f8a78bed1b2ae572032ae92a7d7a1adaebd54e",
+        "onnx_sha256": "cfa8edb260cc4a228594d6e24ac2eaa2b87d48d57eb759602822081d4d50b3c1",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "574d166be2c75ba30027e441e5bd294c8361bdba59cff030144b15fa2a4ffa5c",
+        "weight_group": "llm_16"
+      },
+      {
+        "name": "llm_prefill_5",
+        "omc_bytes": 122471777,
+        "omc_sha256": "d4bd6ba03fa7dfcb8c24eb15fd9fa9b8cc9ec2c822a673f9d0db2c089638aa2a",
+        "onnx_sha256": "708bbd227d9ca81328ee4b45d3e256bef9260fd402c5ffe0cfafd93943a387da",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "8bbff4f3cf3d8e79c16a1706d923fea85081a6e0332398e31225e88a32a2cbba",
+        "weight_group": "llm_20"
+      },
+      {
+        "name": "llm_prefill_6",
+        "omc_bytes": 122471793,
+        "omc_sha256": "be72d08ccf45ca7399d01d84c597a4d63947de5b37939fa5c025afa843469dd8",
+        "onnx_sha256": "98e4731a442e5c3ad3927ce1b65941cf22ec85f442fdada9acbe18baeb846859",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "7d48d9995a07e507eaab9ae719afa6435a24f3bcbfdb89aa3d566b771c779e0e",
+        "weight_group": "llm_24"
+      },
+      {
+        "name": "embedding_prefill",
+        "omc_bytes": 622337577,
+        "omc_sha256": "c8453bb64a47fb057b82c3b56b6f850b8702ae87f7bb162c45e8d8c85f76b59f",
+        "onnx_sha256": "5a96b3f6cfc8582342116af0ccb19ca049a8ae860700afaf99e67f03c7c8b76d",
+        "pure_npu": true
+      },
+      {
+        "name": "llm_decode_0",
+        "omc_bytes": 122366066,
+        "omc_sha256": "c07bb09dde5f470a965e8e85737ceb655fe4cecfac243e3304e48a6c3775d953",
+        "onnx_sha256": "cca375301f1b96a19c4880b6722acfd9aa5d995879afa431a0adc62bf589d381",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "f13bc4350113c9e15f6870a05e8e594f3452ed33c9e46a35eef162f1e07b11e4",
+        "weight_group": "llm_0"
+      },
+      {
+        "name": "llm_decode_1",
+        "omc_bytes": 122366066,
+        "omc_sha256": "837c7a09edec36ef8201f3c50298fc961fa7efff710cae549046fd33d4696506",
+        "onnx_sha256": "cd3892ab738bfee890d732e6183fdfada17e8be51ee9d62225d7728cfc1e1783",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "206ed58aa8285e8fe7a84ef076c523c74054b3105149a803c01f806fd62130c0",
+        "weight_group": "llm_4"
+      },
+      {
+        "name": "llm_decode_2",
+        "omc_bytes": 122366086,
+        "omc_sha256": "095a544254541bb86420e110ef8820b824e840ee331fa3cb6377f159bdad6fdb",
+        "onnx_sha256": "4f6d240425ff56b9e4c3feae6d7469f60d74fa756dedafe457ca4d2031dabd7c",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "11974bd7e6420cb532a5ac0a558908e766bb30f91ab6e1b1e48f98ffede1479c",
+        "weight_group": "llm_8"
+      },
+      {
+        "name": "llm_decode_3",
+        "omc_bytes": 122366162,
+        "omc_sha256": "7d99c51094507901a5a7fe42f44935dc01d7b79a8ab1168283e950afd8386eb7",
+        "onnx_sha256": "ee17fdc1e0dc852f34ccb624f39b762a468cab1fef714d3e379487b65f31aa92",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "707557b9902a08a53e59c1146ff69ea24679939b0626e7499c3720de07748567",
+        "weight_group": "llm_12"
+      },
+      {
+        "name": "llm_decode_4",
+        "omc_bytes": 122366162,
+        "omc_sha256": "0163c376ddd0160218f019da326b391f9ffd5c92ce3282693cfd526aa0a8e11c",
+        "onnx_sha256": "bfc0d1165288b6f66fe939ad5bc737450eec1c143d1113f22cb8f6f9ea696ad4",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "574d166be2c75ba30027e441e5bd294c8361bdba59cff030144b15fa2a4ffa5c",
+        "weight_group": "llm_16"
+      },
+      {
+        "name": "llm_decode_5",
+        "omc_bytes": 122366162,
+        "omc_sha256": "b6d97cf9974a66e430b524e5a92be789999095856e8967efabb7857ed71a3a27",
+        "onnx_sha256": "186485ea2b45b6bb1e5b449b7aca5b6a6d9fb54a670a7b7dce977dc4b2cad0e3",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "8bbff4f3cf3d8e79c16a1706d923fea85081a6e0332398e31225e88a32a2cbba",
+        "weight_group": "llm_20"
+      },
+      {
+        "name": "llm_decode_6",
+        "omc_bytes": 122366162,
+        "omc_sha256": "017645421a2a4fc2794b77ecccd7e9968ca957bd81d20db953283e018ced7e5b",
+        "onnx_sha256": "072d7a6a5717f85409e89a6aee19d62cd3e8c23a43bffc142ab7356728e6582d",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "7d48d9995a07e507eaab9ae719afa6435a24f3bcbfdb89aa3d566b771c779e0e",
+        "weight_group": "llm_24"
+      },
+      {
+        "name": "embedding_decode",
+        "omc_bytes": 622337527,
+        "omc_sha256": "2e803939888e9e7ac89b688d59e9485d5c8065d854077b7245ca9c5e8120f054",
+        "onnx_sha256": "be798d31c179820663bc982bceaf92b261c8307695b00c8bc58568cb1eb4a60c",
+        "pure_npu": true
+      },
+      {
+        "name": "lm_head",
+        "omc_bytes": 186060124,
+        "omc_sha256": "0f3ca82dde441deabaaa0377cd5decb1857a7b7198c7b62e11b46df8c0981446",
+        "onnx_sha256": "78fa05a43456af33745f6778a1b102eff42c3062ea9798d8a2ea68229afcc6df",
+        "pure_npu": true,
+        "quantized_matmuls": 1,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "017ac01636484b5ee31d56377b41a514eba722dd506a59fb5752d004f600851f",
+        "weight_group": "head"
+      },
+      {
+        "name": "vision_pre",
+        "omc_bytes": 8055190,
+        "omc_sha256": "7fb5ffdc307650cbe0144107e5233bf754e6a9b413c78cf0443205df8ab47d71",
+        "onnx_sha256": "a71fce441743883fa22b90e9afcff9bbca7979185374fe4f9f851d7b1a40f661",
+        "pure_npu": true
+      },
+      {
+        "name": "vision_blocks_0",
+        "omc_bytes": 31741933,
+        "omc_sha256": "9fe4294e5547931d48e96ff02820cc05e2c24ab5bea06051f5340b192a82498d",
+        "onnx_sha256": "9cf6850b8f66dbdc938e48dba5b79820db2af9d01567fdec47e79d3eee7c8f41",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "45dd126bee48b4e7532abeeb5764ba0af88fb64414d7cbdc72e996d7a458f0c3",
+        "weight_group": "vision_0"
+      },
+      {
+        "name": "vision_blocks_1",
+        "omc_bytes": 31748719,
+        "omc_sha256": "c1358a17dddf844495e1067e8df91b888b384cb5902f9d5e9fcfc0a3e0e2e307",
+        "onnx_sha256": "909b8da4bf63c7a09949ab84681a30c5a60d57a351261e1016ee913746721649",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "f62101eec8299ba0242432e68ad45b1d410b32c95c1be1607fbd5f942b32d913",
+        "weight_group": "vision_4"
+      },
+      {
+        "name": "vision_blocks_2",
+        "omc_bytes": 31741899,
+        "omc_sha256": "73aeef074f2020a82cded70023df8ac1d70c9e282fb4a7f33084409d39d9210f",
+        "onnx_sha256": "93f9f510a14765c56a0297f92fe10667ba847d42ef0e36a399c1ba0100a06a17",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "09175681c0ebafaa44ebe971185c6ccaadaee00a8e5c52b39ba26f2b7f6765c9",
+        "weight_group": "vision_8"
+      },
+      {
+        "name": "vision_blocks_3",
+        "omc_bytes": 31741869,
+        "omc_sha256": "01fa3d2a59c768d86d5dc513dfab03fc5c8469c4e36029dbec14cac7c0dd286f",
+        "onnx_sha256": "9cf6850b8f66dbdc938e48dba5b79820db2af9d01567fdec47e79d3eee7c8f41",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "1d8ea373644c8d83ed6ecb0ed1674e3ae6537982c2497acd803c970b06958900",
+        "weight_group": "vision_12"
+      },
+      {
+        "name": "vision_blocks_4",
+        "omc_bytes": 31748739,
+        "omc_sha256": "dc16cc283cf601d22760c0268aa69f1fd2070fc6d6186c49d171db1421faa226",
+        "onnx_sha256": "63e93fa98eb5d98e0cc803021154944059fe86f8ccd12ee1261f16cce88f21c6",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "50d0d00ea6a980809711d106f7a3f306ec1ea2022818f76dbf042591e1f8d163",
+        "weight_group": "vision_16"
+      },
+      {
+        "name": "vision_blocks_5",
+        "omc_bytes": 31741901,
+        "omc_sha256": "6101acb1283c4ddaf4402e8292d7293b04e050f82cedba3c73ec4e24d663ec63",
+        "onnx_sha256": "9cf6850b8f66dbdc938e48dba5b79820db2af9d01567fdec47e79d3eee7c8f41",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "140e670a4490f505033edbf1ff1c062f3194b1fb38e2c63d655a9f4a8bfc4e4a",
+        "weight_group": "vision_20"
+      },
+      {
+        "name": "vision_post",
+        "omc_bytes": 60622255,
+        "omc_sha256": "36e6f1f1816c6188fed80d46647c1b387f83dea56b1de90483baf08c79514686",
+        "onnx_sha256": "be2816b7a5145bbd01099c5d8f8096a7c65a6e8833a18e33094ca4677de1e598",
+        "pure_npu": true,
+        "quantized_matmuls": 8,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "3aa24c43d8e6339d3864d3c44113a57518264b2ad7e6f3032092cc017c29bb54",
+        "weight_group": "vision_post"
+      }
+    ],
+    "graph_count": 25,
+    "quantized_graph_count": 22,
+    "unique_weight_groups": 15,
+    "unique_quantized_linear_count": 301,
+    "quantized_matmul_instances": 497,
+    "omc_total_bytes": 3403742730,
+    "omc_bytes_by_component": {
+      "llm_prefill": 857302131,
+      "embedding": 1244675104,
+      "llm_decode": 856562866,
+      "head": 186060124,
+      "vision_pre": 8055190,
+      "vision_blocks": 190465060,
+      "vision_post": 60622255
+    },
+    "native_weight_pair_reaudit": true,
+    "all_quantized_kernels_matched": true,
+    "all_onnx_reference_parameters_omc_hashes_verified": true,
+    "device_execution": false,
+    "fp16_baseline_omc_bytes": 8345568957,
+    "omc_size_reduction_fraction": 0.5921497087211713
+  },
+  "regression_tests": {
+    "passed": 18,
+    "sdk_tests_enabled": true
+  },
+  "local_artifact_directory": "/tmp/kirin_full_vlm_w4a16_g64_gptq",
+  "device_tested": false,
+  "device_precision_verified": false,
+  "app_integrated": false
+}

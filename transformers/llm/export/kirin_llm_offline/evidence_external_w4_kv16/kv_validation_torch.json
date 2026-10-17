@@ -1,0 +1,506 @@
+{
+  "reference": "same frozen model, static Torch, FP32 KV",
+  "candidate": "static torch, fp16 KV",
+  "scope": "isolated KV storage effect",
+  "weight_precision": "w4a16",
+  "relative_l2_tolerance": 0.05,
+  "strict_greedy": false,
+  "device_execution": false,
+  "cases": [
+    {
+      "name": "text",
+      "image": null,
+      "prefill_tokens": 13,
+      "decode_steps": 8,
+      "final_cache_tokens": 21,
+      "cache_dtype": "fp16",
+      "baseline_cache_bytes": 469762048,
+      "kv_group_size": 32,
+      "passed": true,
+      "failures": [],
+      "candidate_cache_bytes": 234881024,
+      "max_logits_relative_l2": 0.01629897333641703,
+      "kv_max_relative_l2": 0.016436345790288506,
+      "greedy_token_agreement": 1.0,
+      "reference_tokens": [
+        111308,
+        6313,
+        35946,
+        101909,
+        101951,
+        102064,
+        104949,
+        3837,
+        101599
+      ],
+      "candidate_tokens": [
+        111308,
+        6313,
+        35946,
+        101909,
+        101951,
+        102064,
+        104949,
+        3837,
+        101599
+      ],
+      "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+      "phases": [
+        {
+          "phase": "prefill",
+          "step": 0,
+          "logits": {
+            "relative_l2": 0.0,
+            "max_abs": 0.0,
+            "cosine": 1.0
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 1,
+          "logits": {
+            "relative_l2": 0.01629897333641703,
+            "max_abs": 0.31375789642333984,
+            "cosine": 0.999927840942158
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 2,
+          "logits": {
+            "relative_l2": 0.013223430328645988,
+            "max_abs": 0.20377898216247559,
+            "cosine": 0.9999299045364607
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 3,
+          "logits": {
+            "relative_l2": 0.0061774689093601455,
+            "max_abs": 0.09572982788085938,
+            "cosine": 0.9999831853265023
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 4,
+          "logits": {
+            "relative_l2": 0.006722585943693666,
+            "max_abs": 0.1285724639892578,
+            "cosine": 0.9999774193449469
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 5,
+          "logits": {
+            "relative_l2": 0.005882677919228335,
+            "max_abs": 0.132232666015625,
+            "cosine": 0.9999827336266964
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 6,
+          "logits": {
+            "relative_l2": 0.007776435216526796,
+            "max_abs": 0.20293617248535156,
+            "cosine": 0.9999708382293712
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 7,
+          "logits": {
+            "relative_l2": 0.008706429770271185,
+            "max_abs": 0.18204402923583984,
+            "cosine": 0.999965208550263
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 8,
+          "logits": {
+            "relative_l2": 0.008141157622816675,
+            "max_abs": 0.1793522834777832,
+            "cosine": 0.9999678696874855
+          }
+        }
+      ]
+    },
+    {
+      "name": "arithmetic",
+      "image": null,
+      "prefill_tokens": 21,
+      "decode_steps": 8,
+      "final_cache_tokens": 29,
+      "cache_dtype": "fp16",
+      "baseline_cache_bytes": 469762048,
+      "kv_group_size": 32,
+      "passed": true,
+      "failures": [],
+      "candidate_cache_bytes": 234881024,
+      "max_logits_relative_l2": 0.007202850289150047,
+      "kv_max_relative_l2": 0.007205515860068798,
+      "greedy_token_agreement": 1.0,
+      "reference_tokens": [
+        97639,
+        36407,
+        100768,
+        220,
+        17,
+        18,
+        93883,
+        220,
+        16
+      ],
+      "candidate_tokens": [
+        97639,
+        36407,
+        100768,
+        220,
+        17,
+        18,
+        93883,
+        220,
+        16
+      ],
+      "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+      "phases": [
+        {
+          "phase": "prefill",
+          "step": 0,
+          "logits": {
+            "relative_l2": 0.0,
+            "max_abs": 0.0,
+            "cosine": 1.0
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 1,
+          "logits": {
+            "relative_l2": 0.0063923028266895015,
+            "max_abs": 0.1348257064819336,
+            "cosine": 0.9999812962095002
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 2,
+          "logits": {
+            "relative_l2": 0.007202850289150047,
+            "max_abs": 0.103179931640625,
+            "cosine": 0.9999847736236984
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 3,
+          "logits": {
+            "relative_l2": 0.0032881385328167698,
+            "max_abs": 0.0649566650390625,
+            "cosine": 0.999997210550629
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 4,
+          "logits": {
+            "relative_l2": 0.0019727650204722424,
+            "max_abs": 0.04289436340332031,
+            "cosine": 0.9999985385297933
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 5,
+          "logits": {
+            "relative_l2": 0.00197804699100806,
+            "max_abs": 0.04165172576904297,
+            "cosine": 0.9999990029926847
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 6,
+          "logits": {
+            "relative_l2": 0.0013579259484524384,
+            "max_abs": 0.04109668731689453,
+            "cosine": 0.9999994421598057
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 7,
+          "logits": {
+            "relative_l2": 0.0028359374450031304,
+            "max_abs": 0.057926177978515625,
+            "cosine": 0.999998030505935
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 8,
+          "logits": {
+            "relative_l2": 0.0017823911537180985,
+            "max_abs": 0.037160396575927734,
+            "cosine": 0.9999985831926975
+          }
+        }
+      ]
+    },
+    {
+      "name": "long_text",
+      "image": null,
+      "prefill_tokens": 1802,
+      "decode_steps": 8,
+      "final_cache_tokens": 1810,
+      "cache_dtype": "fp16",
+      "baseline_cache_bytes": 469762048,
+      "kv_group_size": 32,
+      "passed": false,
+      "failures": [
+        {
+          "metric": "cache",
+          "relative_l2": 0.2759133217154401
+        }
+      ],
+      "candidate_cache_bytes": 234881024,
+      "max_logits_relative_l2": 0.023159919116286263,
+      "kv_max_relative_l2": 0.2759133217154401,
+      "greedy_token_agreement": 1.0,
+      "reference_tokens": [
+        35946,
+        101128,
+        87026,
+        99880,
+        35946,
+        54542,
+        104383,
+        105444,
+        9370
+      ],
+      "candidate_tokens": [
+        35946,
+        101128,
+        87026,
+        99880,
+        35946,
+        54542,
+        104383,
+        105444,
+        9370
+      ],
+      "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+      "phases": [
+        {
+          "phase": "prefill",
+          "step": 0,
+          "logits": {
+            "relative_l2": 0.023159919116286263,
+            "max_abs": 0.5325832366943359,
+            "cosine": 0.9997344111696231
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 1,
+          "logits": {
+            "relative_l2": 0.017822389450420743,
+            "max_abs": 0.31228089332580566,
+            "cosine": 0.9998432402717574
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 2,
+          "logits": {
+            "relative_l2": 0.018992379418449487,
+            "max_abs": 0.35150575637817383,
+            "cosine": 0.9998482827073341
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 3,
+          "logits": {
+            "relative_l2": 0.020439190737659853,
+            "max_abs": 0.33826255798339844,
+            "cosine": 0.9998130886919372
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 4,
+          "logits": {
+            "relative_l2": 0.022326373037750636,
+            "max_abs": 0.5606651306152344,
+            "cosine": 0.9997525034931798
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 5,
+          "logits": {
+            "relative_l2": 0.015706914044834396,
+            "max_abs": 0.39359378814697266,
+            "cosine": 0.9998790817058976
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 6,
+          "logits": {
+            "relative_l2": 0.015803047739210742,
+            "max_abs": 0.36385536193847656,
+            "cosine": 0.9998811350469078
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 7,
+          "logits": {
+            "relative_l2": 0.014545731106669587,
+            "max_abs": 0.2521200180053711,
+            "cosine": 0.9998945247492422
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 8,
+          "logits": {
+            "relative_l2": 0.01259915175150713,
+            "max_abs": 0.270079106092453,
+            "cosine": 0.9999241400444714
+          }
+        }
+      ]
+    },
+    {
+      "name": "image_0",
+      "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_14_27.jpg",
+      "prefill_tokens": 168,
+      "decode_steps": 8,
+      "final_cache_tokens": 176,
+      "cache_dtype": "fp16",
+      "baseline_cache_bytes": 469762048,
+      "kv_group_size": 32,
+      "passed": true,
+      "failures": [],
+      "candidate_cache_bytes": 234881024,
+      "max_logits_relative_l2": 0.03593485367939667,
+      "kv_max_relative_l2": 0.014625570898647342,
+      "greedy_token_agreement": 1.0,
+      "reference_tokens": [
+        43288,
+        99639,
+        86341,
+        58695,
+        104124,
+        16,
+        17,
+        18,
+        15
+      ],
+      "candidate_tokens": [
+        43288,
+        99639,
+        86341,
+        58695,
+        104124,
+        16,
+        17,
+        18,
+        15
+      ],
+      "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+      "phases": [
+        {
+          "phase": "prefill",
+          "step": 0,
+          "logits": {
+            "relative_l2": 0.027028936663924367,
+            "max_abs": 0.41796183586120605,
+            "cosine": 0.9996386190425081
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 1,
+          "logits": {
+            "relative_l2": 0.016021078241695807,
+            "max_abs": 0.3372049331665039,
+            "cosine": 0.9998815758342631
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 2,
+          "logits": {
+            "relative_l2": 0.03593485367939667,
+            "max_abs": 0.5649504661560059,
+            "cosine": 0.9994474602556732
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 3,
+          "logits": {
+            "relative_l2": 0.027352053615336467,
+            "max_abs": 0.3535289764404297,
+            "cosine": 0.9996609191283431
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 4,
+          "logits": {
+            "relative_l2": 0.013259071105089745,
+            "max_abs": 0.2181403636932373,
+            "cosine": 0.9999375889263932
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 5,
+          "logits": {
+            "relative_l2": 0.007974055654694006,
+            "max_abs": 0.1540699005126953,
+            "cosine": 0.999976575174025
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 6,
+          "logits": {
+            "relative_l2": 0.00960339869024537,
+            "max_abs": 0.1557936668395996,
+            "cosine": 0.9999603056197961
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 7,
+          "logits": {
+            "relative_l2": 0.0070690164686916315,
+            "max_abs": 0.15808486938476562,
+            "cosine": 0.9999762909297049
+          }
+        },
+        {
+          "phase": "decode",
+          "step": 8,
+          "logits": {
+            "relative_l2": 0.008768313507017065,
+            "max_abs": 0.38886260986328125,
+            "cosine": 0.9999627215333966
+          }
+        }
+      ]
+    }
+  ],
+  "complete": true,
+  "passed": false
+}

@@ -1,0 +1,87 @@
+{
+  "scope": "CPU new ONNX references; FP16 embedding/KV boundaries; no new OMC execution",
+  "cases": [
+    {
+      "question": "你是谁？",
+      "prompt_tokens": 22,
+      "first_token": 108386,
+      "first_token_text": "你好",
+      "first_logits_range": [
+        -18.110797882080078,
+        25.779556274414062
+      ],
+      "first_logits_vs_previous_cpu": {
+        "relative_l2": 0.0928918995039467,
+        "max_abs": 1.7482643127441406,
+        "cosine": 0.9972267630596966
+      },
+      "response": "你好呀！我叫通义千问，是阿里巴巴集团旗下的通义",
+      "generated_tokens": [
+        108386,
+        104256,
+        6313,
+        35946,
+        99882,
+        31935,
+        64559,
+        99320,
+        56007,
+        3837,
+        20412,
+        107076,
+        100338,
+        111477,
+        31935,
+        64559
+      ]
+    },
+    {
+      "question": "请只回答结果：8 乘以 7 等于多少？",
+      "prompt_tokens": 36,
+      "first_token": 20,
+      "first_token_text": "5",
+      "first_logits_range": [
+        -17.596166610717773,
+        30.069780349731445
+      ],
+      "first_logits_vs_previous_cpu": {
+        "relative_l2": 0.045909056169254586,
+        "max_abs": 0.8534088730812073,
+        "cosine": 0.9989504651708765
+      },
+      "response": "56",
+      "generated_tokens": [
+        20,
+        21
+      ]
+    },
+    {
+      "question": "把“桌上有一本蓝色的书。”翻译成英语。",
+      "prompt_tokens": 32,
+      "first_token": 3862,
+      "first_token_text": "There",
+      "first_logits_range": [
+        -19.715007781982422,
+        33.306636810302734
+      ],
+      "first_logits_vs_previous_cpu": {
+        "relative_l2": 0.0263003905629869,
+        "max_abs": 0.6657495498657227,
+        "cosine": 0.9996913401917986
+      },
+      "response": "There is a blue book on the table.",
+      "generated_tokens": [
+        3862,
+        374,
+        264,
+        6303,
+        2311,
+        389,
+        279,
+        1965,
+        13
+      ]
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,260 @@
+{
+  "format": "kirin_external_build_audit_v1",
+  "device_tested": false,
+  "hap_build_verified": false,
+  "pure_npu_graphs": 13,
+  "external_weight_graphs": 13,
+  "main_weight_bits": 4,
+  "weight_group": 64,
+  "unique_compressed_matrices": 301,
+  "compressed_parameters": 2123104256,
+  "all_native_uint4_lut_weights_match_frozen_reference": true,
+  "frozen_checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+  "activation_input_range_multiplier": 1,
+  "activation_output_range_multiplier": 4,
+  "kv_dtype": "fp16",
+  "omc_total_bytes": 26542524,
+  "graphs": [
+    {
+      "name": "embedding_prefill",
+      "omc_bytes": 7508,
+      "omc_sha256": "99c53e1d23d86ab577d49ce7e695111d0aa38470563e01dd14bfe77d5dd53b7c",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/embedding_prefill/external/SubGraph_0.weight",
+          "sha256": "3b8da4f15a774c7a55e1cb6e9bf732105fe57d739a7627e6dbf7c1e0123ec89f",
+          "bytes": 622330368
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/embedding_prefill/compile_external.log",
+      "compile_log_sha256": "8b71fac0a4ac0803ae3d4504cd3e828cfc59cfd9c3b390effc40b6d6de6126fd",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "embedding_decode",
+      "omc_bytes": 7458,
+      "omc_sha256": "44e0dd4db811bd353df3ef390fc2ad3d429881ea428bb0ee5d8a09adf138636a",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/embedding_decode/external/SubGraph_0.weight",
+          "sha256": "3b8da4f15a774c7a55e1cb6e9bf732105fe57d739a7627e6dbf7c1e0123ec89f",
+          "bytes": 622330368
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/embedding_decode/compile_external.log",
+      "compile_log_sha256": "81c055e2f139781a68ea7e81779207e0ca0c1695cd93072a5dcee6106af0b4a8",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "llm_prefill_0",
+      "omc_bytes": 9360230,
+      "omc_sha256": "654bf5f5c8b1106a6e2b9b489c080289e9b3ce67f44dffea0a4a1bd921740a37",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/llm_prefill_0/external/SubGraph_0.weight",
+          "sha256": "2d987707075810f61a3152d195d72966510bbd9cae2bbbecf9fd7f1a7d7b22eb",
+          "bytes": 844706304
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/llm_prefill_0/compile_external.log",
+      "compile_log_sha256": "1801d7e6dc2ea626faf08ca450199113a8e2e29c20d3791eb9fb3d817c49dbd5",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "llm_decode_0",
+      "omc_bytes": 8921142,
+      "omc_sha256": "d79647c04bdcca0beb34aaf117c444c0c42b1a904116d788377aa19aa588c465",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/llm_decode_0/external/SubGraph_0.weight",
+          "sha256": "e7bc2811f66f1e17d690b8cebf2debf6e06ef4df232b4826c71b662b3b25403e",
+          "bytes": 844591616
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/llm_decode_0/compile_external.log",
+      "compile_log_sha256": "aea63bb581f7acf6510304e5e84b3465108a27b9dbfe37c2ecd61cf93d7064ca",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "lm_head",
+      "omc_bytes": 369577,
+      "omc_sha256": "e206c0ffca00cfce507decb9b6c94b5e1c52753c4c8e5e1e7ca570ecd0130207",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/lm_head/external/SubGraph_0.weight",
+          "sha256": "50c979dc984872cfa3fc9847e4b8165f8a20c151eeace5579ae42b0356a5ed3b",
+          "bytes": 185691648
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/lm_head/compile_external.log",
+      "compile_log_sha256": "9452398f428a1cba4c5d4e61aa0fbc5b64820e4e700dd8c7cb5e16e1bf202a66",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_pre",
+      "omc_bytes": 184674,
+      "omc_sha256": "42a4348a6f524f2581c0fbf60197e7aa7447cc7e6c5d50079d7ac003a74e92e5",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_pre/external/SubGraph_0.weight",
+          "sha256": "e1588de3b973634d9f777f988d91b2562193da9d51f87ca156fa1011a96243d0",
+          "bytes": 7870976
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_pre/compile_external.log",
+      "compile_log_sha256": "e8ee224ecad2a16a2dfac49cd99841fdf6b3e8abe0ed8d2c5b67c187babec60b",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_blocks_0",
+      "omc_bytes": 1199786,
+      "omc_sha256": "d266f7f869cf7ae1c452861c848adc90b541af67d258c1af8679eada409e59d0",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_blocks_0/external/SubGraph_0.weight",
+          "sha256": "370fe43e4d0720a534a85a4f07bc1ee3c7ce979bd331983280c9c5f8e8b638e2",
+          "bytes": 30554624
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_blocks_0/compile_external.log",
+      "compile_log_sha256": "5208b199665ef641607e63a3e343843f666b779ebf034779452a3607ebe05eb7",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_blocks_1",
+      "omc_bytes": 1206690,
+      "omc_sha256": "3251f5d4c26020a5662e565ffd2f7a688dfbcb561192f96a8a99daf9f748061c",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_blocks_1/external/SubGraph_0.weight",
+          "sha256": "472d741cab05a628fcbba1b96dba6165dc97d1cb4f2d8d621c8b8efd670b1c1f",
+          "bytes": 30554624
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_blocks_1/compile_external.log",
+      "compile_log_sha256": "50ccb9daf8711ad35ff1a56ef8cdea5367b87388fec66724cf7e7829ed021e25",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_blocks_2",
+      "omc_bytes": 1199819,
+      "omc_sha256": "d9bede3c2b0df81ee7a0275c5430fe72907cd835d69efc90e64692425fbab3c8",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_blocks_2/external/SubGraph_0.weight",
+          "sha256": "f5ef91429436ba14178b86f5dedd1bb2bcfed26bba7904a385a9a09aea947aaf",
+          "bytes": 30554624
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_blocks_2/compile_external.log",
+      "compile_log_sha256": "d46633a0919a55fe675c2028d8d48d76f758071d05da423789829b1f6576ab98",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_blocks_3",
+      "omc_bytes": 1199794,
+      "omc_sha256": "d55ecd5de4d12aa07b81913d177038192630b7cfbd3ac2a861672994c408a26c",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_blocks_3/external/SubGraph_0.weight",
+          "sha256": "6f2f1d6898e10d782d8e390b8ec11d4ec95d7be01dff6d897ad4cf6ec251c903",
+          "bytes": 30554624
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_blocks_3/compile_external.log",
+      "compile_log_sha256": "4f3ab7dec2f7b461b5759d94650c0c69a10a371e929e9e6422dfe4472aa04e1e",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_blocks_4",
+      "omc_bytes": 1206660,
+      "omc_sha256": "555fdbb5732ccba4742afa73350c150c85c7bfe34dbec9f2b4291e84e4b4513c",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_blocks_4/external/SubGraph_0.weight",
+          "sha256": "edcd592f2c90dc4958a11b6180552815957226c15505d8dc0b1af3d383ff334d",
+          "bytes": 30554624
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_blocks_4/compile_external.log",
+      "compile_log_sha256": "af5211dc3ba1393f848c680aa20a17d8193354e0ec1aab868aa82a9ae9844746",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_blocks_5",
+      "omc_bytes": 1199776,
+      "omc_sha256": "b5e7689dc5378f7bdf7d5e681755d09115d21ac8faf01eddb78eceb92e13432d",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_blocks_5/external/SubGraph_0.weight",
+          "sha256": "b77d31d41da938272a4808b6a066048b327fe715342958267ad87a0961c2cd5c",
+          "bytes": 30554624
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_blocks_5/compile_external.log",
+      "compile_log_sha256": "c152dbe35c4f0147dc17ef01c966a4bb0d7565494e4ab691121bccffd88bea12",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    },
+    {
+      "name": "vision_post",
+      "omc_bytes": 479410,
+      "omc_sha256": "af4c785f426cd59b69125c2683aa883f75f1bd928c6401a9c15a5644d65ef310",
+      "pure_npu": true,
+      "external_weights": [
+        {
+          "file": "graphs/vision_post/external/SubGraph_0.weight",
+          "sha256": "351c6c30772010a4b1bbf9c884603e8f7faf79814166fb55308a25ae840b0e63",
+          "bytes": 60149248
+        }
+      ],
+      "compile_log": "/tmp/kirin_full_vlm_external_w4_kv16_output4/graphs/vision_post/compile_external.log",
+      "compile_log_sha256": "0f869ce32cf2a5e412758d8e88714d5f4bfa089ba0202371b500a81a165cdc7a",
+      "partitions": [
+        "partition type NPU:1, CPU:0, GPU:0, ISP:0"
+      ]
+    }
+  ],
+  "accuracy_accepted": false,
+  "known_failures": [
+    "long-context FP16 KV relative-L2 gate",
+    "image logits differ substantially from original float32",
+    "factual/OCR/detail answer errors"
+  ],
+  "scope": "Compiler and encoded-weight evidence; OMC not executed on host"
+}

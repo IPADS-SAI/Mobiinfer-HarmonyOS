@@ -1,0 +1,56 @@
+{
+  "status": "host_lookup_regression_fixed; device_api_availability_unconfirmed",
+  "user_failure": {
+    "graph": "embedding_decode",
+    "stage": "before OH_NNCompilation_Build",
+    "message": "External-weight model requires HMS_HiAIExecutor_InitWeights; device API unavailable",
+    "old_lookup": "dlsym(RTLD_DEFAULT, symbol)",
+    "device_function_absence_proven": false
+  },
+  "change": {
+    "primary_lookup": "dlopen libhiai_foundation.so with RTLD_LAZY | RTLD_LOCAL, then dlsym on its handle",
+    "fallback_lookup": "RTLD_DEFAULT",
+    "handle_lifetime": "destroy all executors/compilations before dlclose",
+    "logging": [
+      "hiai_version",
+      "dlopen",
+      "lookup",
+      "provider",
+      "library_symbol_error",
+      "global_symbol_error",
+      "result"
+    ],
+    "missing_api_policy": "fail before Build; never skip external-weight initialization",
+    "model_files_changed": false,
+    "weight_bits": 4,
+    "kv_dtype": "fp16"
+  },
+  "checks": {
+    "cpp_suites": 9,
+    "old_implementation_negative_control": "Fails when symbol exists only in RTLD_LOCAL shared library",
+    "new_local_library_case": "Passed with actual dynamically loaded shared-library fixture",
+    "missing_symbol_case": "Passed; no Build; embedded package still loads",
+    "missing_library_case": "Passed; no Build; embedded package still loads",
+    "actual_synced_app_cpp_compiled": true,
+    "actual_app_local_missing_unavailable_cases": "passed",
+    "app_synced_files": 54,
+    "device_tested": false,
+    "hap_build_verified": false
+  },
+  "references": [
+    "https://github.com/mindspore-ai/mindspore-lite/blob/ed913aad743379cb38aec529210263abe8d8115b/mindspore-lite/lite_llm/src/backend/nnrt/nnrt_wrapper.cc",
+    "https://raw.githubusercontent.com/openharmony/third_party_musl/master/porting/linux/user/ldso/dynlink.c"
+  ],
+  "app_patch": {
+    "path": "/tmp/kirin_initweights_lookup_fix_app.patch",
+    "base_commit": "f2f9de22485c85a3fd6632e8a459f9bde74c7e66",
+    "sha256": "2588c41173bcf4a20e554850f904ad4ab653e70163a7d9b67455fec7612fe2fc",
+    "apply_check": "reverse check against current App tree passed",
+    "requires_model_redownload": false
+  },
+  "validation_logs": [
+    "/tmp/kirin_hiai_lookup_tests.log",
+    "/tmp/kirin_hiai_lookup_old_control.log",
+    "/tmp/kirin_hiai_lookup_app_test.log"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "vision_input_0_max_abs": 0.007843255996704102,
+  "vision_input_1_max_abs": 0.0,
+  "vision_input_2_max_abs": 0.0,
+  "vision_input_3_max_abs": 0.0,
+  "vision_input_4_max_abs": 0.0,
+  "vision_input_5_max_abs": 0.0,
+  "tokens": 167,
+  "image_tokens": 152,
+  "mrope": "HF exact",
+  "embeddings": "exact",
+  "cpu_prefill_logits_max_abs": 0.0,
+  "cpu_prefill_logits_cosine": 1.0000001192092896,
+  "first_token": 99692,
+  "first_piece": "好的",
+  "retry_and_decode": "passed; see run.log",
+  "omc_executed": false,
+  "build_manifest_sha256": "dd43f1883988aed7d2a048ecb5f1ba106d5cde14683e4a7fdaff00681e74e2a8",
+  "visual_output_sha256": [
+    "4904ae7acc48882079f3d709f82320cbb2f262400c7e2c47910aacebff6ec582",
+    "524dfe704da2b6da730ef8050d0eb98947e250dd4a221ddf31584692bb915536"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "mnn_visual_source": "/temp/models/mnn_mobi_2B_w8a8_visual_npu_kirin9030_pathA",
+  "repacked": "/tmp/kirin_offline_npu2_dual_release",
+  "reference": "same supplied MNN weights, complete visual pipeline and CPU LLM",
+  "cases": [
+    {
+      "images": 1,
+      "tokens": 184,
+      "image_tokens": 169,
+      "prefill_logits_max_abs": 0.0,
+      "generated_tokens_exact": true,
+      "generated_tokens": [
+        99692,
+        3837,
+        100346
+      ],
+      "answer_prefix": "好的，这是"
+    },
+    {
+      "images": 2,
+      "tokens": 355,
+      "image_tokens": 338,
+      "prefill_logits_max_abs": 0.0,
+      "generated_tokens_exact": true,
+      "generated_tokens": [
+        99692,
+        3837,
+        108893
+      ],
+      "answer_prefix": "好的，这张"
+    }
+  ],
+  "hiai_executed": false,
+  "omc_executed": false,
+  "full_npu_accuracy_equivalence_verified": false
+}

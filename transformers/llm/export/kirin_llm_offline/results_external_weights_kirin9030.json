@@ -1,0 +1,149 @@
+{
+  "date": "2026-10-16",
+  "status": "implemented_and_host_validated; accuracy_not_accepted",
+  "device_tested": false,
+  "hap_build_verified": false,
+  "official_reference": {
+    "repository": "mindspore-ai/mindspore-lite",
+    "commit": "ed913aad743379cb38aec529210263abe8d8115b",
+    "compile_flag": "--save_weights_as_external_data=true",
+    "load_sequence": [
+      "OH_NNCompilation_Build",
+      "OH_NNExecutor_Construct",
+      "HMS_HiAIExecutor_InitWeights",
+      "tensor validation"
+    ],
+    "scope": "External weight loader and FP16 KV approach; full Lite custom-kernel pipeline was not installed"
+  },
+  "artifacts": {
+    "build": "/tmp/kirin_full_vlm_external_w4_kv16_output4",
+    "model_package": "/tmp/kirin_full_npu_external_w4_kv16_output4_release",
+    "format": "kirin_full_npu_runtime_v2",
+    "graphs": 13,
+    "external_weight_directories": 12,
+    "files_including_checksum_lists": 40,
+    "payload_bytes": 2779754043,
+    "omc_total_bytes": 26542524,
+    "app_patch": "/tmp/kirin_external_w4_kv16_app.patch",
+    "app_patch_sha256": "fbee949a7530827e61750a228b0116135570292db6d90cef707c2224b93f79c0",
+    "release_manifest_sha256": "a1ec37ae763ea622f695f122a5c071714117bd830091328617a2a0ad2ff1049a"
+  },
+  "model": {
+    "main_weight_bits": 4,
+    "group_size": 64,
+    "method": "frozen SDK LUT/UINT4 + GPTQ",
+    "unique_compressed_matrices": 301,
+    "compressed_parameters": 2123104256,
+    "native_weights_match_frozen_reference": true,
+    "frozen_checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+    "activation_dtype": "INT16",
+    "input_range_multiplier": 1,
+    "output_range_multiplier": 4,
+    "kv_dtype": "fp16",
+    "context": 2048,
+    "prefill": 128,
+    "llm_layers_per_graph": 28
+  },
+  "residency": {
+    "decode_components": [
+      "embedding_decode",
+      "llm_decode_0",
+      "lm_head"
+    ],
+    "serialized_bytes": 1661911809,
+    "max_graphs": 4,
+    "model_budget_mib": 2048,
+    "runtime_memory_measured": false,
+    "steady_builds_per_token_simulated": 0,
+    "steady_InitWeights_calls_per_token_simulated": 0,
+    "on_device_shared_weights_verified": false,
+    "fallback": "single graph and full KV sync after pressure; speed claim does not apply after fallback"
+  },
+  "kv": {
+    "host_bytes": 234881024,
+    "persistent_input_pool_bytes": 234881024,
+    "pool_budget_mib": 256,
+    "per_decode_token_host_writes_simulated": 114688,
+    "initial_full_sync_bytes": 234881024,
+    "scope": "Host writes to persistent NNRT input storage; not total device bandwidth"
+  },
+  "checks": {
+    "python_tests": 32,
+    "sdk_tests_included": true,
+    "python_skipped": 0,
+    "cpp_suites": 6,
+    "actual_app_cpp_replay_cases": 5,
+    "actual_app_cpp_tensor_checks": 2985,
+    "pure_npu_compiled_graphs": 13,
+    "all_compiled_artifact_hashes_checked": true,
+    "max_per_graph_reference_torch_ort_relative_l2": 0.016549431002538147,
+    "app_full_npu_synced_files": 54,
+    "app_sources_manifest_sha256": "e303a220020391e00778301d9b1d66bc8979b6c0ef32a583bd76b188fc6b23d4",
+    "app_patch_base_commit": "e001fa66056cd7cdaf435e72ba08add79bf8e4a1",
+    "app_libMNN_sha256": "fda4364bd3067713af0a04b0abfc2a51d0524851e1f1238a188511a06100e1e3",
+    "scope": "Host C++ plus CPU ONNX references and NNRT call substitutes; no OMC execution"
+  },
+  "accuracy": {
+    "accepted": false,
+    "text_cases": 10,
+    "text_cases_unseen_by_range_selection": 5,
+    "image_cases": 3,
+    "image_first_logits_relative_l2": [
+      0.5658472300063555,
+      0.5344030047888269,
+      0.5671037860433887
+    ],
+    "image_weight_only_first_logits_relative_l2": [
+      0.42901283954309416,
+      0.4110554192038862,
+      0.4678019874170884
+    ],
+    "kv_numeric_gate_passed": false,
+    "kv_relative_l2_tolerance": 0.05,
+    "kv_cases": [
+      {
+        "name": "text",
+        "passed": true,
+        "max_logits_relative_l2": 0.01629897333641703,
+        "kv_max_relative_l2": 0.016436345790288506,
+        "greedy_token_agreement": 1.0
+      },
+      {
+        "name": "arithmetic",
+        "passed": true,
+        "max_logits_relative_l2": 0.007202850289150047,
+        "kv_max_relative_l2": 0.007205515860068798,
+        "greedy_token_agreement": 1.0
+      },
+      {
+        "name": "long_text",
+        "passed": false,
+        "max_logits_relative_l2": 0.023159919116286263,
+        "kv_max_relative_l2": 0.2759133217154401,
+        "greedy_token_agreement": 1.0
+      },
+      {
+        "name": "image_0",
+        "passed": true,
+        "max_logits_relative_l2": 0.03593485367939667,
+        "kv_max_relative_l2": 0.014625570898647342,
+        "greedy_token_agreement": 1.0
+      }
+    ],
+    "known_answer_failures": [
+      "moon explanation incorrectly refers to reflected light from Earth",
+      "image OCR/detail omissions"
+    ],
+    "scope": "Small fixed CPU corpus, not benchmark accuracy or device numerical acceptance"
+  },
+  "raw_evidence": "evidence_external_w4_kv16/",
+  "publication": {
+    "status": "complete",
+    "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_external",
+    "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_external",
+    "verified_files": 40,
+    "verified_bytes": 2779764092,
+    "verification": "Public recursive file list; exact size and SHA256 for all release files",
+    "old_embsplit_repository_unchanged": true
+  }
+}

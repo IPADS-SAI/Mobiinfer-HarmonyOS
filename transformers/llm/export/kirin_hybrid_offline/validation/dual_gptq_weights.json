@@ -1,0 +1,31 @@
+{
+  "source": "/temp/models/autoround_export/mobi0402_2B_halfimage_rl-w8g128",
+  "requantized": false,
+  "language_matrices": 196,
+  "visual_matrices": 144,
+  "weights_exact": 340,
+  "scales_exact": 340,
+  "source_activation_config": {
+    "bits": 8,
+    "group_size": 128,
+    "sym": true,
+    "data_type": "int",
+    "seqlen": 1024,
+    "batch_size": 1,
+    "scale_dtype": "None",
+    "gradient_accumulate_steps": 8,
+    "iters": 100,
+    "act_bits": 8,
+    "act_group_size": 128,
+    "act_sym": true,
+    "act_dynamic": true,
+    "act_data_type": "int",
+    "dataset": "/temp/csm/data/fengdahu/tmp/calibration-20k427half/mobimind_calibration_20k.json",
+    "autoround_version": "0.9.2",
+    "block_name_to_quantize": "model.visual.blocks,model.language_model.layers",
+    "quant_method": "auto-round",
+    "packing_format": "auto_round:auto_gptq"
+  },
+  "runtime_activation_equivalence_verified": false,
+  "all_matrices_exact": true
+}

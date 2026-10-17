@@ -1,0 +1,120 @@
+{
+  "device_tested": false,
+  "omc_executed": false,
+  "scope": "split W4 CPU ONNX vs fused W4 CPU ONNX",
+  "absolute_quantization_quality_reassessed": false,
+  "frozen_checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+  "source_manifest_sha256": "d6f66c41bb7bb00e1f16a82319d29f7ac74fbd8947f5925b1ddff0b0bb16dd4d",
+  "candidate_manifest_sha256": "e7313130ba9f11e18177b92efd9972cef5f20578e68bdd473344975cbe9b87fd",
+  "w4_encoded_tensors_unchanged": true,
+  "w4_visual_matrices": 104,
+  "language_graphs_unchanged": [
+    "embedding_prefill",
+    "embedding_decode",
+    "llm_prefill_0",
+    "llm_decode_0",
+    "lm_head"
+  ],
+  "visual_deepstack_layers": [
+    5,
+    11,
+    17
+  ],
+  "llm_injection_layers": [
+    0,
+    1,
+    2
+  ],
+  "relative_l2_threshold": 0.01,
+  "cosine_threshold": 0.9999,
+  "cases": [
+    {
+      "image": "/home/ma-user/workspace/feh/mobiinfer/transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_14_27.jpg",
+      "sha256": "7087946b00cefb8397c04675d8afd61b7d13410c85c1f47951cf75771d8deea4",
+      "held_out": true,
+      "outputs": {
+        "image_embeddings": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_5": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_11": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_17": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      },
+      "passed": true
+    },
+    {
+      "image": "/home/ma-user/workspace/feh/mobiinfer/transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_AutoExplore_大众点评_20260310-155000_paths_path_0033_4.jpg",
+      "sha256": "fa395732f62a7a044d89beba3ed7e7f1e7d4df1951f4acfa68be96c6491608f5",
+      "held_out": true,
+      "outputs": {
+        "image_embeddings": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_5": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        },
+        "deepstack_11": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        },
+        "deepstack_17": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0000000000000002
+        }
+      },
+      "passed": true
+    },
+    {
+      "image": "/home/ma-user/workspace/feh/mobiinfer/transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_3_3.jpg",
+      "sha256": "a0457a308b9890fffca9390f062e1d6b5bc1138b6e5c2f699d68344fb0865197",
+      "held_out": true,
+      "outputs": {
+        "image_embeddings": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_5": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_11": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        },
+        "deepstack_17": {
+          "relative_l2": 0.0,
+          "max_abs": 0.0,
+          "cosine": 1.0
+        }
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "candidate_manifest_stage": "exported_before_external_compile",
+  "candidate_reference_onnx_sha256": "d2e4ad274956734d141b13ec147b1c05c03bf95b1afc2a9d9be7e168d0fcf8b8",
+  "candidate_native_onnx_sha256": "41d05c9f16c0af0815aabce55e4a27b6233d7ba04a449ef3f033e331d64e3c82"
+}

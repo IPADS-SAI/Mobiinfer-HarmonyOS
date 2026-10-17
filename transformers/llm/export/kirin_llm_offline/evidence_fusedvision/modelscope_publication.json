@@ -1,0 +1,10 @@
+{
+  "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_fusedvision_v1",
+  "started_utc": "2026-10-17T04:13:53.818456+00:00",
+  "status": "complete",
+  "files": 24,
+  "total_bytes": 2782486376,
+  "verified_files": 24,
+  "finished_utc": "2026-10-17T04:14:06.241522+00:00",
+  "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_fusedvision_v1"
+}

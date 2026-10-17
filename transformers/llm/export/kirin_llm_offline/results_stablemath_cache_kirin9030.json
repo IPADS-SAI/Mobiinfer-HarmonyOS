@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-17",
+  "status": "implemented_compiled_host_validated_device_unverified",
+  "phone_reconnected_during_repair": false,
+  "hap_build_verified": false,
+  "new_model_device_tested": false,
+  "graph_weight_separated": true,
+  "main_weight_bits": 4,
+  "kv_dtype": "fp16",
+  "runtime_fixes": [
+    "bounded one-at-a-time pressure eviction",
+    "retain decoder before head when constrained",
+    "restore configured budgets on request/phase boundaries",
+    "retain KV pool while releasing model sessions",
+    "executor-local incremental KV even when tensor format cannot be queried",
+    "effective-budget, format, and token-ID diagnostics"
+  ],
+  "numerical_candidate": {
+    "math": "scaled_rmsnorm_prescaled_qk_v1",
+    "frozen_weight_checkpoint_unchanged": true,
+    "reason": "Avoid FP16 intermediate RMS squares and unscaled QK overflow",
+    "device_numeric_fix_confirmed": false
+  },
+  "validation": {
+    "cpp_suites": 9,
+    "python_tests_including_official_sdk": 35,
+    "python_skipped": 0,
+    "actual_app_backend_test_passed": true,
+    "cpu_text_cases": 3,
+    "cpu_text_canary": "evidence_stablemath_cache/cpu_text_canary.json",
+    "max_first_logits_relative_l2_vs_previous_cpu": 0.0928918995039467,
+    "cpu_app_replay_cases": 4,
+    "cpu_app_tensor_checks": 2928,
+    "pure_npu_graphs": 13,
+    "unique_w4_matrices": 301,
+    "max_torch_ort_relative_l2": 0.015545305350311844
+  },
+  "build": "/tmp/kirin_full_vlm_external_w4_kv16_stablemath_v1",
+  "evidence": "evidence_stablemath_cache/",
+  "limitations": [
+    "The first cause of the previous single-graph state was not retained in device logs.",
+    "CPU and compiler checks cannot establish the new OMC device accuracy or speed.",
+    "Previous frozen W4 quality and long-context FP16 KV acceptance failures are not claimed fixed."
+  ],
+  "release": "/tmp/kirin_full_npu_external_w4_kv16_stablemath_v1_release",
+  "app_patch": "evidence_stablemath_cache/app_runtime.patch",
+  "app_patch_base_commit": "de634bcd07edf880295b0a7dfe1ca36d2953cfee",
+  "publication": {
+    "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_stablemath_v1",
+    "started_utc": "2026-10-16T18:13:04.413095+00:00",
+    "status": "complete",
+    "files": 37,
+    "total_bytes": 2785113131,
+    "verified_files": 37,
+    "finished_utc": "2026-10-16T18:13:35.209375+00:00",
+    "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv16_stablemath_v1"
+  },
+  "app_patch_sha256": "a830372993d6a686f52faafc2931283abdaf8fe05b27553619ee07267f6a824a"
+}

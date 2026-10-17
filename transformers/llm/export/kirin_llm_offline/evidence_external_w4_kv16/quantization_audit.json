@@ -1,0 +1,322 @@
+{
+  "complete": true,
+  "device_tested": false,
+  "scope": "CPU dequantized/fake-quant reference; no native OMC accuracy claim",
+  "corpus": "ten fixed prompts with system template; *_unseen were not used to choose the range guard",
+  "source_manifest_sha256": "bc91fbad0fa2dc7af43819aa9370ab957efe086fbc64ce82cb2e34a4bba09797",
+  "calibration_checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+  "cases": [
+    {
+      "name": "arithmetic",
+      "prompt": "请只回答结果：8 乘以 7 等于多少？",
+      "teacher_forced_target": "56",
+      "target_tokens": 2,
+      "reference_nll": 0.1273009032011032,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.5666122674483308,
+          "max_abs": 10.654138565063477,
+          "cosine": 0.8324868109444382,
+          "nll": 0.009817469865083694,
+          "nll_delta": -0.11748343333601952,
+          "perplexity_ratio": 0.8891552419605525,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.37833136320114136
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.5780528738583381,
+          "max_abs": 11.60150671005249,
+          "cosine": 0.8224537662826278,
+          "nll": 0.3121117353439331,
+          "nll_delta": 0.1848108321428299,
+          "perplexity_ratio": 1.2029908514005834,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.24958436191082
+        }
+      },
+      "reference_answer": "56",
+      "w4_fp16_kv_answer": "56"
+    },
+    {
+      "name": "translation",
+      "prompt": "把“桌上有一本蓝色的书。”翻译成英语。",
+      "teacher_forced_target": "There is a blue book on the table.",
+      "target_tokens": 9,
+      "reference_nll": 0.00025606469716876745,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.19878491631608924,
+          "max_abs": 8.1525239944458,
+          "cosine": 0.9806585629242266,
+          "nll": 0.003273800015449524,
+          "nll_delta": 0.0030177353182807565,
+          "perplexity_ratio": 1.0030222932652457,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.0025217304937541485
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.23414109208889153,
+          "max_abs": 10.013142585754395,
+          "cosine": 0.9736342122583699,
+          "nll": 0.004609414841979742,
+          "nll_delta": 0.004353350144810975,
+          "perplexity_ratio": 1.0043628397390645,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.0037151919677853584
+        }
+      },
+      "reference_answer": "There is a blue book on the table.",
+      "w4_fp16_kv_answer": "There is a blue book on the table."
+    },
+    {
+      "name": "retrieval",
+      "prompt": "已知暗号是“松树”。请只重复暗号，不要解释。",
+      "teacher_forced_target": "松树",
+      "target_tokens": 2,
+      "reference_nll": 2.562994040999911e-06,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.4570182890747429,
+          "max_abs": 13.869707107543945,
+          "cosine": 0.9133783480480255,
+          "nll": 0.00011079598334617913,
+          "nll_delta": 0.00010823298930517922,
+          "perplexity_ratio": 1.0001082388467064,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.00010171934263780713
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.45876216080320276,
+          "max_abs": 12.855807542800903,
+          "cosine": 0.9085619827410469,
+          "nll": 4.297336272429675e-05,
+          "nll_delta": 4.041036868329684e-05,
+          "perplexity_ratio": 1.0000404111851933,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 3.4818931453628466e-05
+        }
+      },
+      "reference_answer": "松树",
+      "w4_fp16_kv_answer": "松树"
+    },
+    {
+      "name": "explanation",
+      "prompt": "用一句话说明为什么白天能看见月亮。",
+      "teacher_forced_target": "月亮反射太阳光，当它白天位于地平线上方时也能被看见。",
+      "target_tokens": 18,
+      "reference_nll": 4.195071697235107,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.4858009632552784,
+          "max_abs": 10.563363313674927,
+          "cosine": 0.8759597744863464,
+          "nll": 3.2190582752227783,
+          "nll_delta": -0.9760134220123291,
+          "perplexity_ratio": 0.3768102921565924,
+          "teacher_forced_top1_agreement": 0.8333333134651184,
+          "kl_reference_to_candidate": 0.4289458990097046
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.5048551991630968,
+          "max_abs": 11.062124133110046,
+          "cosine": 0.8638978286558027,
+          "nll": 2.9954676628112793,
+          "nll_delta": -1.1996040344238281,
+          "perplexity_ratio": 0.3013134980669085,
+          "teacher_forced_top1_agreement": 0.7777777910232544,
+          "kl_reference_to_candidate": 0.46698877215385437
+        }
+      },
+      "reference_answer": "因为月亮反射太阳光，而地球上的我们看到月亮时，正是它反射的太阳光照射到我们眼睛，所以我们能看见月亮。",
+      "w4_fp16_kv_answer": "因为月亮本身不发光，我们看到的月亮是地球反射的太阳光。"
+    },
+    {
+      "name": "python",
+      "prompt": "写一个 Python 函数，返回列表中最大的数。",
+      "teacher_forced_target": "def largest(values):\n    return max(values)",
+      "target_tokens": 9,
+      "reference_nll": 3.0038087368011475,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.38411216267898984,
+          "max_abs": 11.247154712677002,
+          "cosine": 0.9235338707757659,
+          "nll": 3.6284077167510986,
+          "nll_delta": 0.6245989799499512,
+          "perplexity_ratio": 1.867496903547721,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.24781806766986847
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.5618998986860161,
+          "max_abs": 13.213661193847656,
+          "cosine": 0.8272701826269934,
+          "nll": 2.9440345764160156,
+          "nll_delta": -0.059774160385131836,
+          "perplexity_ratio": 0.9419772453422766,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.16349540650844574
+        }
+      },
+      "reference_answer": "```python\ndef find_max(numbers):\n    if not numbers:\n        return None  # 如果列表为空，返回 None\n    return max(numbers)\n```",
+      "w4_fp16_kv_answer": "```python\ndef find_max_number(numbers):\n    if not numbers:\n        return None\n    return max(numbers)\n```"
+    },
+    {
+      "name": "arithmetic_unseen",
+      "prompt": "请只回答：9 乘以 6 的结果。",
+      "teacher_forced_target": "54",
+      "target_tokens": 2,
+      "reference_nll": 0.3231469690799713,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.5197093005928288,
+          "max_abs": 11.63890027999878,
+          "cosine": 0.8547125378662556,
+          "nll": 0.14859382808208466,
+          "nll_delta": -0.17455314099788666,
+          "perplexity_ratio": 0.8398322235209454,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.06452154368162155
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.5577945421824224,
+          "max_abs": 12.152686834335327,
+          "cosine": 0.8300960102529243,
+          "nll": 0.14038462936878204,
+          "nll_delta": -0.18276233971118927,
+          "perplexity_ratio": 0.8329660951777365,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.08979494124650955
+        }
+      },
+      "reference_answer": "54",
+      "w4_fp16_kv_answer": "54"
+    },
+    {
+      "name": "translation_unseen",
+      "prompt": "将“我们下周一在图书馆见面。”翻译成英语。",
+      "teacher_forced_target": "We will meet at the library next Monday.",
+      "target_tokens": 9,
+      "reference_nll": 0.04250381886959076,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.18708623233474228,
+          "max_abs": 8.02120041847229,
+          "cosine": 0.9830815252526403,
+          "nll": 0.09454283118247986,
+          "nll_delta": 0.0520390123128891,
+          "perplexity_ratio": 1.05341683793903,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.06143702566623688
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.19683224875813163,
+          "max_abs": 8.542779922485352,
+          "cosine": 0.9807038665381245,
+          "nll": 0.12164727598428726,
+          "nll_delta": 0.0791434571146965,
+          "perplexity_ratio": 1.0823595831162556,
+          "teacher_forced_top1_agreement": 0.8888888955116272,
+          "kl_reference_to_candidate": 0.08059396594762802
+        }
+      },
+      "reference_answer": "We will meet at the library next Monday.",
+      "w4_fp16_kv_answer": "We will meet at the library on Monday."
+    },
+    {
+      "name": "retrieval_unseen",
+      "prompt": "名单里甲对应红色、乙对应绿色。乙对应哪种颜色？只答颜色。",
+      "teacher_forced_target": "绿色",
+      "target_tokens": 1,
+      "reference_nll": 0.2348002940416336,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.33799415125666493,
+          "max_abs": 12.275574564933777,
+          "cosine": 0.9411723931434247,
+          "nll": 0.11669886112213135,
+          "nll_delta": -0.11810143291950226,
+          "perplexity_ratio": 0.8886059141510316,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.11875436455011368
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.37177843629498625,
+          "max_abs": 10.186541438102722,
+          "cosine": 0.9300144759822931,
+          "nll": 0.0821399837732315,
+          "nll_delta": -0.1526603102684021,
+          "perplexity_ratio": 0.8584212691812926,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.13393640518188477
+        }
+      },
+      "reference_answer": "绿色",
+      "w4_fp16_kv_answer": "绿色"
+    },
+    {
+      "name": "summary_unseen",
+      "prompt": "用一句话概括：小林忘带雨伞，下班时下雨，同事把备用伞借给他。",
+      "teacher_forced_target": "小林下班遇雨，同事把备用伞借给了他。",
+      "target_tokens": 14,
+      "reference_nll": 0.7371131181716919,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.27317242598128355,
+          "max_abs": 6.5713791847229,
+          "cosine": 0.9620421474447343,
+          "nll": 0.8829284310340881,
+          "nll_delta": 0.14581531286239624,
+          "perplexity_ratio": 1.1569824885335627,
+          "teacher_forced_top1_agreement": 0.9285714030265808,
+          "kl_reference_to_candidate": 0.1066131442785263
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.30792419664529325,
+          "max_abs": 7.560176610946655,
+          "cosine": 0.9515353165176389,
+          "nll": 0.8256889581680298,
+          "nll_delta": 0.08857583999633789,
+          "perplexity_ratio": 1.0926171135462432,
+          "teacher_forced_top1_agreement": 0.9285714030265808,
+          "kl_reference_to_candidate": 0.2124691754579544
+        }
+      },
+      "reference_answer": "小林因忘带雨伞，同事借伞相助，两人共用一把伞。",
+      "w4_fp16_kv_answer": "小林忘记带伞，同事借给他一把备用伞，他才在雨中得救。"
+    },
+    {
+      "name": "python_unseen",
+      "prompt": "写一个 Python 函数，把两个数字相加。",
+      "teacher_forced_target": "def add(a, b):\n    return a + b",
+      "target_tokens": 11,
+      "reference_nll": 1.0443609952926636,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.47497976293928024,
+          "max_abs": 10.487980842590332,
+          "cosine": 0.8800521077689807,
+          "nll": 1.3976234197616577,
+          "nll_delta": 0.35326242446899414,
+          "perplexity_ratio": 1.4237047093673973,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.10894158482551575
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.6023417891241348,
+          "max_abs": 12.478645324707031,
+          "cosine": 0.7995832551253961,
+          "nll": 1.0444365739822388,
+          "nll_delta": 7.557868957519531e-05,
+          "perplexity_ratio": 1.0000755815457163,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.08856502920389175
+        }
+      },
+      "reference_answer": "```python\ndef add_numbers(a, b):\n    return a + b\n```",
+      "w4_fp16_kv_answer": "```python\ndef add_numbers(num1, num2):\n    return num1 + num2\n\n# 示例调用\nresult = add_numbers(5,"
+    }
+  ],
+  "activation_range_multiplier": 1,
+  "output_range_multiplier": 4.0
+}

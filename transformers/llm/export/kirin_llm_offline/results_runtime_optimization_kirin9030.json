@@ -1,0 +1,398 @@
+{
+  "format": "kirin_full_npu_runtime_optimization_v1",
+  "date": "2026-10-16",
+  "model_package": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+  "device_optimization_verified": false,
+  "hap_build_verified": false,
+  "vendor_sdk_compilation_verified": false,
+  "phone_operated": false,
+  "model_files_changed": false,
+  "quantization_parameters_changed": false,
+  "legacy_execution_routes_changed": false,
+  "libMNN_sha256": "fda4364bd3067713af0a04b0abfc2a51d0524851e1f1238a188511a06100e1e3",
+  "user_feedback_before_optimization": {
+    "policy": "single_graph",
+    "execution": "User reports generation completed; supplied excerpt shows successful decode stages at past=198.",
+    "relevance": "User reports answers unrelated to the question.",
+    "speed": "User reports very slow generation.",
+    "decode_4_load_ms": 398.273125,
+    "decode_4_total_ms": 450.481563,
+    "decode_5_load_ms": 421.723594,
+    "decode_5_total_ms": 472.984844,
+    "request_complete_log_supplied": false
+  },
+  "defaults": {
+    "npu_max_resident_graphs": 4,
+    "npu_resident_model_mib": 640,
+    "npu_persistent_kv_mib": 192,
+    "npu_incremental_kv": true
+  },
+  "model_residency": {
+    "policy": "bounded priority, eviction before Build; head then earlier LLM stages preferred",
+    "budget_basis": "serialized model file sizes, not actual driver memory",
+    "steady_profile_model_builds_before": 16,
+    "steady_profile_model_builds_after": 13,
+    "evidence": "NNRT call substitutes using the cyclic decode working set; no device timing claim",
+    "pressure_recovery": "Release peer models and persistent KV input pool; retry once with one model and full synchronization; retain demotion until model reload",
+    "cpu_fallback": false
+  },
+  "kv_sync": {
+    "scope": "host writes into reusable NNRT input tensors; does not measure internal driver traffic",
+    "host_cache_bytes": 147259392,
+    "additional_persistent_nnrt_kv_bytes": 147259392,
+    "full_copy_bytes_per_decode_token": 147259392,
+    "steady_incremental_bytes_per_decode_token": 179200,
+    "steady_incremental_bytes_per_four_layer_stage": 25600,
+    "first_reset_backoff_or_budget_miss_requires_full_copy": true,
+    "prefill_tail_requires_catching_up_committed_rows": true,
+    "pool_key": [
+      "device",
+      "logical_port",
+      "format",
+      "dtype",
+      "shape"
+    ],
+    "invalidation": [
+      "cache_epoch",
+      "source_address",
+      "length_rollback",
+      "RunSync_failure"
+    ],
+    "release": "whole-request completion, reset/cancel/failure, pressure backoff or reconfiguration",
+    "attention_length_unchanged": true,
+    "graph_dequantization_unchanged": true,
+    "full_precision_shadow_cache_added": false
+  },
+  "validation": {
+    "cpp_suites_passed": 6,
+    "names": [
+      "cache",
+      "utf8_stream",
+      "port_binding",
+      "incremental_kv_transfer",
+      "nnrt_loading_call_substitutes",
+      "runtime_failures"
+    ],
+    "bounded_model_count_and_byte_budget_verified": true,
+    "executor_and_tensor_failure_recovery_verified": true,
+    "tensor_pool_reuse_across_executor_and_phase_verified": true,
+    "different_tensor_format_isolation_verified": true,
+    "incremental_vs_full_buffer_byte_equality_verified": true,
+    "ring_wrap_long_jump_reset_and_retry_verified": true,
+    "nnrt_tests_use_call_substitutes": true,
+    "address_and_undefined_behavior_sanitizers_passed": true,
+    "leak_sanitizer": "Unavailable under traced sandbox; leak detection disabled for ASan/UBSan run. NNRT live-handle counters return to zero.",
+    "cpu_reference_replay": {
+      "device_tested": false,
+      "package_config_sha256": "206fb62bf4da7ca0613816d769d084cd268bd350de6958591fa7024868a49a43",
+      "embedding_slice_build_verified": true,
+      "cases": [
+        {
+          "case": "text",
+          "prompt_tokens": 13,
+          "graph_calls": 72,
+          "independent_tensor_checks": 2096,
+          "image_patch_metrics": [],
+          "response": "你好！我是一个多任务智能AI",
+          "passed": true
+        },
+        {
+          "case": "image_0",
+          "prompt_tokens": 168,
+          "graph_calls": 88,
+          "independent_tensor_checks": 2388,
+          "image_patch_metrics": [
+            {
+              "relative_l2": 0.0017182224395274137,
+              "max_abs": 0.023529529571533203,
+              "cosine": 0.9999985276406809
+            }
+          ],
+          "response": "这是一张中国国内多城市间",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "app_source_synced": true,
+  "requires_app_rebuild": true,
+  "requires_model_redownload": false,
+  "sources": [
+    {
+      "path": "KvTransfer.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/KvTransfer.hpp",
+      "sha256": "e98165bd2236d56fb63db34dee097e8b800ed640755f7b92b4ca41f6fc920b0f"
+    },
+    {
+      "path": "FullNpuRuntime.cpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.cpp",
+      "sha256": "92f635e89cdf1eb61592d9aadb17aafb9722cdd3c6a5b7fe93a3b3ca726ba6f5"
+    },
+    {
+      "path": "FullNpuCache.cpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuCache.cpp",
+      "sha256": "f175c863f6de0a3bcefdda789af82f2319132884d2c6eeea1d814ae100097360"
+    },
+    {
+      "path": "Utf8Stream.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/Utf8Stream.hpp",
+      "sha256": "9e145fec6079e12de83e7ff50d06049a6110a8f5ce9b85db06393b32ff48d0b0"
+    },
+    {
+      "path": "EmbeddingSlices.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/EmbeddingSlices.hpp",
+      "sha256": "6bfcb052cefb3cfddc5e77d444247e5ae47028e5cf4959c8372c98200a3dc58d"
+    },
+    {
+      "path": "NnrtBackend.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/NnrtBackend.hpp",
+      "sha256": "5527e5733759baad254e2c4e7f0ff6c785f39279ad409ec953a3ed88f535d763"
+    },
+    {
+      "path": "RuntimeContracts.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/RuntimeContracts.hpp",
+      "sha256": "fa2ed494fa486ed5e09c7494c41b8f1d075caac09c3f6ffa235569e9e4b25a94"
+    },
+    {
+      "path": "NnrtBackend.cpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/NnrtBackend.cpp",
+      "sha256": "437f53e5aff462407ddd9c4a5cb7a13ae5235117ed5e6f3ec08d9f916153f5ec"
+    },
+    {
+      "path": "FullNpuRuntime.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.hpp",
+      "sha256": "7e11683f16b59f377acfb9b6639c12cdb10ad3acd05360a879b89cef783b7b0c"
+    },
+    {
+      "path": "PortBinding.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/PortBinding.hpp",
+      "sha256": "03abfbdaf749d6afa271173c3a53c10598c2420d3ae3d89739c1bef73ebf2791"
+    },
+    {
+      "path": "tokenizer/tokenizer.cpp",
+      "source": "transformers/llm/engine/src/tokenizer/tokenizer.cpp",
+      "sha256": "b6dba124415bdb63f44c31843afe7f7762a38c4eb3845217f355174c9a7e0c3a"
+    },
+    {
+      "path": "tokenizer/tokenizer.hpp",
+      "source": "transformers/llm/engine/src/tokenizer/tokenizer.hpp",
+      "sha256": "526fa549196b765351548f3caebb8347e5467640b1bf06602f46873266388f33"
+    },
+    {
+      "path": "tokenizer/unicode.cpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode.cpp",
+      "sha256": "7119a5f0d167bf8c840586af25f52d92d4ed0eba9c328ddad5c5c20a9d6ca6d0"
+    },
+    {
+      "path": "tokenizer/unicode.hpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode.hpp",
+      "sha256": "06d2577f4adc10e130778e05c08114f97709477d70bc2655c8e3b9b6361c12dd"
+    },
+    {
+      "path": "tokenizer/unicode_data.cpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode_data.cpp",
+      "sha256": "e8c7050623e49b74107c0afecf4082458b1f11f7ead7d608251c0f7db323cea0"
+    },
+    {
+      "path": "tokenizer/unicode_data.hpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode_data.hpp",
+      "sha256": "1f2e5db80ad4659b59cf578f33e4ed00bc34873f6b1ca4a5d60c0f9ef39b9752"
+    },
+    {
+      "path": "rapidjson/prettywriter.h",
+      "source": "3rd_party/rapidjson/prettywriter.h",
+      "sha256": "da98bac45ac565f1126361f57090259f1a556a27ff161a5f3bc441db8b104be8"
+    },
+    {
+      "path": "rapidjson/reader.h",
+      "source": "3rd_party/rapidjson/reader.h",
+      "sha256": "9312d9cb66f4de4308d01b097e390318128734777f0f26276a1c95e2fe5114bf"
+    },
+    {
+      "path": "rapidjson/stream.h",
+      "source": "3rd_party/rapidjson/stream.h",
+      "sha256": "c6cead9dffa8e5972a9e6c9a52cee754411b9eda674cbab5c86a2c78146254e1"
+    },
+    {
+      "path": "rapidjson/cursorstreamwrapper.h",
+      "source": "3rd_party/rapidjson/cursorstreamwrapper.h",
+      "sha256": "f37c106e59e042d4ebefe00715f33d0599a3c6f028737c91cad4d017846814ad"
+    },
+    {
+      "path": "rapidjson/filewritestream.h",
+      "source": "3rd_party/rapidjson/filewritestream.h",
+      "sha256": "c306b379af7957a0d21bfa8f798f48e67cd78ec96fcddd79d008f1ef699dc34a"
+    },
+    {
+      "path": "rapidjson/fwd.h",
+      "source": "3rd_party/rapidjson/fwd.h",
+      "sha256": "06a7b142b7b0e1d2b773e657bbafd9b861e4b0a17fadf49a806d8833ac6d557e"
+    },
+    {
+      "path": "rapidjson/writer.h",
+      "source": "3rd_party/rapidjson/writer.h",
+      "sha256": "012aee1720a98987ec479f78a1e9c31de1c4ec06a7ef29c92171c3db990cfe97"
+    },
+    {
+      "path": "rapidjson/document.h",
+      "source": "3rd_party/rapidjson/document.h",
+      "sha256": "e26772ed7bdc9693469d8b6419c5eff8afaf2ff310746b526c83c92d801c0d89"
+    },
+    {
+      "path": "rapidjson/memorystream.h",
+      "source": "3rd_party/rapidjson/memorystream.h",
+      "sha256": "5381dd5981676dc6194cb384af6bcf623d9dee46b9b1508bd1e62c7cf3efac9f"
+    },
+    {
+      "path": "rapidjson/filereadstream.h",
+      "source": "3rd_party/rapidjson/filereadstream.h",
+      "sha256": "2d4b395866a0b64dc168e7eb4dbcb8a2f71f411c054cf02ae57be6418aa71e61"
+    },
+    {
+      "path": "rapidjson/schema.h",
+      "source": "3rd_party/rapidjson/schema.h",
+      "sha256": "51bdbebf18eda2195b220964bf908ac1267a09c78ce80a77585a90567764610a"
+    },
+    {
+      "path": "rapidjson/allocators.h",
+      "source": "3rd_party/rapidjson/allocators.h",
+      "sha256": "af8df398d1863a1d300e26dcc1fea813143ca11c12f13242c2eccad558f85884"
+    },
+    {
+      "path": "rapidjson/encodedstream.h",
+      "source": "3rd_party/rapidjson/encodedstream.h",
+      "sha256": "ac15a6f9b872f129d019947505c212db502dcbdb9d9c8806fef8fc2afe3922a7"
+    },
+    {
+      "path": "rapidjson/memorybuffer.h",
+      "source": "3rd_party/rapidjson/memorybuffer.h",
+      "sha256": "cbfb33d4b2b826012c9932a664044cd70606ebd938ba9e35748892de2569e03f"
+    },
+    {
+      "path": "rapidjson/rapidjson.h",
+      "source": "3rd_party/rapidjson/rapidjson.h",
+      "sha256": "240f786071b64c28c0a1dae3e3b05fc3ca93fa4882b1e36e56ee49fee3037b0a"
+    },
+    {
+      "path": "rapidjson/istreamwrapper.h",
+      "source": "3rd_party/rapidjson/istreamwrapper.h",
+      "sha256": "ca185d060c0d7edf8a4026bbd706de2f77869f7e642b11ca7dc3a35daa57c5fd"
+    },
+    {
+      "path": "rapidjson/license.txt",
+      "source": "3rd_party/rapidjson/license.txt",
+      "sha256": "a140e5d46fe734a1c78f1a3c3ef207871dd75648be71fdda8e309b23ab8b1f32"
+    },
+    {
+      "path": "rapidjson/pointer.h",
+      "source": "3rd_party/rapidjson/pointer.h",
+      "sha256": "fc4e8923378a6c07afbdf279eb572ec97b150fd071114b2fb3d735d1fc1cb2e2"
+    },
+    {
+      "path": "rapidjson/encodings.h",
+      "source": "3rd_party/rapidjson/encodings.h",
+      "sha256": "e83626ecf17f424c3979ff850ca188721e9ea96d9d5973f47302d5e5ab07f6b0"
+    },
+    {
+      "path": "rapidjson/stringbuffer.h",
+      "source": "3rd_party/rapidjson/stringbuffer.h",
+      "sha256": "57fc25405c5a97b941c4ce2cdc9cb4ec502c4936196c368c7d78c1e5096d69e7"
+    },
+    {
+      "path": "rapidjson/ostreamwrapper.h",
+      "source": "3rd_party/rapidjson/ostreamwrapper.h",
+      "sha256": "8ab62eb2967a965b4b39bd03ae49c220e7a6cd6c5c680f39cb32ef652b2c3337"
+    },
+    {
+      "path": "rapidjson/msinttypes/stdint.h",
+      "source": "3rd_party/rapidjson/msinttypes/stdint.h",
+      "sha256": "bf2d1bc4885bc1e0720ec9af8f399477c7e105ae1e70e2863c31a8123cae1c17"
+    },
+    {
+      "path": "rapidjson/msinttypes/inttypes.h",
+      "source": "3rd_party/rapidjson/msinttypes/inttypes.h",
+      "sha256": "78ee41fd99bcbe59ca93f6a870a83c0a90f4b179af571f6e684f2600491bbae7"
+    },
+    {
+      "path": "rapidjson/internal/itoa.h",
+      "source": "3rd_party/rapidjson/internal/itoa.h",
+      "sha256": "ab0b5d49d2671156463ba03c1cbbe32bd186d3220caec3ad2a9654ccc9955f12"
+    },
+    {
+      "path": "rapidjson/internal/regex.h",
+      "source": "3rd_party/rapidjson/internal/regex.h",
+      "sha256": "6b52da06d96e58536e2a5364255731fba3537336c51ace628c0f6f8aaf7eeb03"
+    },
+    {
+      "path": "rapidjson/internal/pow10.h",
+      "source": "3rd_party/rapidjson/internal/pow10.h",
+      "sha256": "6b8787ecc984887cc2579d7043c08ac57614b8c59e09073565538890dcd1ff21"
+    },
+    {
+      "path": "rapidjson/internal/strtod.h",
+      "source": "3rd_party/rapidjson/internal/strtod.h",
+      "sha256": "973a6a567707b5d706422d432681eb6d55b33fb6a58f081ea35f1f0f0610232a"
+    },
+    {
+      "path": "rapidjson/internal/ieee754.h",
+      "source": "3rd_party/rapidjson/internal/ieee754.h",
+      "sha256": "7e4456bf81b86de2e4639cbf1a80d76f852978511e506c20d0acd79ecd31f7e1"
+    },
+    {
+      "path": "rapidjson/internal/diyfp.h",
+      "source": "3rd_party/rapidjson/internal/diyfp.h",
+      "sha256": "b7086c604d1e24a64e7a83fb23690e34e28397e82e80f29de115a522e498d806"
+    },
+    {
+      "path": "rapidjson/internal/dtoa.h",
+      "source": "3rd_party/rapidjson/internal/dtoa.h",
+      "sha256": "77f2a85c791347e2df5823486651b7c64182b076522a0241bbb443646270d2d8"
+    },
+    {
+      "path": "rapidjson/internal/strfunc.h",
+      "source": "3rd_party/rapidjson/internal/strfunc.h",
+      "sha256": "07f1a7fbf266154f9638bc75876391e1d020bd5c891d639901150f3c53127ec2"
+    },
+    {
+      "path": "rapidjson/internal/stack.h",
+      "source": "3rd_party/rapidjson/internal/stack.h",
+      "sha256": "2ab58804815bf418898da95e4466173876038528024ae6474aca4df7739e0954"
+    },
+    {
+      "path": "rapidjson/internal/meta.h",
+      "source": "3rd_party/rapidjson/internal/meta.h",
+      "sha256": "52eb6de01e95e9c9e88bd70e050c985d7b37e7ac62a2320a4a06df665ecd4b9a"
+    },
+    {
+      "path": "rapidjson/internal/biginteger.h",
+      "source": "3rd_party/rapidjson/internal/biginteger.h",
+      "sha256": "b311ad68b7b1f971d87f10ad636994377ff7f51f0205887b8df8bb0285dcc859"
+    },
+    {
+      "path": "rapidjson/internal/swap.h",
+      "source": "3rd_party/rapidjson/internal/swap.h",
+      "sha256": "1403bd099a25621c63a1234ca61daae0444f1538c4be7b193694cf41a76f14ac"
+    },
+    {
+      "path": "rapidjson/error/en.h",
+      "source": "3rd_party/rapidjson/error/en.h",
+      "sha256": "5d040327a5b7b50367f5862fe88e9d742bcefcff52450279bfebb89a30072d2d"
+    },
+    {
+      "path": "rapidjson/error/error.h",
+      "source": "3rd_party/rapidjson/error/error.h",
+      "sha256": "85bc3e758f3463971eb85e0c4639bc22168863227dd6fc38940fc34e533bf472"
+    },
+    {
+      "path": "stb_image.h",
+      "source": "3rd_party/imageHelper/stb_image.h",
+      "sha256": "0e28238d865510073b5740ae8eba8cd8032cc5b25f94e0f7505fac8036864909"
+    }
+  ],
+  "unresolved": [
+    "User-reported unrelated NPU responses remain unresolved.",
+    "Device speed, input-buffer reuse and memory pressure need real HiAI testing.",
+    "Known long-context KV numerical tolerance failures remain unchanged."
+  ],
+  "api_reference": "https://github.com/openharmony/ai_neural_network_runtime/blob/master/frameworks/native/neural_network_core/neural_network_core.cpp"
+}

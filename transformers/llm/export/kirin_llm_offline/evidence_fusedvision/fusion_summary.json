@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-17",
+  "status": "compiled_and_host_validated",
+  "old_visual_graphs": 8,
+  "new_visual_graphs": 1,
+  "old_total_graphs": 13,
+  "new_total_graphs": 6,
+  "format": "kirin_full_npu_runtime_v3",
+  "graph_weights_external": true,
+  "main_matrix_weight_bits": 4,
+  "group_size": 64,
+  "weight_method": "gptq",
+  "kv_dtype": "fp16",
+  "frozen_checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+  "frozen_quantization_recalibrated": false,
+  "visual_deepstack_layers": [
+    5,
+    11,
+    17
+  ],
+  "llm_deepstack_injection_layers": [
+    0,
+    1,
+    2
+  ],
+  "heldout_images": 3,
+  "split_vs_fused_cpu_max_absolute_error": 0,
+  "split_vs_fused_cpu_max_relative_l2": 0,
+  "unchanged_language_graphs": 5,
+  "unique_w4_matrices": 301,
+  "visual_w4_matrices": 104,
+  "python_sdk_tests": 36,
+  "cpp_test_suites": 9,
+  "cpp_invalid_v3_contract_cases": 30,
+  "cpp_replay_cases": 6,
+  "cpp_independent_tensor_checks": 3112,
+  "actual_app_source_compiled_on_host": true,
+  "app_runtime_sources_sha256": "8e8b375f739878f6f8499414dcbd01d5dff7a2c9430ab3f0ff1f4260e37c7fbe",
+  "app_arkts_format_check_sha256": "f94f8df6a51ca8da918a79ff31fc7770debf58422f65034d961a0d30f429a861",
+  "app_base_commit": "3a14746fc79d70ffcc3db3562393fd02472508f3",
+  "app_residency_budget": {
+    "graphs": 16,
+    "model_mib": 4096
+  },
+  "hap_build_verified": false,
+  "device_tested": false,
+  "phone_modified": false,
+  "build": "/tmp/kirin_full_vlm_external_w4_kv16_fusedvision_v1",
+  "release": "/tmp/kirin_full_npu_external_w4_kv16_fusedvision_v1_release",
+  "limitations": [
+    "No fused OMC device execution or speed/peak-memory measurement.",
+    "CPU bitwise equivalence to the split W4 reference does not establish absolute quantization accuracy.",
+    "Earlier W4 quality and long-context FP16 KV acceptance failures were not reassessed or declared fixed.",
+    "Decoder external weight reinitialization remains a separate performance issue."
+  ]
+}

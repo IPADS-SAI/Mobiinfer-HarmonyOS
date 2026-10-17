@@ -1,0 +1,737 @@
+{
+  "scope": "Read-only HDC device logs, config and selected model file hashes; local CPU ONNX comparison only. No App, model, code or device setting changes.",
+  "raw_log": "/tmp/kirin_phone_mnn_runtime_20261017.log",
+  "device_runtime_config": {
+    "capacity": 2048,
+    "prefill": 128,
+    "layers": 28,
+    "hidden": 2048,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "kv_group": 32,
+    "kv_dtype": "fp16",
+    "kv_recent": 0,
+    "kv_sink": 0,
+    "image_height": 608,
+    "image_width": 256,
+    "patch": 16,
+    "merge": 2,
+    "temporal": 2,
+    "vision_hidden": 1024,
+    "vision_heads": 16,
+    "image_token": 151655,
+    "pad_token": 151643,
+    "max_new_tokens": 256,
+    "rope_theta": 5000000,
+    "mrope_section": [
+      24,
+      20,
+      20
+    ],
+    "npu_max_resident_graphs": 4,
+    "npu_resident_model_mib": 2048,
+    "npu_persistent_kv_mib": 256,
+    "npu_incremental_kv": true
+  },
+  "request": {
+    "question": "你是谁？",
+    "prompt_tokens": 22,
+    "decode_tokens": 25,
+    "prefill_ms": 3789.634687,
+    "decode_ms": 59165.382656,
+    "decode_tokens_per_second": 0.4225443811519866,
+    "response": "了一搜索的是是一2计划了一\n健康首页\n0.\n\n饮食健康3手机\n0： \".\n的工作学习Machine"
+  },
+  "counts": {
+    "level=cache_hit": 0,
+    "level=cache_backoff": 0,
+    "level=resident_evict": 76,
+    "step=HMS_HiAIExecutor_InitWeights ret=": 78,
+    "level=error": 0
+  },
+  "model_hashes": [
+    {
+      "file": "om/llm_prefill_0.omc",
+      "matches": true,
+      "phone_sha256": "654bf5f5c8b1106a6e2b9b489c080289e9b3ce67f44dffea0a4a1bd921740a37",
+      "release_sha256": "654bf5f5c8b1106a6e2b9b489c080289e9b3ce67f44dffea0a4a1bd921740a37"
+    },
+    {
+      "file": "weights/697eb5bb373fe96abb755132/SubGraph_0.weight",
+      "matches": true,
+      "phone_sha256": "2d987707075810f61a3152d195d72966510bbd9cae2bbbecf9fd7f1a7d7b22eb",
+      "release_sha256": "2d987707075810f61a3152d195d72966510bbd9cae2bbbecf9fd7f1a7d7b22eb"
+    },
+    {
+      "file": "om/llm_decode_0.omc",
+      "matches": true,
+      "phone_sha256": "d79647c04bdcca0beb34aaf117c444c0c42b1a904116d788377aa19aa588c465",
+      "release_sha256": "d79647c04bdcca0beb34aaf117c444c0c42b1a904116d788377aa19aa588c465"
+    },
+    {
+      "file": "weights/7f6869f5c8c20f4dbe785313/SubGraph_0.weight",
+      "matches": true,
+      "phone_sha256": "e7bc2811f66f1e17d690b8cebf2debf6e06ef4df232b4826c71b662b3b25403e",
+      "release_sha256": "e7bc2811f66f1e17d690b8cebf2debf6e06ef4df232b4826c71b662b3b25403e"
+    },
+    {
+      "file": "om/lm_head.omc",
+      "matches": true,
+      "phone_sha256": "e206c0ffca00cfce507decb9b6c94b5e1c52753c4c8e5e1e7ca570ecd0130207",
+      "release_sha256": "e206c0ffca00cfce507decb9b6c94b5e1c52753c4c8e5e1e7ca570ecd0130207"
+    },
+    {
+      "file": "weights/3f722d6bc1cf3ccc8a612779/SubGraph_0.weight",
+      "matches": true,
+      "phone_sha256": "50c979dc984872cfa3fc9847e4b8165f8a20c151eeace5579ae42b0356a5ed3b",
+      "release_sha256": "50c979dc984872cfa3fc9847e4b8165f8a20c151eeace5579ae42b0356a5ed3b"
+    }
+  ],
+  "accuracy_reference": {
+    "scope": "CPU quantized ONNX reference with exact phone embedding hash; other prefill inputs reconstructed from inspected runtime, no full device tensors available",
+    "embedding_fnv64": 11585001617800823683,
+    "prompt_tokens": 22,
+    "comparisons": [
+      {
+        "output": "hidden_states",
+        "cpu_min": -1495.947021484375,
+        "cpu_max": 8191.97705078125,
+        "phone_min": -24576.0,
+        "phone_max": 28768.0
+      },
+      {
+        "output": "key_delta_0",
+        "cpu_min": -349.6535949707031,
+        "cpu_max": 395.4961853027344,
+        "phone_min": -349.5,
+        "phone_max": 394.5
+      },
+      {
+        "output": "value_delta_0",
+        "cpu_min": -1.4362794160842896,
+        "cpu_max": 1.3116203546524048,
+        "phone_min": -1.426758,
+        "phone_max": 1.305664
+      },
+      {
+        "output": "key_delta_1",
+        "cpu_min": -123.33504486083984,
+        "cpu_max": 133.06967163085938,
+        "phone_min": -123.5,
+        "phone_max": 133.875
+      },
+      {
+        "output": "value_delta_1",
+        "cpu_min": -1.2451258897781372,
+        "cpu_max": 0.7563227415084839,
+        "phone_min": -1.234375,
+        "phone_max": 0.75293
+      },
+      {
+        "output": "key_delta_2",
+        "cpu_min": -123.31684112548828,
+        "cpu_max": 167.81446838378906,
+        "phone_min": -123.125,
+        "phone_max": 167.75
+      },
+      {
+        "output": "value_delta_2",
+        "cpu_min": -2.2852954864501953,
+        "cpu_max": 2.116785764694214,
+        "phone_min": -2.273438,
+        "phone_max": 2.101562
+      },
+      {
+        "output": "key_delta_3",
+        "cpu_min": -88.37688446044922,
+        "cpu_max": 90.95223236083984,
+        "phone_min": -88.4375,
+        "phone_max": 92.25
+      },
+      {
+        "output": "value_delta_3",
+        "cpu_min": -3.011399745941162,
+        "cpu_max": 2.6451427936553955,
+        "phone_min": -6.441406,
+        "phone_max": 6.5
+      },
+      {
+        "output": "key_delta_4",
+        "cpu_min": -111.36666870117188,
+        "cpu_max": 109.11251068115234,
+        "phone_min": -107.75,
+        "phone_max": 106.6875
+      },
+      {
+        "output": "value_delta_4",
+        "cpu_min": -2.229999303817749,
+        "cpu_max": 2.4495387077331543,
+        "phone_min": -5.816406,
+        "phone_max": 4.363281
+      },
+      {
+        "output": "key_delta_5",
+        "cpu_min": -93.2042236328125,
+        "cpu_max": 87.17979431152344,
+        "phone_min": -100.5625,
+        "phone_max": 95.75
+      },
+      {
+        "output": "value_delta_5",
+        "cpu_min": -2.652775526046753,
+        "cpu_max": 3.6701886653900146,
+        "phone_min": -7.316406,
+        "phone_max": 3.519531
+      },
+      {
+        "output": "key_delta_6",
+        "cpu_min": -59.49229431152344,
+        "cpu_max": 86.10234832763672,
+        "phone_min": -58.90625,
+        "phone_max": 95.8125
+      },
+      {
+        "output": "value_delta_6",
+        "cpu_min": -2.7505671977996826,
+        "cpu_max": 2.3774638175964355,
+        "phone_min": -5.429688,
+        "phone_max": 3.078125
+      },
+      {
+        "output": "key_delta_7",
+        "cpu_min": -62.86597442626953,
+        "cpu_max": 53.26508712768555,
+        "phone_min": -59.625,
+        "phone_max": 52.9375
+      },
+      {
+        "output": "value_delta_7",
+        "cpu_min": -4.274387836456299,
+        "cpu_max": 4.432097911834717,
+        "phone_min": -7.136719,
+        "phone_max": 6.523438
+      },
+      {
+        "output": "key_delta_8",
+        "cpu_min": -22.10331153869629,
+        "cpu_max": 22.926429748535156,
+        "phone_min": -26.75,
+        "phone_max": 25.4375
+      },
+      {
+        "output": "value_delta_8",
+        "cpu_min": -32.11885452270508,
+        "cpu_max": 32.50920486450195,
+        "phone_min": -10.695312,
+        "phone_max": 10.273438
+      },
+      {
+        "output": "key_delta_9",
+        "cpu_min": -33.53667449951172,
+        "cpu_max": 35.71090316772461,
+        "phone_min": -36.9375,
+        "phone_max": 33.53125
+      },
+      {
+        "output": "value_delta_9",
+        "cpu_min": -5.077270030975342,
+        "cpu_max": 5.016129493713379,
+        "phone_min": -11.164062,
+        "phone_max": 15.148438
+      },
+      {
+        "output": "key_delta_10",
+        "cpu_min": -73.94461822509766,
+        "cpu_max": 87.1414794921875,
+        "phone_min": -54.28125,
+        "phone_max": 62.125
+      },
+      {
+        "output": "value_delta_10",
+        "cpu_min": -19.999521255493164,
+        "cpu_max": 41.71673583984375,
+        "phone_min": -15.46875,
+        "phone_max": 15.328125
+      },
+      {
+        "output": "key_delta_11",
+        "cpu_min": -29.632816314697266,
+        "cpu_max": 25.029661178588867,
+        "phone_min": -15.921875,
+        "phone_max": 16.75
+      },
+      {
+        "output": "value_delta_11",
+        "cpu_min": -37.195980072021484,
+        "cpu_max": 32.302730560302734,
+        "phone_min": -18.390625,
+        "phone_max": 21.46875
+      },
+      {
+        "output": "key_delta_12",
+        "cpu_min": -39.59400939941406,
+        "cpu_max": 54.046146392822266,
+        "phone_min": -41.6875,
+        "phone_max": 41.21875
+      },
+      {
+        "output": "value_delta_12",
+        "cpu_min": -77.24990844726562,
+        "cpu_max": 64.44139099121094,
+        "phone_min": -24.375,
+        "phone_max": 25.953125
+      },
+      {
+        "output": "key_delta_13",
+        "cpu_min": -23.80612564086914,
+        "cpu_max": 22.25517463684082,
+        "phone_min": -12.296875,
+        "phone_max": 12.929688
+      },
+      {
+        "output": "value_delta_13",
+        "cpu_min": -79.70524597167969,
+        "cpu_max": 79.70899200439453,
+        "phone_min": -29.890625,
+        "phone_max": 29.046875
+      },
+      {
+        "output": "key_delta_14",
+        "cpu_min": -23.52249526977539,
+        "cpu_max": 25.312042236328125,
+        "phone_min": -20.375,
+        "phone_max": 27.734375
+      },
+      {
+        "output": "value_delta_14",
+        "cpu_min": -166.32479858398438,
+        "cpu_max": 72.88705444335938,
+        "phone_min": -36.03125,
+        "phone_max": 43.03125
+      },
+      {
+        "output": "key_delta_15",
+        "cpu_min": -56.603111267089844,
+        "cpu_max": 59.92361068725586,
+        "phone_min": -53.875,
+        "phone_max": 58.0625
+      },
+      {
+        "output": "value_delta_15",
+        "cpu_min": -12.58515739440918,
+        "cpu_max": 16.809728622436523,
+        "phone_min": -43.15625,
+        "phone_max": 43.78125
+      },
+      {
+        "output": "key_delta_16",
+        "cpu_min": -35.57758331298828,
+        "cpu_max": 23.16607666015625,
+        "phone_min": -21.890625,
+        "phone_max": 16.484375
+      },
+      {
+        "output": "value_delta_16",
+        "cpu_min": -20.180627822875977,
+        "cpu_max": 14.121159553527832,
+        "phone_min": -54.6875,
+        "phone_max": 44.46875
+      },
+      {
+        "output": "key_delta_17",
+        "cpu_min": -47.2430305480957,
+        "cpu_max": 34.35772705078125,
+        "phone_min": -34.71875,
+        "phone_max": 40.9375
+      },
+      {
+        "output": "value_delta_17",
+        "cpu_min": -24.749025344848633,
+        "cpu_max": 32.447418212890625,
+        "phone_min": -87.375,
+        "phone_max": 95.75
+      },
+      {
+        "output": "key_delta_18",
+        "cpu_min": -24.81524085998535,
+        "cpu_max": 28.835044860839844,
+        "phone_min": -18.78125,
+        "phone_max": 14.851562
+      },
+      {
+        "output": "value_delta_18",
+        "cpu_min": -23.858030319213867,
+        "cpu_max": 26.506616592407227,
+        "phone_min": -112.5625,
+        "phone_max": 97.125
+      },
+      {
+        "output": "key_delta_19",
+        "cpu_min": -27.036434173583984,
+        "cpu_max": 29.20110511779785,
+        "phone_min": -38.0625,
+        "phone_max": 32.875
+      },
+      {
+        "output": "value_delta_19",
+        "cpu_min": -34.288841247558594,
+        "cpu_max": 31.99466323852539,
+        "phone_min": -162.75,
+        "phone_max": 148.875
+      },
+      {
+        "output": "key_delta_20",
+        "cpu_min": -24.513532638549805,
+        "cpu_max": 24.63349723815918,
+        "phone_min": -68.6875,
+        "phone_max": 56.25
+      },
+      {
+        "output": "value_delta_20",
+        "cpu_min": -44.98833084106445,
+        "cpu_max": 49.939414978027344,
+        "phone_min": -184.5,
+        "phone_max": 189.5
+      },
+      {
+        "output": "key_delta_21",
+        "cpu_min": -27.764039993286133,
+        "cpu_max": 26.804725646972656,
+        "phone_min": -105.9375,
+        "phone_max": 78.75
+      },
+      {
+        "output": "value_delta_21",
+        "cpu_min": -59.130287170410156,
+        "cpu_max": 70.13554382324219,
+        "phone_min": -292.0,
+        "phone_max": 289.75
+      },
+      {
+        "output": "key_delta_22",
+        "cpu_min": -22.664819717407227,
+        "cpu_max": 16.081954956054688,
+        "phone_min": -54.5,
+        "phone_max": 59.03125
+      },
+      {
+        "output": "value_delta_22",
+        "cpu_min": -81.18587493896484,
+        "cpu_max": 101.96339416503906,
+        "phone_min": -345.25,
+        "phone_max": 395.0
+      },
+      {
+        "output": "key_delta_23",
+        "cpu_min": -29.251434326171875,
+        "cpu_max": 27.153278350830078,
+        "phone_min": -126.5625,
+        "phone_max": 121.5
+      },
+      {
+        "output": "value_delta_23",
+        "cpu_min": -85.11405181884766,
+        "cpu_max": 65.18376922607422,
+        "phone_min": -402.75,
+        "phone_max": 365.0
+      },
+      {
+        "output": "key_delta_24",
+        "cpu_min": -50.64179229736328,
+        "cpu_max": 36.292057037353516,
+        "phone_min": -200.5,
+        "phone_max": 222.0
+      },
+      {
+        "output": "value_delta_24",
+        "cpu_min": -96.2254638671875,
+        "cpu_max": 123.54552459716797,
+        "phone_min": -637.5,
+        "phone_max": 543.0
+      },
+      {
+        "output": "key_delta_25",
+        "cpu_min": -32.560035705566406,
+        "cpu_max": 35.00824737548828,
+        "phone_min": -170.0,
+        "phone_max": 182.25
+      },
+      {
+        "output": "value_delta_25",
+        "cpu_min": -99.86029815673828,
+        "cpu_max": 95.67652130126953,
+        "phone_min": -555.5,
+        "phone_max": 536.0
+      },
+      {
+        "output": "key_delta_26",
+        "cpu_min": -35.432891845703125,
+        "cpu_max": 25.845561981201172,
+        "phone_min": -163.5,
+        "phone_max": 146.25
+      },
+      {
+        "output": "value_delta_26",
+        "cpu_min": -108.03620910644531,
+        "cpu_max": 101.01560974121094,
+        "phone_min": -734.0,
+        "phone_max": 657.5
+      },
+      {
+        "output": "key_delta_27",
+        "cpu_min": -40.87613296508789,
+        "cpu_max": 36.19795608520508,
+        "phone_min": -268.0,
+        "phone_max": 268.0
+      },
+      {
+        "output": "value_delta_27",
+        "cpu_min": -81.99848937988281,
+        "cpu_max": 92.09619140625,
+        "phone_min": -690.5,
+        "phone_max": 690.5
+      }
+    ],
+    "cpu_head_range": [
+      -17.289064407348633,
+      25.173864364624023
+    ],
+    "phone_head_range": [
+      -159.75,
+      151.75
+    ],
+    "cpu_top_tokens": [
+      {
+        "id": 108386,
+        "text": "你好",
+        "logit": 25.173864364624023
+      },
+      {
+        "id": 111308,
+        "text": "您好",
+        "logit": 23.41512680053711
+      },
+      {
+        "id": 35946,
+        "text": "我",
+        "logit": 22.946083068847656
+      },
+      {
+        "id": 104198,
+        "text": "我是",
+        "logit": 20.528602600097656
+      },
+      {
+        "id": 112488,
+        "text": "嗨",
+        "logit": 20.196535110473633
+      },
+      {
+        "id": 9,
+        "text": "*",
+        "logit": 18.569194793701172
+      },
+      {
+        "id": 110030,
+        "text": "哎",
+        "logit": 18.010618209838867
+      },
+      {
+        "id": 99466,
+        "text": "大家",
+        "logit": 17.842927932739258
+      }
+    ]
+  },
+  "limitations": [
+    "The on-device saved log starts at this request and does not contain earlier startup or backoff events. The initial cause of the single-resident-graph behavior is not preserved.",
+    "Only device tensor summaries are available. CPU reference inputs other than embedding are reconstructed from the inspected runtime; no full on-device tensor comparison or exact failing operator attribution is possible."
+  ],
+  "graph_timings": {
+    "embedding_prefill": {
+      "load_ms": {
+        "count": 1,
+        "mean": 631.571719,
+        "sum": 631.571719,
+        "min": 631.571719,
+        "max": 631.571719
+      },
+      "input_copy_ms": {
+        "count": 1,
+        "mean": 0.00375,
+        "sum": 0.00375,
+        "min": 0.00375,
+        "max": 0.00375
+      },
+      "run_sync_ms": {
+        "count": 1,
+        "mean": 1.257969,
+        "sum": 1.257969,
+        "min": 1.257969,
+        "max": 1.257969
+      },
+      "kv_copied_bytes": {
+        "count": 1,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "persistent_kv_bytes": {
+        "count": 1,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    },
+    "llm_prefill_0": {
+      "load_ms": {
+        "count": 1,
+        "mean": 1691.030312,
+        "sum": 1691.030312,
+        "min": 1691.030312,
+        "max": 1691.030312
+      },
+      "input_copy_ms": {
+        "count": 1,
+        "mean": 22.188594,
+        "sum": 22.188594,
+        "min": 22.188594,
+        "max": 22.188594
+      },
+      "run_sync_ms": {
+        "count": 1,
+        "mean": 1284.35125,
+        "sum": 1284.35125,
+        "min": 1284.35125,
+        "max": 1284.35125
+      },
+      "kv_copied_bytes": {
+        "count": 1,
+        "mean": 234881024.0,
+        "sum": 234881024.0,
+        "min": 234881024.0,
+        "max": 234881024.0
+      },
+      "persistent_kv_bytes": {
+        "count": 1,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    },
+    "lm_head": {
+      "load_ms": {
+        "count": 26,
+        "mean": 478.91786665384615,
+        "sum": 12451.864533000004,
+        "min": 343.187344,
+        "max": 821.549375
+      },
+      "input_copy_ms": {
+        "count": 26,
+        "mean": 0.006015615384615385,
+        "sum": 0.15640600000000002,
+        "min": 0.004843,
+        "max": 0.016094
+      },
+      "run_sync_ms": {
+        "count": 26,
+        "mean": 15.994236884615384,
+        "sum": 415.8501590000001,
+        "min": 14.407656,
+        "max": 17.519532
+      },
+      "kv_copied_bytes": {
+        "count": 26,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "persistent_kv_bytes": {
+        "count": 26,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    },
+    "embedding_decode": {
+      "load_ms": {
+        "count": 25,
+        "mean": 536.48158736,
+        "sum": 13412.039684000001,
+        "min": 417.222344,
+        "max": 639.69375
+      },
+      "input_copy_ms": {
+        "count": 25,
+        "mean": 0.0042999200000000005,
+        "sum": 0.10749800000000001,
+        "min": 0.002968,
+        "max": 0.006093
+      },
+      "run_sync_ms": {
+        "count": 25,
+        "mean": 1.66348124,
+        "sum": 41.587031,
+        "min": 0.880156,
+        "max": 4.095781
+      },
+      "kv_copied_bytes": {
+        "count": 25,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "persistent_kv_bytes": {
+        "count": 25,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    },
+    "llm_decode_0": {
+      "load_ms": {
+        "count": 25,
+        "mean": 1146.4199688,
+        "sum": 28660.499219999998,
+        "min": 843.350938,
+        "max": 1310.612188
+      },
+      "input_copy_ms": {
+        "count": 25,
+        "mean": 22.5270812,
+        "sum": 563.1770300000002,
+        "min": 13.452031,
+        "max": 29.859531
+      },
+      "run_sync_ms": {
+        "count": 25,
+        "mean": 138.63055632,
+        "sum": 3465.7639079999994,
+        "min": 129.920469,
+        "max": 145.45
+      },
+      "kv_copied_bytes": {
+        "count": 25,
+        "mean": 234881024.0,
+        "sum": 5872025600.0,
+        "min": 234881024.0,
+        "max": 234881024.0
+      },
+      "persistent_kv_bytes": {
+        "count": 25,
+        "mean": 0.0,
+        "sum": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    }
+  }
+}

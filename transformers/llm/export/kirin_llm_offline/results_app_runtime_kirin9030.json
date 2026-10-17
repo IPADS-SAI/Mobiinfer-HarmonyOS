@@ -1,0 +1,554 @@
+{
+  "format": "kirin_full_npu_app_integration_v1",
+  "app_source": "/home/ma-user/workspace/feh/mobiinfra-oh",
+  "execution_mode": "full_npu",
+  "app_source_integrated": true,
+  "hap_build_verified": false,
+  "nnrt_backend_sdk_compilation_verified": false,
+  "device_tested": true,
+  "legacy_routes_retained": [
+    "cpu",
+    "online",
+    "offline"
+  ],
+  "legacy_device_regression_tested": false,
+  "libMNN_unchanged_sha256": "fda4364bd3067713af0a04b0abfc2a51d0524851e1f1238a188511a06100e1e3",
+  "python_regression_tests": {
+    "passed": 32,
+    "skipped": 0
+  },
+  "cpp_regression_suites": {
+    "passed": 5,
+    "names": [
+      "cache",
+      "utf8_stream",
+      "port_binding",
+      "nnrt_loading_call_substitutes",
+      "runtime_failures"
+    ],
+    "nnrt_tests_use_call_substitutes_not_vendor_sdk": true
+  },
+  "cpp_onnx_reference": {
+    "device_tested": false,
+    "cases": [
+      {
+        "case": "text",
+        "prompt_tokens": 13,
+        "graph_calls": 72,
+        "independent_tensor_checks": 2088,
+        "image_patch_metrics": [],
+        "response": "你好！我是一个多任务智能AI",
+        "passed": true
+      },
+      {
+        "case": "image_0",
+        "prompt_tokens": 168,
+        "graph_calls": 88,
+        "independent_tensor_checks": 2379,
+        "image_patch_metrics": [
+          {
+            "relative_l2": 0.0017182224395274137,
+            "max_abs": 0.023529529571533203,
+            "cosine": 0.9999985276406809
+          }
+        ],
+        "response": "这是一张中国国内多城市间",
+        "passed": true
+      },
+      {
+        "case": "multiple_images",
+        "prompt_tokens": 322,
+        "graph_calls": 104,
+        "independent_tensor_checks": 2670,
+        "image_patch_metrics": [
+          {
+            "relative_l2": 0.0017182224395274137,
+            "max_abs": 0.023529529571533203,
+            "cosine": 0.9999985276406809
+          },
+          {
+            "relative_l2": 0.0016419874221308686,
+            "max_abs": 0.023529529571533203,
+            "cosine": 0.9999986544007194
+          }
+        ],
+        "response": "这张图片展示了一个移动应用的搜索",
+        "passed": true
+      }
+    ],
+    "cpp_cache_and_failure_tests_passed": true,
+    "python_regression_tests_passed": 32,
+    "hap_build_verified": false
+  },
+  "publication": {
+    "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8",
+    "started_utc": "2026-10-16T09:26:15.450672+00:00",
+    "status": "complete",
+    "files": 37,
+    "total_bytes": 3411510897,
+    "verified_files": 37,
+    "finished_utc": "2026-10-16T09:26:54.377074+00:00",
+    "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8",
+    "anonymous_downloads_verified": [
+      "config.json",
+      "vision_constants.bin",
+      "tokenizer.mtok"
+    ]
+  },
+  "runtime_sources": [
+    {
+      "path": "FullNpuRuntime.cpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.cpp",
+      "sha256": "234ccbe911c5f6616e741347d70a94f49f2fae8ed6e2fe0c77d96d80e64461ad"
+    },
+    {
+      "path": "FullNpuCache.cpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuCache.cpp",
+      "sha256": "e64c76b7ca05c63c7e1594b6740d66626e6cfa1f6823ba6ab88c4326c406ca67"
+    },
+    {
+      "path": "Utf8Stream.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/Utf8Stream.hpp",
+      "sha256": "9e145fec6079e12de83e7ff50d06049a6110a8f5ce9b85db06393b32ff48d0b0"
+    },
+    {
+      "path": "EmbeddingSlices.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/EmbeddingSlices.hpp",
+      "sha256": "6bfcb052cefb3cfddc5e77d444247e5ae47028e5cf4959c8372c98200a3dc58d"
+    },
+    {
+      "path": "NnrtBackend.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/NnrtBackend.hpp",
+      "sha256": "5527e5733759baad254e2c4e7f0ff6c785f39279ad409ec953a3ed88f535d763"
+    },
+    {
+      "path": "RuntimeContracts.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/RuntimeContracts.hpp",
+      "sha256": "fa2ed494fa486ed5e09c7494c41b8f1d075caac09c3f6ffa235569e9e4b25a94"
+    },
+    {
+      "path": "NnrtBackend.cpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/NnrtBackend.cpp",
+      "sha256": "fb331d92398332c1917cf91bbfc6e86d7a423201e9f36531f2da5a80dc89537e"
+    },
+    {
+      "path": "FullNpuRuntime.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/FullNpuRuntime.hpp",
+      "sha256": "545eed54a00c67261ad0ce4c08140a5fe5a61bc5023ea0f0da976159fcaf6a40"
+    },
+    {
+      "path": "PortBinding.hpp",
+      "source": "transformers/llm/export/kirin_llm_offline/runtime/PortBinding.hpp",
+      "sha256": "03abfbdaf749d6afa271173c3a53c10598c2420d3ae3d89739c1bef73ebf2791"
+    },
+    {
+      "path": "tokenizer/tokenizer.cpp",
+      "source": "transformers/llm/engine/src/tokenizer/tokenizer.cpp",
+      "sha256": "b6dba124415bdb63f44c31843afe7f7762a38c4eb3845217f355174c9a7e0c3a"
+    },
+    {
+      "path": "tokenizer/tokenizer.hpp",
+      "source": "transformers/llm/engine/src/tokenizer/tokenizer.hpp",
+      "sha256": "526fa549196b765351548f3caebb8347e5467640b1bf06602f46873266388f33"
+    },
+    {
+      "path": "tokenizer/unicode.cpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode.cpp",
+      "sha256": "7119a5f0d167bf8c840586af25f52d92d4ed0eba9c328ddad5c5c20a9d6ca6d0"
+    },
+    {
+      "path": "tokenizer/unicode.hpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode.hpp",
+      "sha256": "06d2577f4adc10e130778e05c08114f97709477d70bc2655c8e3b9b6361c12dd"
+    },
+    {
+      "path": "tokenizer/unicode_data.cpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode_data.cpp",
+      "sha256": "e8c7050623e49b74107c0afecf4082458b1f11f7ead7d608251c0f7db323cea0"
+    },
+    {
+      "path": "tokenizer/unicode_data.hpp",
+      "source": "transformers/llm/engine/src/tokenizer/unicode_data.hpp",
+      "sha256": "1f2e5db80ad4659b59cf578f33e4ed00bc34873f6b1ca4a5d60c0f9ef39b9752"
+    },
+    {
+      "path": "rapidjson/prettywriter.h",
+      "source": "3rd_party/rapidjson/prettywriter.h",
+      "sha256": "da98bac45ac565f1126361f57090259f1a556a27ff161a5f3bc441db8b104be8"
+    },
+    {
+      "path": "rapidjson/reader.h",
+      "source": "3rd_party/rapidjson/reader.h",
+      "sha256": "9312d9cb66f4de4308d01b097e390318128734777f0f26276a1c95e2fe5114bf"
+    },
+    {
+      "path": "rapidjson/stream.h",
+      "source": "3rd_party/rapidjson/stream.h",
+      "sha256": "c6cead9dffa8e5972a9e6c9a52cee754411b9eda674cbab5c86a2c78146254e1"
+    },
+    {
+      "path": "rapidjson/cursorstreamwrapper.h",
+      "source": "3rd_party/rapidjson/cursorstreamwrapper.h",
+      "sha256": "f37c106e59e042d4ebefe00715f33d0599a3c6f028737c91cad4d017846814ad"
+    },
+    {
+      "path": "rapidjson/filewritestream.h",
+      "source": "3rd_party/rapidjson/filewritestream.h",
+      "sha256": "c306b379af7957a0d21bfa8f798f48e67cd78ec96fcddd79d008f1ef699dc34a"
+    },
+    {
+      "path": "rapidjson/fwd.h",
+      "source": "3rd_party/rapidjson/fwd.h",
+      "sha256": "06a7b142b7b0e1d2b773e657bbafd9b861e4b0a17fadf49a806d8833ac6d557e"
+    },
+    {
+      "path": "rapidjson/writer.h",
+      "source": "3rd_party/rapidjson/writer.h",
+      "sha256": "012aee1720a98987ec479f78a1e9c31de1c4ec06a7ef29c92171c3db990cfe97"
+    },
+    {
+      "path": "rapidjson/document.h",
+      "source": "3rd_party/rapidjson/document.h",
+      "sha256": "e26772ed7bdc9693469d8b6419c5eff8afaf2ff310746b526c83c92d801c0d89"
+    },
+    {
+      "path": "rapidjson/memorystream.h",
+      "source": "3rd_party/rapidjson/memorystream.h",
+      "sha256": "5381dd5981676dc6194cb384af6bcf623d9dee46b9b1508bd1e62c7cf3efac9f"
+    },
+    {
+      "path": "rapidjson/filereadstream.h",
+      "source": "3rd_party/rapidjson/filereadstream.h",
+      "sha256": "2d4b395866a0b64dc168e7eb4dbcb8a2f71f411c054cf02ae57be6418aa71e61"
+    },
+    {
+      "path": "rapidjson/schema.h",
+      "source": "3rd_party/rapidjson/schema.h",
+      "sha256": "51bdbebf18eda2195b220964bf908ac1267a09c78ce80a77585a90567764610a"
+    },
+    {
+      "path": "rapidjson/allocators.h",
+      "source": "3rd_party/rapidjson/allocators.h",
+      "sha256": "af8df398d1863a1d300e26dcc1fea813143ca11c12f13242c2eccad558f85884"
+    },
+    {
+      "path": "rapidjson/encodedstream.h",
+      "source": "3rd_party/rapidjson/encodedstream.h",
+      "sha256": "ac15a6f9b872f129d019947505c212db502dcbdb9d9c8806fef8fc2afe3922a7"
+    },
+    {
+      "path": "rapidjson/memorybuffer.h",
+      "source": "3rd_party/rapidjson/memorybuffer.h",
+      "sha256": "cbfb33d4b2b826012c9932a664044cd70606ebd938ba9e35748892de2569e03f"
+    },
+    {
+      "path": "rapidjson/rapidjson.h",
+      "source": "3rd_party/rapidjson/rapidjson.h",
+      "sha256": "240f786071b64c28c0a1dae3e3b05fc3ca93fa4882b1e36e56ee49fee3037b0a"
+    },
+    {
+      "path": "rapidjson/istreamwrapper.h",
+      "source": "3rd_party/rapidjson/istreamwrapper.h",
+      "sha256": "ca185d060c0d7edf8a4026bbd706de2f77869f7e642b11ca7dc3a35daa57c5fd"
+    },
+    {
+      "path": "rapidjson/license.txt",
+      "source": "3rd_party/rapidjson/license.txt",
+      "sha256": "a140e5d46fe734a1c78f1a3c3ef207871dd75648be71fdda8e309b23ab8b1f32"
+    },
+    {
+      "path": "rapidjson/pointer.h",
+      "source": "3rd_party/rapidjson/pointer.h",
+      "sha256": "fc4e8923378a6c07afbdf279eb572ec97b150fd071114b2fb3d735d1fc1cb2e2"
+    },
+    {
+      "path": "rapidjson/encodings.h",
+      "source": "3rd_party/rapidjson/encodings.h",
+      "sha256": "e83626ecf17f424c3979ff850ca188721e9ea96d9d5973f47302d5e5ab07f6b0"
+    },
+    {
+      "path": "rapidjson/stringbuffer.h",
+      "source": "3rd_party/rapidjson/stringbuffer.h",
+      "sha256": "57fc25405c5a97b941c4ce2cdc9cb4ec502c4936196c368c7d78c1e5096d69e7"
+    },
+    {
+      "path": "rapidjson/ostreamwrapper.h",
+      "source": "3rd_party/rapidjson/ostreamwrapper.h",
+      "sha256": "8ab62eb2967a965b4b39bd03ae49c220e7a6cd6c5c680f39cb32ef652b2c3337"
+    },
+    {
+      "path": "rapidjson/msinttypes/stdint.h",
+      "source": "3rd_party/rapidjson/msinttypes/stdint.h",
+      "sha256": "bf2d1bc4885bc1e0720ec9af8f399477c7e105ae1e70e2863c31a8123cae1c17"
+    },
+    {
+      "path": "rapidjson/msinttypes/inttypes.h",
+      "source": "3rd_party/rapidjson/msinttypes/inttypes.h",
+      "sha256": "78ee41fd99bcbe59ca93f6a870a83c0a90f4b179af571f6e684f2600491bbae7"
+    },
+    {
+      "path": "rapidjson/internal/itoa.h",
+      "source": "3rd_party/rapidjson/internal/itoa.h",
+      "sha256": "ab0b5d49d2671156463ba03c1cbbe32bd186d3220caec3ad2a9654ccc9955f12"
+    },
+    {
+      "path": "rapidjson/internal/regex.h",
+      "source": "3rd_party/rapidjson/internal/regex.h",
+      "sha256": "6b52da06d96e58536e2a5364255731fba3537336c51ace628c0f6f8aaf7eeb03"
+    },
+    {
+      "path": "rapidjson/internal/pow10.h",
+      "source": "3rd_party/rapidjson/internal/pow10.h",
+      "sha256": "6b8787ecc984887cc2579d7043c08ac57614b8c59e09073565538890dcd1ff21"
+    },
+    {
+      "path": "rapidjson/internal/strtod.h",
+      "source": "3rd_party/rapidjson/internal/strtod.h",
+      "sha256": "973a6a567707b5d706422d432681eb6d55b33fb6a58f081ea35f1f0f0610232a"
+    },
+    {
+      "path": "rapidjson/internal/ieee754.h",
+      "source": "3rd_party/rapidjson/internal/ieee754.h",
+      "sha256": "7e4456bf81b86de2e4639cbf1a80d76f852978511e506c20d0acd79ecd31f7e1"
+    },
+    {
+      "path": "rapidjson/internal/diyfp.h",
+      "source": "3rd_party/rapidjson/internal/diyfp.h",
+      "sha256": "b7086c604d1e24a64e7a83fb23690e34e28397e82e80f29de115a522e498d806"
+    },
+    {
+      "path": "rapidjson/internal/dtoa.h",
+      "source": "3rd_party/rapidjson/internal/dtoa.h",
+      "sha256": "77f2a85c791347e2df5823486651b7c64182b076522a0241bbb443646270d2d8"
+    },
+    {
+      "path": "rapidjson/internal/strfunc.h",
+      "source": "3rd_party/rapidjson/internal/strfunc.h",
+      "sha256": "07f1a7fbf266154f9638bc75876391e1d020bd5c891d639901150f3c53127ec2"
+    },
+    {
+      "path": "rapidjson/internal/stack.h",
+      "source": "3rd_party/rapidjson/internal/stack.h",
+      "sha256": "2ab58804815bf418898da95e4466173876038528024ae6474aca4df7739e0954"
+    },
+    {
+      "path": "rapidjson/internal/meta.h",
+      "source": "3rd_party/rapidjson/internal/meta.h",
+      "sha256": "52eb6de01e95e9c9e88bd70e050c985d7b37e7ac62a2320a4a06df665ecd4b9a"
+    },
+    {
+      "path": "rapidjson/internal/biginteger.h",
+      "source": "3rd_party/rapidjson/internal/biginteger.h",
+      "sha256": "b311ad68b7b1f971d87f10ad636994377ff7f51f0205887b8df8bb0285dcc859"
+    },
+    {
+      "path": "rapidjson/internal/swap.h",
+      "source": "3rd_party/rapidjson/internal/swap.h",
+      "sha256": "1403bd099a25621c63a1234ca61daae0444f1538c4be7b193694cf41a76f14ac"
+    },
+    {
+      "path": "rapidjson/error/en.h",
+      "source": "3rd_party/rapidjson/error/en.h",
+      "sha256": "5d040327a5b7b50367f5862fe88e9d742bcefcff52450279bfebb89a30072d2d"
+    },
+    {
+      "path": "rapidjson/error/error.h",
+      "source": "3rd_party/rapidjson/error/error.h",
+      "sha256": "85bc3e758f3463971eb85e0c4639bc22168863227dd6fc38940fc34e533bf472"
+    },
+    {
+      "path": "stb_image.h",
+      "source": "3rd_party/imageHelper/stb_image.h",
+      "sha256": "0e28238d865510073b5740ae8eba8cd8032cc5b25f94e0f7505fac8036864909"
+    }
+  ],
+  "limitations": [
+    "No HarmonyOS native SDK / HAP build or NNRT device execution on this host.",
+    "Known long-context KV relative L2 threshold failure is preserved in the published model.",
+    "Each conversation/Agent step rebuilds prefill; Agent prefix KV reuse is not implemented.",
+    "CPU handles tokenization, image decode/resize, masks/positions, KV encoding and greedy sampling."
+  ],
+  "device_tested_by_agent": false,
+  "device_inference_verified": false,
+  "device_feedback": {
+    "reported_by": "user",
+    "result": "model_load_failed",
+    "error": "Offline NNRT build failed: 1",
+    "failing_graph_confirmed": true,
+    "loading_api_step_confirmed": true,
+    "failing_graph": "embedding_decode",
+    "failing_step": "OH_NNCompilation_Build",
+    "return_code": "OH_NN_FAILED(1)",
+    "file_bytes": 622337527,
+    "hiai_version": "109.636.120.010",
+    "compatibility_result": 0,
+    "all_model_setup_options_succeeded": true,
+    "request_execution_started": false
+  },
+  "load_failure_followup": {
+    "model_files_changed": false,
+    "existing_modes_changed": false,
+    "phone_operated": false,
+    "device_fix_verified": false,
+    "changes": [
+      "Include failing graph and individual NNRT setup/Build step in errors and Debug logs.",
+      "Include file size, HiAI version and memory snapshots in load logs.",
+      "Set NORMAL band mode with advisory error handling, matching existing ViT executor.",
+      "Allocate persistent KV only after all model probes pass."
+    ]
+  },
+  "source_audit": {
+    "date": "2026-10-16",
+    "model_files_changed": false,
+    "libMNN_changed": false,
+    "phone_operated": false,
+    "hap_build_verified": false,
+    "device_load_failure_fixed": false,
+    "python_regressions_rerun": false,
+    "independent_tensor_checks": 7137,
+    "fixes": [
+      "Validate complete logical graph interfaces against runtime dimensions before feature copies or NNRT probing; clear state on reload.",
+      "Validate NNRT input views and reject FP32 to FP16 overflow.",
+      "Validate streamed UTF-8 and flush incomplete tails at generation end.",
+      "Reject empty full-NPU Agent responses.",
+      "Route full-NPU profiles using the original config and disable irrelevant CPU preset sweeps.",
+      "Include full_npu in both default and named loadModel type declarations."
+    ],
+    "additional_reference_checks": [
+      "HF visual interpolation indices/weights and visual RoPE constants.",
+      "Visual hidden/DeepStack transfer and image embedding injection.",
+      "LLM hidden transfer and LM-head last-real-row selection."
+    ],
+    "unresolved": [
+      "User-reported NNRT loading return code 1 still requires device graph/API-step logs.",
+      "No full HarmonyOS native SDK or HAP build on this host.",
+      "Known long-context KV numerical tolerance failure.",
+      "2048 total context, fixed portrait image grid, no local history compression and per-request KV rebuild."
+    ]
+  },
+  "embedding_load_followup": {
+    "status": "device_individual_graph_load_verified_full_inference_failed",
+    "device_fix_verified": true,
+    "phone_operated": false,
+    "evidence": "User log confirms first embedding_decode failed in Build after successful compatibility and setup.",
+    "source_clue": "Public OpenHarmony NNRT Build authenticates models above 200 MiB; private HIAI_F implementation is not confirmed.",
+    "source_url": "https://github.com/openharmony/ai_neural_network_runtime/blob/master/frameworks/native/neural_network_core/neural_network_core.cpp",
+    "approach": "Partition embedding Gather weights along hidden dimension; concatenate rows. Current runtime bounds all model residency to one graph.",
+    "changes_quantization_parameters": false,
+    "cpu_embedding_fallback": false,
+    "requires_updated_app_and_new_package": true,
+    "publication": {
+      "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+      "started_utc": "2026-10-16T10:56:21.655542+00:00",
+      "status": "complete",
+      "files": 52,
+      "total_bytes": 3411639613,
+      "verified_files": 52,
+      "finished_utc": "2026-10-16T10:56:40.349334+00:00",
+      "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+      "anonymous_downloads_verified": [
+        "config.json",
+        "vision_constants.bin",
+        "tokenizer.mtok",
+        "om/embedding_prefill_slice_0.omc [first 4096 bytes]",
+        "om/embedding_decode_slice_0.omc [first 4096 bytes]"
+      ]
+    },
+    "logical_graphs": 25,
+    "physical_graphs": 39,
+    "embedding_slice_count": 16,
+    "embedding_slice_mib": 74.19485759735107,
+    "largest_graph_mib": 177.4407615661621,
+    "cpp_host_reference_checks": 4484,
+    "cpp_regression_suites_passed": 5,
+    "device_fix_verification_scope": "All individual graph probes passed; full inference did not complete.",
+    "latest_device_feedback": {
+      "reported_by": "user",
+      "date": "2026-10-16",
+      "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+      "hiai_version": "109.636.120.010",
+      "physical_graphs_probed_successfully": 39,
+      "logical_graphs": 25,
+      "request_execution_started": true,
+      "request_completed": false,
+      "successful_logical_runs": 14,
+      "successful_llm_prefill_stages": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "failing_graph": "llm_prefill_5",
+      "build_succeeded": true,
+      "failing_step": "OH_NNExecutor_Construct",
+      "result": "nullptr",
+      "prefill_past": 0,
+      "mem_available_kib_at_prefill_0": 4189184,
+      "mem_available_kib_at_prefill_5": 3337216,
+      "inference": "Cumulative device residency/resource pressure or service scheduling limit is suspected; private driver cause is not confirmed."
+    }
+  },
+  "latest_device_feedback": {
+    "reported_by": "user",
+    "date": "2026-10-16",
+    "repo": "fengerhu1/mobi_2B_full_npu_kirin9030_w4a16_g64_kv8_embsplit",
+    "hiai_version": "109.636.120.010",
+    "physical_graphs_probed_successfully": 39,
+    "logical_graphs": 25,
+    "request_execution_started": true,
+    "request_completed": false,
+    "successful_logical_runs": 14,
+    "successful_llm_prefill_stages": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "failing_graph": "llm_prefill_5",
+    "build_succeeded": true,
+    "failing_step": "OH_NNExecutor_Construct",
+    "result": "nullptr",
+    "prefill_past": 0,
+    "mem_available_kib_at_prefill_0": 4189184,
+    "mem_available_kib_at_prefill_5": 3337216,
+    "inference": "Cumulative device residency/resource pressure or service scheduling limit is suspected; private driver cause is not confirmed."
+  },
+  "execution_residency_followup": {
+    "status": "source_fix_host_verified_device_unverified",
+    "device_fix_verified": false,
+    "phone_operated": false,
+    "model_files_changed": false,
+    "quantization_parameters_changed": false,
+    "kv_cache_layout_changed": false,
+    "libMNN_changed": false,
+    "legacy_execution_modes_changed": false,
+    "app_runtime_source_synced": true,
+    "requires_app_rebuild": true,
+    "requires_model_redownload_for_existing_embsplit_users": false,
+    "residency_policy": "single_graph; destroy old device tensors/executor before the next graph Build",
+    "tradeoff": "LLM graphs are reloaded for every prefill block/decode token; device latency is expected to increase.",
+    "diagnostics": [
+      "resident_evict",
+      "resident_policy=single_graph",
+      "OH_NNExecutor_Construct result and resource snapshots"
+    ],
+    "host_regression": {
+      "nnrt_uses_call_substitutes_not_sdk": true,
+      "executor_limit_in_substitute": 1,
+      "llm_stages": 7,
+      "prefill_blocks": 2,
+      "decode_blocks": 4,
+      "stage_runs": 42,
+      "eviction_before_build_verified": true,
+      "host_outputs_survive_eviction": true,
+      "construction_failure_cleanup_and_retry": true,
+      "embedding_slice_transition_cleanup": true,
+      "negative_control_without_eviction": "fails on consecutive LLM stages",
+      "cpp_suites_passed": 5
+    },
+    "source_url": "https://github.com/openharmony/ai_neural_network_runtime/blob/master/frameworks/native/neural_network_core/neural_network_core.cpp#L1571",
+    "public_source_boundary": "Executor construction includes backend creation and service preparation/scheduling; this does not identify the private HIAI_F failure cause."
+  }
+}

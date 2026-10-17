@@ -1,0 +1,1152 @@
+{
+  "date_utc": "2026-10-16",
+  "source": {
+    "model": "mobi0402_2B_halfimage_rl",
+    "architecture": "Qwen3VLForConditionalGeneration",
+    "config_sha256": "e563efc29a7528567e49cdae55c6eb7b289777146129669a07c9922f1b6c34d7",
+    "weights_sha256": "573cc1807edf146c088e60d09e2a9dbe9028dbaf2e29b38a7f0cc4c0a4066efc"
+  },
+  "tools": {
+    "ddk": "DDK-tools-next-6.1.1.0",
+    "torch": "2.6.0",
+    "transformers": "5.16.1",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.23.2",
+    "calibration_torch": "2.6.0+cu124",
+    "calibration_device": "CUDA A100"
+  },
+  "profile": {
+    "source_model": "/temp/models/mobi0402_2B_halfimage_rl",
+    "source_config_sha256": "e563efc29a7528567e49cdae55c6eb7b289777146129669a07c9922f1b6c34d7",
+    "platform": "kirin9030",
+    "context": 2048,
+    "prefill_tokens": 128,
+    "layers_per_chunk": 4,
+    "vision_tokens": 608,
+    "vision_layers_per_chunk": 4,
+    "precision": "w4a16",
+    "group_size": 64,
+    "head_bit": 4,
+    "weight_method": "gptq",
+    "gptq_damping": 0.01,
+    "gptq_block_size": 128,
+    "kv_dtype": "int8",
+    "kv_group_size": 32,
+    "kv_residual_tokens": 128,
+    "kv_sink_tokens": 4
+  },
+  "weight_quantization": {
+    "linear_weight_bits": 4,
+    "linear_activation_bits": 16,
+    "activation_dtype": "INT16",
+    "group_size": 64,
+    "head_bits": 4,
+    "encoding": "SDK UINT4/LUT",
+    "embedding": "floating point",
+    "kv_quantized": true,
+    "cpu_execution": "separate dequantized reference graphs"
+  },
+  "frozen_calibration": {
+    "config": "quantization/config.json",
+    "config_sha256": "505288162fad5edae5bea377914425f92ce982093aec50efe4aa485070706eb7",
+    "checkpoint": "quantization/calibrated.pth",
+    "checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e"
+  },
+  "cache": {
+    "layout": "[1, kv_heads, capacity, head_dim] per layer and K/V",
+    "capacity": 2048,
+    "fp16_bytes": 234881024,
+    "reference_float32_bytes": 469762048,
+    "update": "host appends only real delta KV; no sliding-window eviction",
+    "dtype": "int8",
+    "data_bytes": 117440512,
+    "scale_bytes": 14680064,
+    "residual_bytes": 14680064,
+    "sink_bytes": 458752,
+    "total_bytes": 147259392,
+    "quantization": "symmetric per-token per-KV-head per-channel-group max-abs; q=clip(round(x/scale),-127,127)",
+    "group_size": 32,
+    "scale_dtype": "float32",
+    "scale_layout": "[1, kv_heads, capacity, head_dim/group_size] per layer and K/V",
+    "zero_point": 0,
+    "zero_vector_scale": 1,
+    "key_quantization": "after RoPE",
+    "residual_tokens": 128,
+    "sink_tokens": 4,
+    "protected_dtype": "float16",
+    "protected_layout": "prefix then recent ring; duplicated INT8 rows are masked",
+    "quantize_location": "host encodes only new real delta KV; current block attention stays floating point",
+    "dequantize_location": "inside decoder graph: Cast(INT8->float) * scale",
+    "delta_output_dtype": "float32",
+    "full_precision_shadow_cache": false,
+    "storage_reduction_fraction": 0.6865234375,
+    "rollback_temporary_max_bytes": 14680064,
+    "attention_temporary_memory_not_included": true
+  },
+  "compilation": {
+    "graphs": [
+      {
+        "name": "embedding_prefill",
+        "omc_bytes": 622337577,
+        "omc_sha256": "c8453bb64a47fb057b82c3b56b6f850b8702ae87f7bb162c45e8d8c85f76b59f",
+        "onnx_sha256": "5a96b3f6cfc8582342116af0ccb19ca049a8ae860700afaf99e67f03c7c8b76d",
+        "pure_npu": true
+      },
+      {
+        "name": "embedding_decode",
+        "omc_bytes": 622337527,
+        "omc_sha256": "2e803939888e9e7ac89b688d59e9485d5c8065d854077b7245ca9c5e8120f054",
+        "onnx_sha256": "be798d31c179820663bc982bceaf92b261c8307695b00c8bc58568cb1eb4a60c",
+        "pure_npu": true
+      },
+      {
+        "name": "lm_head",
+        "omc_bytes": 186060124,
+        "omc_sha256": "0f3ca82dde441deabaaa0377cd5decb1857a7b7198c7b62e11b46df8c0981446",
+        "onnx_sha256": "78fa05a43456af33745f6778a1b102eff42c3062ea9798d8a2ea68229afcc6df",
+        "pure_npu": true,
+        "quantized_matmuls": 1,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "017ac01636484b5ee31d56377b41a514eba722dd506a59fb5752d004f600851f",
+        "weight_group": "head"
+      },
+      {
+        "name": "vision_pre",
+        "omc_bytes": 8055190,
+        "omc_sha256": "7fb5ffdc307650cbe0144107e5233bf754e6a9b413c78cf0443205df8ab47d71",
+        "onnx_sha256": "a71fce441743883fa22b90e9afcff9bbca7979185374fe4f9f851d7b1a40f661",
+        "pure_npu": true
+      },
+      {
+        "name": "vision_blocks_0",
+        "omc_bytes": 31741933,
+        "omc_sha256": "9fe4294e5547931d48e96ff02820cc05e2c24ab5bea06051f5340b192a82498d",
+        "onnx_sha256": "9cf6850b8f66dbdc938e48dba5b79820db2af9d01567fdec47e79d3eee7c8f41",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "45dd126bee48b4e7532abeeb5764ba0af88fb64414d7cbdc72e996d7a458f0c3",
+        "weight_group": "vision_0"
+      },
+      {
+        "name": "vision_blocks_1",
+        "omc_bytes": 31748719,
+        "omc_sha256": "c1358a17dddf844495e1067e8df91b888b384cb5902f9d5e9fcfc0a3e0e2e307",
+        "onnx_sha256": "909b8da4bf63c7a09949ab84681a30c5a60d57a351261e1016ee913746721649",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "f62101eec8299ba0242432e68ad45b1d410b32c95c1be1607fbd5f942b32d913",
+        "weight_group": "vision_4"
+      },
+      {
+        "name": "vision_blocks_2",
+        "omc_bytes": 31741899,
+        "omc_sha256": "73aeef074f2020a82cded70023df8ac1d70c9e282fb4a7f33084409d39d9210f",
+        "onnx_sha256": "93f9f510a14765c56a0297f92fe10667ba847d42ef0e36a399c1ba0100a06a17",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "09175681c0ebafaa44ebe971185c6ccaadaee00a8e5c52b39ba26f2b7f6765c9",
+        "weight_group": "vision_8"
+      },
+      {
+        "name": "vision_blocks_3",
+        "omc_bytes": 31741869,
+        "omc_sha256": "01fa3d2a59c768d86d5dc513dfab03fc5c8469c4e36029dbec14cac7c0dd286f",
+        "onnx_sha256": "9cf6850b8f66dbdc938e48dba5b79820db2af9d01567fdec47e79d3eee7c8f41",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "1d8ea373644c8d83ed6ecb0ed1674e3ae6537982c2497acd803c970b06958900",
+        "weight_group": "vision_12"
+      },
+      {
+        "name": "vision_blocks_4",
+        "omc_bytes": 31748739,
+        "omc_sha256": "dc16cc283cf601d22760c0268aa69f1fd2070fc6d6186c49d171db1421faa226",
+        "onnx_sha256": "63e93fa98eb5d98e0cc803021154944059fe86f8ccd12ee1261f16cce88f21c6",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "50d0d00ea6a980809711d106f7a3f306ec1ea2022818f76dbf042591e1f8d163",
+        "weight_group": "vision_16"
+      },
+      {
+        "name": "vision_blocks_5",
+        "omc_bytes": 31741901,
+        "omc_sha256": "6101acb1283c4ddaf4402e8292d7293b04e050f82cedba3c73ec4e24d663ec63",
+        "onnx_sha256": "9cf6850b8f66dbdc938e48dba5b79820db2af9d01567fdec47e79d3eee7c8f41",
+        "pure_npu": true,
+        "quantized_matmuls": 16,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "140e670a4490f505033edbf1ff1c062f3194b1fb38e2c63d655a9f4a8bfc4e4a",
+        "weight_group": "vision_20"
+      },
+      {
+        "name": "vision_post",
+        "omc_bytes": 60622255,
+        "omc_sha256": "36e6f1f1816c6188fed80d46647c1b387f83dea56b1de90483baf08c79514686",
+        "onnx_sha256": "be2816b7a5145bbd01099c5d8f8096a7c65a6e8833a18e33094ca4677de1e598",
+        "pure_npu": true,
+        "quantized_matmuls": 8,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "3aa24c43d8e6339d3864d3c44113a57518264b2ad7e6f3032092cc017c29bb54",
+        "weight_group": "vision_post"
+      },
+      {
+        "name": "llm_prefill_0",
+        "omc_bytes": 122695714,
+        "omc_sha256": "f260b308162164d89d340964150d2b9a6961376495863cc96d0f59285cad299d",
+        "onnx_sha256": "d5b9932d288f58563f631f49666ceb2f5695b7160cd5c58603a9c19c3ee9b9da",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "f13bc4350113c9e15f6870a05e8e594f3452ed33c9e46a35eef162f1e07b11e4",
+        "weight_group": "llm_0"
+      },
+      {
+        "name": "llm_prefill_1",
+        "omc_bytes": 122695642,
+        "omc_sha256": "8ba2891ce1d26cea6b429fba2430d987989c6a914bf28c42269c7dbe0f2f8d4f",
+        "onnx_sha256": "f04a56e6aabd07d850d080cec69fbca9e8d3e9802d0cabf67fdf17bccaea0f07",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "206ed58aa8285e8fe7a84ef076c523c74054b3105149a803c01f806fd62130c0",
+        "weight_group": "llm_4"
+      },
+      {
+        "name": "llm_prefill_2",
+        "omc_bytes": 122695682,
+        "omc_sha256": "0cbe04c14a4f34ead627584f5097bf81876bc7a26f5b0f46f4d27e2f54e8b79f",
+        "onnx_sha256": "c0bd79f9f1f2be6a0f94fa007812b14dc88645a1b61cd1914b4f8996ae126114",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "11974bd7e6420cb532a5ac0a558908e766bb30f91ab6e1b1e48f98ffede1479c",
+        "weight_group": "llm_8"
+      },
+      {
+        "name": "llm_prefill_3",
+        "omc_bytes": 122695826,
+        "omc_sha256": "1663739d84858c3b55d4c68d8dc773db6736e79e7bfc5a9c7c16592e1ded8eea",
+        "onnx_sha256": "8976e8e020d7426c8cead1208c561082945515ca48960218fce6ab0067f70e83",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "707557b9902a08a53e59c1146ff69ea24679939b0626e7499c3720de07748567",
+        "weight_group": "llm_12"
+      },
+      {
+        "name": "llm_prefill_4",
+        "omc_bytes": 122695826,
+        "omc_sha256": "732fed269ce2d8b0710b6c4b3dc64a6c7e794306383209bab2f2c769fa2b2c70",
+        "onnx_sha256": "9a67145e7e39a4aab18f60abfec2f858072531c7224785308fdc0b0bdfca8764",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "574d166be2c75ba30027e441e5bd294c8361bdba59cff030144b15fa2a4ffa5c",
+        "weight_group": "llm_16"
+      },
+      {
+        "name": "llm_prefill_5",
+        "omc_bytes": 122695826,
+        "omc_sha256": "4b611d35ef156727820cf9876ca1e52de280c2346e285f99dac7d5bca884c658",
+        "onnx_sha256": "f902d91fa037aee24e913677306335c0fa1ac680df4f60e462386cb6f16df194",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "8bbff4f3cf3d8e79c16a1706d923fea85081a6e0332398e31225e88a32a2cbba",
+        "weight_group": "llm_20"
+      },
+      {
+        "name": "llm_prefill_6",
+        "omc_bytes": 122695754,
+        "omc_sha256": "638a8182654c184c6c98b8d638184b59903d8843a3b5cfd9924837bb36a48cf0",
+        "onnx_sha256": "6b164dbd015a1688ad138877da0ee334eb51f0b05784cb8d48be40463399523f",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "7d48d9995a07e507eaab9ae719afa6435a24f3bcbfdb89aa3d566b771c779e0e",
+        "weight_group": "llm_24"
+      },
+      {
+        "name": "llm_decode_0",
+        "omc_bytes": 122587780,
+        "omc_sha256": "45042659f162fd615e9117ffcc965583afd2c83e1821ed7a0d5a306bd20a3e4e",
+        "onnx_sha256": "bb348d792e83712f653c4df2779f59720ca5a637d3cadae284b193e14ebc373b",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "f13bc4350113c9e15f6870a05e8e594f3452ed33c9e46a35eef162f1e07b11e4",
+        "weight_group": "llm_0"
+      },
+      {
+        "name": "llm_decode_1",
+        "omc_bytes": 122587780,
+        "omc_sha256": "516a26d878a41870afbfd2024bc369a88c10f701866e18340da73998d77882e3",
+        "onnx_sha256": "ee26668f64eb2a518aa29d132f8f3fd29c35611c7850b55eaf6c97fb1831b215",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "206ed58aa8285e8fe7a84ef076c523c74054b3105149a803c01f806fd62130c0",
+        "weight_group": "llm_4"
+      },
+      {
+        "name": "llm_decode_2",
+        "omc_bytes": 122587836,
+        "omc_sha256": "647999a26ad8a34fbf7b220be18d7ad3d1448f42785d3ec7168b08ccd22d2a84",
+        "onnx_sha256": "11141ce549f6485f4cecc24c3386deedb9b96ed8b8bccaf4b05d1cce3f09e9a1",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "11974bd7e6420cb532a5ac0a558908e766bb30f91ab6e1b1e48f98ffede1479c",
+        "weight_group": "llm_8"
+      },
+      {
+        "name": "llm_decode_3",
+        "omc_bytes": 122587892,
+        "omc_sha256": "cf05cc634007eafcb1c1f3c047e8030b49328121fa1ce43274d138a09e1e2b42",
+        "onnx_sha256": "ff8f5fa5f9c91a19621b6e441d8fe864cb1ed6dbb0b7b7e34e77d33143128f96",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "707557b9902a08a53e59c1146ff69ea24679939b0626e7499c3720de07748567",
+        "weight_group": "llm_12"
+      },
+      {
+        "name": "llm_decode_4",
+        "omc_bytes": 122587892,
+        "omc_sha256": "0afb388d212f1f8fb08754fdf6ec2404f674af38b9808820e429d6f43013bfa2",
+        "onnx_sha256": "3c0aeb675080efd2f5e983d4168cc0898109b087914bb81e3b377389e4a1abe5",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "574d166be2c75ba30027e441e5bd294c8361bdba59cff030144b15fa2a4ffa5c",
+        "weight_group": "llm_16"
+      },
+      {
+        "name": "llm_decode_5",
+        "omc_bytes": 122587860,
+        "omc_sha256": "19263e2ad5db9714ec22fce54e637172388380b648e0688d820747f497ec2ab1",
+        "onnx_sha256": "59cde269be914441a0eb1271222f8f0e143e0e396a8195416f1657633094e1bd",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "8bbff4f3cf3d8e79c16a1706d923fea85081a6e0332398e31225e88a32a2cbba",
+        "weight_group": "llm_20"
+      },
+      {
+        "name": "llm_decode_6",
+        "omc_bytes": 122587892,
+        "omc_sha256": "8b310360392731042e09fa42aaf5b18b3ed8bbe976d73211ed17a26853d51ad9",
+        "onnx_sha256": "1cb77a0cfdb293494d40f5575acc737906b41a3a5658cde0f1b2bba495a5f50e",
+        "pure_npu": true,
+        "quantized_matmuls": 28,
+        "quantized_kernel_evidence": true,
+        "parameters_sha256": "7d48d9995a07e507eaab9ae719afa6435a24f3bcbfdb89aa3d566b771c779e0e",
+        "weight_group": "llm_24"
+      }
+    ],
+    "graph_count": 25,
+    "quantized_graph_count": 22,
+    "unique_weight_groups": 15,
+    "unique_quantized_linear_count": 301,
+    "quantized_matmul_instances": 497,
+    "omc_total_bytes": 3406862935,
+    "omc_bytes_by_component": {
+      "embedding": 1244675104,
+      "head": 186060124,
+      "vision_pre": 8055190,
+      "vision_blocks": 190465060,
+      "vision_post": 60622255,
+      "llm_prefill": 858870270,
+      "llm_decode": 858114932
+    },
+    "native_weight_pair_reaudit": true,
+    "all_quantized_kernels_matched": true,
+    "all_onnx_reference_parameters_omc_hashes_verified": true,
+    "device_execution": false,
+    "cache_ports": [
+      {
+        "name": "llm_prefill_0",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_prefill_1",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_prefill_2",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_prefill_3",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_prefill_4",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_prefill_5",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_prefill_6",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_0",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_1",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_2",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_3",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_4",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_5",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      },
+      {
+        "name": "llm_decode_6",
+        "typed_cache_ports_verified": true,
+        "input_count": 37
+      }
+    ],
+    "actual_cache_bytes": 147259392,
+    "no_full_fp32_shadow_cache": true,
+    "unchanged_weight_quantization": true,
+    "reused_non_llm_graphs_byte_identical": true,
+    "device_cache_descriptors_verified": false,
+    "rebuilt_llm_graphs": 14,
+    "reused_other_graphs": 11
+  },
+  "per_graph_cpu_reference_torch_ort": {
+    "count": 25,
+    "max_relative_l2": 0.0120431507813994
+  },
+  "kv_validation": {
+    "torch": {
+      "reference": "same frozen model, static Torch, FP32 KV",
+      "candidate": "static torch, int8 KV",
+      "scope": "isolated KV storage effect",
+      "weight_precision": "w4a16",
+      "relative_l2_tolerance": 0.05,
+      "strict_greedy": false,
+      "device_execution": false,
+      "complete": true,
+      "passed": false,
+      "report": "kv_validation_torch.json",
+      "report_sha256": "113837f3c9b30e240b349eefd9a9ff2ca5a7d523addc6135adba45520b435eb3",
+      "cases": [
+        {
+          "name": "text",
+          "image": null,
+          "prefill_tokens": 13,
+          "decode_steps": 16,
+          "final_cache_tokens": 29,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.016376922875723423,
+          "kv_max_relative_l2": 0.020553258023438516,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            108386,
+            6313,
+            35946,
+            101909,
+            42140,
+            88802,
+            100168,
+            15469,
+            3837,
+            73670,
+            99553,
+            100646,
+            88802,
+            9370,
+            100168,
+            100143,
+            1773
+          ],
+          "candidate_tokens": [
+            108386,
+            6313,
+            35946,
+            101909,
+            42140,
+            88802,
+            100168,
+            15469,
+            3837,
+            73670,
+            99553,
+            100646,
+            88802,
+            9370,
+            100168,
+            100143,
+            1773
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+          "free_generation": {
+            "max_new_tokens": 48,
+            "fp32_kv": "你好！我是一个多任务智能AI，可以提供各种任务的智能支持。我能够进行文本生成、多任务回答、翻译、总结、分析、计算、排序、分类、推荐、逻辑推导、回答问题、",
+            "candidate_int8_kv": "你好！我是一个多任务智能AI，可以提供各种任务的智能支持。我能够进行文本生成、多任务回答、翻译、总结、分析、计算、排序、分类、推荐、逻辑推导、回答问题、"
+          }
+        },
+        {
+          "name": "arithmetic",
+          "image": null,
+          "prefill_tokens": 21,
+          "decode_steps": 16,
+          "final_cache_tokens": 37,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.019745421413965607,
+          "kv_max_relative_l2": 0.019697824666231337,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            97639,
+            36407,
+            117719,
+            100768,
+            48443,
+            17,
+            18,
+            488,
+            220,
+            16,
+            24,
+            271,
+            105773,
+            60726,
+            20929,
+            18947,
+            8863
+          ],
+          "candidate_tokens": [
+            97639,
+            36407,
+            117719,
+            100768,
+            48443,
+            17,
+            18,
+            488,
+            220,
+            16,
+            24,
+            271,
+            105773,
+            60726,
+            20929,
+            18947,
+            8863
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+          "free_generation": {
+            "max_new_tokens": 48,
+            "fp32_kv": "我们来一步一步计算：\n\n23 + 19\n\n我们可以先加个数，再加个数，或者使用更简单地进位的方式：\n\n1. 23 + 19\n\n先加个位上的数",
+            "candidate_int8_kv": "我们来一步一步计算：\n\n23 + 19\n\n我们可以先加个数，再加个数：\n\n23 + 19\n\n先加个位上的数：\n\n3（个位） + 9（个位"
+          }
+        },
+        {
+          "name": "long_text",
+          "image": null,
+          "prefill_tokens": 1802,
+          "decode_steps": 16,
+          "final_cache_tokens": 1818,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": false,
+          "failures": [
+            {
+              "metric": "logits",
+              "step": 0,
+              "relative_l2": 0.06035180133112168
+            },
+            {
+              "metric": "logits",
+              "step": 6,
+              "relative_l2": 0.05634705234049772
+            },
+            {
+              "metric": "logits",
+              "step": 9,
+              "relative_l2": 0.05858423611189416
+            },
+            {
+              "metric": "logits",
+              "step": 15,
+              "relative_l2": 0.0556548078788117
+            },
+            {
+              "metric": "logits",
+              "step": 16,
+              "relative_l2": 0.0841563898427014
+            },
+            {
+              "metric": "cache",
+              "relative_l2": 0.3350387120320499
+            }
+          ],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.0841563898427014,
+          "kv_max_relative_l2": 0.3350387120320499,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            20002,
+            104964,
+            99892,
+            74876,
+            78973,
+            45943,
+            5373,
+            117130,
+            62926,
+            101963,
+            102297,
+            39953,
+            1773,
+            151645,
+            198,
+            151644,
+            64
+          ],
+          "candidate_tokens": [
+            20002,
+            104964,
+            99892,
+            74876,
+            78973,
+            45943,
+            5373,
+            117130,
+            62926,
+            101963,
+            102297,
+            39953,
+            1773,
+            151645,
+            198,
+            151644,
+            64
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes"
+        },
+        {
+          "name": "image_0",
+          "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_AutoExplore_饿了么_20260306-142208_ui-pages_page_0049_2_1.jpg",
+          "prefill_tokens": 168,
+          "decode_steps": 16,
+          "final_cache_tokens": 184,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.03649751538178568,
+          "kv_max_relative_l2": 0.017759049365925206,
+          "greedy_token_agreement": 0.9411764705882353,
+          "reference_tokens": [
+            43288,
+            99639,
+            86341,
+            58405,
+            99892,
+            9370,
+            102718,
+            112183,
+            3837,
+            54021,
+            100146,
+            2073,
+            100168,
+            64754,
+            47874,
+            854,
+            36295
+          ],
+          "candidate_tokens": [
+            43288,
+            99639,
+            86341,
+            58405,
+            99892,
+            9370,
+            102718,
+            40090,
+            3837,
+            54021,
+            100146,
+            2073,
+            100168,
+            64754,
+            47874,
+            854,
+            36295
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+          "free_generation": {
+            "max_new_tokens": 48,
+            "fp32_kv": "这是一张手机应用的屏幕截图，显示的是“智能客服务”页面。页面整体为深灰色，顶部是“智能客”标题，下方是“请选择您的单”列表，包括“美奶奶白",
+            "candidate_int8_kv": "这是一张手机应用的屏幕操作页面，显示的是“智能客服务”中的“问题已解决”功能。页面顶部是“智能客”标题，下方是“请选择您的单”的标题和一个单选列表"
+          },
+          "image_sha256": "143b4a932a44dfe109b9de5561d85283f303fca1d3576e616b5b55232f41efa5"
+        },
+        {
+          "name": "image_1",
+          "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_14_27.jpg",
+          "prefill_tokens": 168,
+          "decode_steps": 16,
+          "final_cache_tokens": 184,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.019639963890425848,
+          "kv_max_relative_l2": 0.016003734460831396,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            43288,
+            99639,
+            86341,
+            58695,
+            100156,
+            42140,
+            27442,
+            99490,
+            17881,
+            99534,
+            38507,
+            109743,
+            9370,
+            78973,
+            59151,
+            44177,
+            45930
+          ],
+          "candidate_tokens": [
+            43288,
+            99639,
+            86341,
+            58695,
+            100156,
+            42140,
+            27442,
+            99490,
+            17881,
+            99534,
+            38507,
+            109743,
+            9370,
+            78973,
+            59151,
+            44177,
+            45930
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+          "free_generation": {
+            "max_new_tokens": 48,
+            "fp32_kv": "这是一张中国国内多点城市间短程航线的搜索结果列表图片，截图于2023年1月10日01:00。页面顶部显示“深 在 — 杠州”",
+            "candidate_int8_kv": "这是一张中国国内多点城市间短程航线的搜索结果列表图片，截图于2023年1月10日。页面顶部显示“01:00”和“深圳 - 杠州"
+          },
+          "image_sha256": "7087946b00cefb8397c04675d8afd61b7d13410c85c1f47951cf75771d8deea4"
+        },
+        {
+          "name": "image_2",
+          "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_sft_unexpected_verification_3_3.jpg",
+          "prefill_tokens": 168,
+          "decode_steps": 16,
+          "final_cache_tokens": 184,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.04389450700942226,
+          "kv_max_relative_l2": 0.019855208906011286,
+          "greedy_token_agreement": 0.9411764705882353,
+          "reference_tokens": [
+            43288,
+            99639,
+            86341,
+            58405,
+            99892,
+            9370,
+            78973,
+            59151,
+            36295,
+            45930,
+            3837,
+            54021,
+            34187,
+            2073,
+            100756,
+            105711,
+            101083
+          ],
+          "candidate_tokens": [
+            43288,
+            99639,
+            86341,
+            58405,
+            99892,
+            9370,
+            78973,
+            36295,
+            36295,
+            45930,
+            3837,
+            54021,
+            34187,
+            2073,
+            100756,
+            105711,
+            101083
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+          "free_generation": {
+            "max_new_tokens": 48,
+            "fp32_kv": "这是一张手机应用的搜索结果页面图片，显示了“自动喂食品”相关的搜索结果。页面的上部是搜索历史或搜索建议列表，列表中包含“自动喂食品”等搜索词。搜索框",
+            "candidate_int8_kv": "这是一张手机应用的搜索页面图片，显示了“自动喂食品”搜索结果。页面的上部是搜索框，显示“自动喂食品”并显示“搜索”和“相机”图标。搜索结果列表"
+          },
+          "image_sha256": "a0457a308b9890fffca9390f062e1d6b5bc1138b6e5c2f699d68344fb0865197"
+        }
+      ]
+    },
+    "onnx": {
+      "reference": "same frozen model, static Torch, FP32 KV",
+      "candidate": "static onnx, int8 KV",
+      "scope": "KV storage plus ONNX backend effect",
+      "weight_precision": "w4a16",
+      "relative_l2_tolerance": 0.05,
+      "strict_greedy": false,
+      "device_execution": false,
+      "complete": true,
+      "passed": false,
+      "report": "kv_validation_onnx.json",
+      "report_sha256": "a11852147639a4e220ac6f71eb0f33024960adecf3e910356f8a1523d418c902",
+      "cases": [
+        {
+          "name": "text",
+          "image": null,
+          "prefill_tokens": 13,
+          "decode_steps": 8,
+          "final_cache_tokens": 21,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.02739759385441789,
+          "kv_max_relative_l2": 0.029130063516994296,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            108386,
+            6313,
+            35946,
+            101909,
+            42140,
+            88802,
+            100168,
+            15469,
+            3837
+          ],
+          "candidate_tokens": [
+            108386,
+            6313,
+            35946,
+            101909,
+            42140,
+            88802,
+            100168,
+            15469,
+            3837
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes"
+        },
+        {
+          "name": "arithmetic",
+          "image": null,
+          "prefill_tokens": 21,
+          "decode_steps": 8,
+          "final_cache_tokens": 29,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.012357693341717756,
+          "kv_max_relative_l2": 0.02609516880468937,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            97639,
+            36407,
+            117719,
+            100768,
+            48443,
+            17,
+            18,
+            488,
+            220
+          ],
+          "candidate_tokens": [
+            97639,
+            36407,
+            117719,
+            100768,
+            48443,
+            17,
+            18,
+            488,
+            220
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes"
+        },
+        {
+          "name": "long_text",
+          "image": null,
+          "prefill_tokens": 1802,
+          "decode_steps": 8,
+          "final_cache_tokens": 1810,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": false,
+          "failures": [
+            {
+              "metric": "logits",
+              "step": 0,
+              "relative_l2": 0.05602042453651819
+            },
+            {
+              "metric": "logits",
+              "step": 2,
+              "relative_l2": 0.05163292824695271
+            },
+            {
+              "metric": "logits",
+              "step": 6,
+              "relative_l2": 0.057089950291744046
+            },
+            {
+              "metric": "cache",
+              "relative_l2": 0.32974247027534465
+            }
+          ],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.057089950291744046,
+          "kv_max_relative_l2": 0.32974247027534465,
+          "greedy_token_agreement": 1.0,
+          "reference_tokens": [
+            20002,
+            104964,
+            99892,
+            74876,
+            78973,
+            45943,
+            5373,
+            117130,
+            62926
+          ],
+          "candidate_tokens": [
+            20002,
+            104964,
+            99892,
+            74876,
+            78973,
+            45943,
+            5373,
+            117130,
+            62926
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes"
+        },
+        {
+          "name": "image_0",
+          "image": "transformers/llm/export/plugin_quant_visual_matmul_route_v1/calib_images/main_AutoExplore_饿了么_20260306-142208_ui-pages_page_0049_2_1.jpg",
+          "prefill_tokens": 168,
+          "decode_steps": 8,
+          "final_cache_tokens": 176,
+          "cache_dtype": "int8",
+          "baseline_cache_bytes": 469762048,
+          "kv_group_size": 32,
+          "passed": true,
+          "failures": [],
+          "candidate_cache_bytes": 147259392,
+          "max_logits_relative_l2": 0.029711262402974795,
+          "kv_max_relative_l2": 0.03323745965107567,
+          "greedy_token_agreement": 0.8888888888888888,
+          "reference_tokens": [
+            43288,
+            99639,
+            86341,
+            58405,
+            99892,
+            9370,
+            102718,
+            112183,
+            3837
+          ],
+          "candidate_tokens": [
+            43288,
+            99639,
+            86341,
+            58405,
+            99892,
+            9370,
+            102718,
+            40090,
+            3837
+          ],
+          "numeric_comparison": "shared teacher-forced FP32-cache prefixes",
+          "image_sha256": "143b4a932a44dfe109b9de5561d85283f303fca1d3576e616b5b55232f41efa5"
+        }
+      ]
+    }
+  },
+  "structure_weight_only_fp32_kv": {
+    "report": "host_validation_torch_weight_only.json",
+    "sha256": "7e28b091aac8d02673027a08f1095520f71afb732adfc881b59329814dfd2a50",
+    "reference": "full HF architecture with calibrated W4 weights; activation requantization bypassed",
+    "relative_l2_tolerance": 0.0002,
+    "strict_greedy": true,
+    "cases": [
+      {
+        "name": "text",
+        "prefill_tokens": 13,
+        "decode_steps": 8,
+        "max_logits_relative_l2": 2.2529593048265835e-06,
+        "kv_max_relative_l2": 2.0125353829186195e-06,
+        "greedy_token_agreement": 1.0,
+        "generation_mode": "greedy"
+      },
+      {
+        "name": "image",
+        "prefill_tokens": 168,
+        "decode_steps": 8,
+        "max_logits_relative_l2": 4.656992678554496e-06,
+        "kv_max_relative_l2": 2.949034390543603e-05,
+        "greedy_token_agreement": 1.0,
+        "generation_mode": "greedy"
+      }
+    ]
+  },
+  "short_full_hf_vs_onnx": {
+    "report": "host_validation_onnx.json",
+    "sha256": "fa0490c2907d8b430125404ce240e01f7477fff88b4c2617c1bcb81b6de54119",
+    "reference": "full HF architecture with calibrated SDK W4A16 fake quantization; eager attention",
+    "relative_l2_tolerance": 0.05,
+    "strict_greedy": false,
+    "cases": [
+      {
+        "name": "text",
+        "prefill_tokens": 13,
+        "decode_steps": 8,
+        "max_logits_relative_l2": 0.018277186598471568,
+        "kv_max_relative_l2": 0.03534974840348798,
+        "greedy_token_agreement": 1.0,
+        "generation_mode": "greedy"
+      },
+      {
+        "name": "image",
+        "prefill_tokens": 168,
+        "decode_steps": 8,
+        "max_logits_relative_l2": 0.038083145886390786,
+        "kv_max_relative_l2": 0.03150699644106265,
+        "greedy_token_agreement": 0.8888888888888888,
+        "generation_mode": "argmax on shared teacher-forced reference prefixes"
+      }
+    ]
+  },
+  "regression_tests": {
+    "passed": 32,
+    "sdk_enabled": true
+  },
+  "rejected_unprotected_candidates": [
+    {
+      "group_size": 128,
+      "recent_tokens": 0,
+      "sink_tokens": 0,
+      "first_text_logit_relative_l2_failure": 0.054173354305719984
+    },
+    {
+      "group_size": 32,
+      "recent_tokens": 0,
+      "sink_tokens": 0,
+      "text_decode_step": 4,
+      "logit_relative_l2_failure": 0.05699710750696222
+    }
+  ],
+  "observations": [
+    "Both full-model KV acceptance reports fail the unchanged 0.05 tolerance on the long-context case.",
+    "The long prompt repeats user content with one complete chat template: 1802 prompt tokens, 16 Torch or 8 ORT decode steps.",
+    "Torch short text, arithmetic and three image numeric cases pass; one argmax differs in each of customer and search image cases.",
+    "48-token free continuations remain relevant to customer/order, flight-list and search-page screenshots; OCR, dates and details remain inaccurate.",
+    "Long-context Torch logits reach relative L2 0.08416 and per-layer KV reaches 0.33504 despite 17/17 equal shared-prefix argmax tokens.",
+    "An earlier repeated-whole-chat-template stress fixture also failed; it is not counted as a normal long-prompt pass.",
+    "This is opt-in cache compression support, not a claim of full numerical alignment or a production App runtime.",
+    "All reported numerical results are host computations; device accuracy and performance remain untested."
+  ],
+  "official_references": [
+    "https://github.com/Ascend/MindIE-LLM/blob/master/docs/zh/user_guide/feature/kv_cache_int8.md",
+    "https://github.com/vllm-project/vllm/blob/main/vllm/v1/kv_cache_interface.py",
+    "https://github.com/ggml-org/llama.cpp/blob/master/ggml/src/ggml-common.h",
+    "https://huggingface.co/docs/transformers/internal/generation_utils#transformers.QuantoQuantizedLayer"
+  ],
+  "implementation_sha256": {
+    "static_kv.py": "efd3f50ca07bafa50516eb39f2f59c7b7879e0691cfda0ee17fc7b3d3de15e2b",
+    "experiment.py": "5ebfe4f3dd8930b18184a974c307b5c15307404c7c14353d10f980b839b76445",
+    "w4a16.py": "9d4be09bc596ab818862841942fec803199b991cf7d19f710d90879a3eab23bd",
+    "kv_validation.py": "a805ae83e934f7d068d40de0725772eae2c76920fbcb28ceeba00ca801dca67a",
+    "validation.py": "ace4b77a2e9c1848b74b4cca298d3dc9f6906cd5e5eb79229f86eba2b241239d"
+  },
+  "local_artifact_directory": "/tmp/kirin_full_vlm_w4a16_g64_gptq_kv8_hybrid",
+  "device_tested": false,
+  "app_integrated": false,
+  "numeric_acceptance_passed": false
+}

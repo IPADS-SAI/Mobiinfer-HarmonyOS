@@ -1,0 +1,10 @@
+{
+  "repo": "fengerhu1/mobi_2B_offline_npu2_kirin9030_vit_w4a16_g64_llm_cpu_v1",
+  "started_utc": "2026-10-17T05:48:05.565404+00:00",
+  "status": "complete",
+  "files": 17,
+  "total_bytes": 3004653895,
+  "verified_files": 17,
+  "finished_utc": "2026-10-17T05:48:17.172410+00:00",
+  "url": "https://www.modelscope.cn/models/fengerhu1/mobi_2B_offline_npu2_kirin9030_vit_w4a16_g64_llm_cpu_v1"
+}

@@ -1,0 +1,64 @@
+{
+  "device_tested": false,
+  "omc_executed": false,
+  "scope": "actual portable App C++ scheduler with CPU dequantized ONNX references; tensor transfer checks",
+  "package_config_sha256": "11f658d89874ecd42ea2da60cb0d84b0da102303e54751c2308f12b252f3546e",
+  "embedding_slice_build_verified": false,
+  "system_prompt": "You are a helpful assistant.",
+  "cases": [
+    {
+      "case": "text",
+      "prompt_tokens": 24,
+      "graph_calls": 24,
+      "independent_tensor_checks": 504,
+      "image_patch_metrics": [],
+      "response": "您好！我是一个大型语言模型，",
+      "passed": true
+    },
+    {
+      "case": "image_0",
+      "prompt_tokens": 179,
+      "graph_calls": 34,
+      "independent_tensor_checks": 597,
+      "image_patch_metrics": [
+        {
+          "relative_l2": 0.002193503113815403,
+          "max_abs": 0.023529529571533203,
+          "cosine": 0.999997596500837
+        }
+      ],
+      "response": "好的，这是对图片内容的描述",
+      "passed": true
+    },
+    {
+      "case": "image_1",
+      "prompt_tokens": 179,
+      "graph_calls": 34,
+      "independent_tensor_checks": 597,
+      "image_patch_metrics": [
+        {
+          "relative_l2": 0.0017182224395274137,
+          "max_abs": 0.023529529571533203,
+          "cosine": 0.9999985276406809
+        }
+      ],
+      "response": "好的，这张图片是深圳至杭州",
+      "passed": true
+    },
+    {
+      "case": "image_2",
+      "prompt_tokens": 179,
+      "graph_calls": 34,
+      "independent_tensor_checks": 597,
+      "image_patch_metrics": [
+        {
+          "relative_l2": 0.0016419874221308686,
+          "max_abs": 0.023529529571533203,
+          "cosine": 0.9999986544007194
+        }
+      ],
+      "response": "好的，根据您提供的图片，我",
+      "passed": true
+    }
+  ]
+}

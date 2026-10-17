@@ -1,0 +1,165 @@
+{
+  "complete": true,
+  "device_tested": false,
+  "scope": "CPU dequantized/fake-quant reference; no native OMC accuracy claim",
+  "corpus": "five fixed held-out prompts with system template; target continuations are teacher forced",
+  "source_manifest_sha256": "bc91fbad0fa2dc7af43819aa9370ab957efe086fbc64ce82cb2e34a4bba09797",
+  "calibration_checkpoint_sha256": "4ebd75fcb73613f9a7e9a3835fe9efb05899cb18e24b65b7c89ca6802043325e",
+  "cases": [
+    {
+      "name": "arithmetic",
+      "prompt": "请只回答结果：8 乘以 7 等于多少？",
+      "teacher_forced_target": "56",
+      "target_tokens": 2,
+      "reference_nll": 0.1273009032011032,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.5666122674483308,
+          "max_abs": 10.654138565063477,
+          "cosine": 0.8324868109444382,
+          "nll": 0.009817469865083694,
+          "nll_delta": -0.11748343333601952,
+          "perplexity_ratio": 0.8891552419605525,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.37833136320114136
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.6604460081924088,
+          "max_abs": 12.747629165649414,
+          "cosine": 0.7723786938754131,
+          "nll": 1.8880858421325684,
+          "nll_delta": 1.7607849389314651,
+          "perplexity_ratio": 5.817001593874743,
+          "teacher_forced_top1_agreement": 0.5,
+          "kl_reference_to_candidate": 1.3605530261993408
+        }
+      },
+      "reference_answer": "56",
+      "w4_fp16_kv_answer": "8 与 7 竞争，结果是 56。"
+    },
+    {
+      "name": "translation",
+      "prompt": "把“桌上有一本蓝色的书。”翻译成英语。",
+      "teacher_forced_target": "There is a blue book on the table.",
+      "target_tokens": 9,
+      "reference_nll": 0.00025606469716876745,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.19878491631608924,
+          "max_abs": 8.1525239944458,
+          "cosine": 0.9806585629242266,
+          "nll": 0.003273800015449524,
+          "nll_delta": 0.0030177353182807565,
+          "perplexity_ratio": 1.0030222932652457,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.0025217304937541485
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.2339567821962039,
+          "max_abs": 25.56773567199707,
+          "cosine": 0.9729868005169432,
+          "nll": 3.2888264656066895,
+          "nll_delta": 3.2885704009095207,
+          "perplexity_ratio": 26.804516539462625,
+          "teacher_forced_top1_agreement": 0.5555555820465088,
+          "kl_reference_to_candidate": 3.2865982055664062
+        }
+      },
+      "reference_answer": "There is a blue book on the table.",
+      "w4_fp16_kv_answer": "A blue book is at a book."
+    },
+    {
+      "name": "retrieval",
+      "prompt": "已知暗号是“松树”。请只重复暗号，不要解释。",
+      "teacher_forced_target": "松树",
+      "target_tokens": 2,
+      "reference_nll": 2.562994040999911e-06,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.4570182890747429,
+          "max_abs": 13.869707107543945,
+          "cosine": 0.9133783480480255,
+          "nll": 0.00011079598334617913,
+          "nll_delta": 0.00010823298930517922,
+          "perplexity_ratio": 1.0001082388467064,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.00010171934263780713
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.5448551973158516,
+          "max_abs": 20.612110137939453,
+          "cosine": 0.8528576649636351,
+          "nll": 1.2429146766662598,
+          "nll_delta": 1.2429121136722188,
+          "perplexity_ratio": 3.4656912707155754,
+          "teacher_forced_top1_agreement": 0.5,
+          "kl_reference_to_candidate": 1.2428866624832153
+        }
+      },
+      "reference_answer": "松树",
+      "w4_fp16_kv_answer": "**松**"
+    },
+    {
+      "name": "explanation",
+      "prompt": "用一句话说明为什么白天能看见月亮。",
+      "teacher_forced_target": "月亮反射太阳光，当它白天位于地平线上方时也能被看见。",
+      "target_tokens": 18,
+      "reference_nll": 4.195071697235107,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.4858009632552784,
+          "max_abs": 10.563363313674927,
+          "cosine": 0.8759597744863464,
+          "nll": 3.2190582752227783,
+          "nll_delta": -0.9760134220123291,
+          "perplexity_ratio": 0.3768102921565924,
+          "teacher_forced_top1_agreement": 0.8333333134651184,
+          "kl_reference_to_candidate": 0.4289458990097046
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.6646761151051666,
+          "max_abs": 17.72739601135254,
+          "cosine": 0.747770419802291,
+          "nll": 6.175356388092041,
+          "nll_delta": 1.9802846908569336,
+          "perplexity_ratio": 7.244805221403981,
+          "teacher_forced_top1_agreement": 0.3333333432674408,
+          "kl_reference_to_candidate": 3.9507229328155518
+        }
+      },
+      "reference_answer": "因为月亮反射太阳光，而地球上的我们看到月亮时，正是它反射的太阳光照射到我们眼睛，所以我们能看见月亮。",
+      "w4_fp16_kv_answer": "因为我们的人眼在地球上，白天的月面会反照出月面的亮，而月面的亮会反照到我们的人眼，"
+    },
+    {
+      "name": "python",
+      "prompt": "写一个 Python 函数，返回列表中最大的数。",
+      "teacher_forced_target": "def largest(values):\n    return max(values)",
+      "target_tokens": 9,
+      "reference_nll": 3.0038087368011475,
+      "scores": {
+        "weight_only": {
+          "relative_l2": 0.38411216267898984,
+          "max_abs": 11.247154712677002,
+          "cosine": 0.9235338707757659,
+          "nll": 3.6284077167510986,
+          "nll_delta": 0.6245989799499512,
+          "perplexity_ratio": 1.867496903547721,
+          "teacher_forced_top1_agreement": 1.0,
+          "kl_reference_to_candidate": 0.24781806766986847
+        },
+        "sdk_w4a16": {
+          "relative_l2": 0.7116250706397906,
+          "max_abs": 25.07465934753418,
+          "cosine": 0.71410444661243,
+          "nll": 6.259440898895264,
+          "nll_delta": 3.255632162094116,
+          "perplexity_ratio": 25.936005112006747,
+          "teacher_forced_top1_agreement": 0.1111111119389534,
+          "kl_reference_to_candidate": 5.157472133636475
+        }
+      },
+      "reference_answer": "```python\ndef find_max(numbers):\n    if not numbers:\n        return None  # 如果列表为空，返回 None\n    return max(numbers)\n```",
+      "w4_fp16_kv_answer": "当然，以下是一个查找列表中所有数字中“最”大数的函数：\n\n``` \n# 从列表中查找所有数字中“最”"
+    }
+  ]
+}

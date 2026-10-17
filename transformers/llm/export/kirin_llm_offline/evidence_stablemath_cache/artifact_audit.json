@@ -1,0 +1,88 @@
+{
+  "scope": "All compiled graph/weight SHA256 and SDK encoding records; no new device execution",
+  "graphs": [
+    {
+      "graph": "embedding_prefill",
+      "pure_npu": true,
+      "graph_bytes": 7508,
+      "external_weight_bytes": 622330368
+    },
+    {
+      "graph": "embedding_decode",
+      "pure_npu": true,
+      "graph_bytes": 7458,
+      "external_weight_bytes": 622330368
+    },
+    {
+      "graph": "vision_pre",
+      "pure_npu": true,
+      "graph_bytes": 184674,
+      "external_weight_bytes": 7870976
+    },
+    {
+      "graph": "vision_blocks_0",
+      "pure_npu": true,
+      "graph_bytes": 1199786,
+      "external_weight_bytes": 30554624
+    },
+    {
+      "graph": "vision_blocks_1",
+      "pure_npu": true,
+      "graph_bytes": 1206690,
+      "external_weight_bytes": 30554624
+    },
+    {
+      "graph": "vision_blocks_2",
+      "pure_npu": true,
+      "graph_bytes": 1199819,
+      "external_weight_bytes": 30554624
+    },
+    {
+      "graph": "vision_blocks_3",
+      "pure_npu": true,
+      "graph_bytes": 1199794,
+      "external_weight_bytes": 30554624
+    },
+    {
+      "graph": "vision_blocks_4",
+      "pure_npu": true,
+      "graph_bytes": 1206660,
+      "external_weight_bytes": 30554624
+    },
+    {
+      "graph": "vision_blocks_5",
+      "pure_npu": true,
+      "graph_bytes": 1199776,
+      "external_weight_bytes": 30554624
+    },
+    {
+      "graph": "vision_post",
+      "pure_npu": true,
+      "graph_bytes": 479410,
+      "external_weight_bytes": 60149248
+    },
+    {
+      "graph": "llm_prefill_0",
+      "pure_npu": true,
+      "graph_bytes": 11942944,
+      "external_weight_bytes": 844892672
+    },
+    {
+      "graph": "llm_decode_0",
+      "pure_npu": true,
+      "graph_bytes": 11442654,
+      "external_weight_bytes": 844663296
+    },
+    {
+      "graph": "lm_head",
+      "pure_npu": true,
+      "graph_bytes": 391309,
+      "external_weight_bytes": 185691648
+    }
+  ],
+  "unique_w4_matrices": 301,
+  "graph_weights_external": true,
+  "static_math": "scaled_rmsnorm_prescaled_qk_v1",
+  "max_torch_ort_relative_l2": 0.015545305350311844,
+  "main_matrix_weight_bits": 4
+}
