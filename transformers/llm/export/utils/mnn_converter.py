@@ -3,6 +3,7 @@ import sys
 import time
 import copy
 import json
+import subprocess
 import torch
 import numpy as np
 
@@ -30,6 +31,10 @@ class MNNConverter:
 
     def convert(self, convert_args):
         import contextlib
+        convert_args = list(convert_args)
+        saved_argv = sys.argv
+        had_argc = hasattr(sys, 'argc')
+        saved_argc = getattr(sys, 'argc', None)
         log_fp = open(EXPORT_LOG, "a")
         sfd = None
         try:
@@ -51,11 +56,13 @@ class MNNConverter:
                     mnnconvert.main()
                 else:
                     convert_args[0] = self.mnnconvert
-                    cmd = ' '.join(convert_args)
-                    message = os.popen(cmd).read()
-                    print(message)
-                sys.argv = []
+                    subprocess.run(convert_args, stdout=log_fp, stderr=subprocess.STDOUT, check=True)
         finally:
+            sys.argv = saved_argv
+            if had_argc:
+                sys.argc = saved_argc
+            elif hasattr(sys, 'argc'):
+                del sys.argc
             if sfd is not None:
                 os.dup2(sfd, 1)
                 os.close(sfd)

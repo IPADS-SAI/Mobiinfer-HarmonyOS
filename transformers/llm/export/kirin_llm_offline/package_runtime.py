@@ -35,7 +35,7 @@ def seal_release(output):
     return files
 
 
-def package(build, model, tokenizer, output, height, width, max_new_tokens, app_validation=None):
+def package(build, model, tokenizer, output, height, width, max_new_tokens, app_validation=None, vision_only=False):
     from transformers.vision_utils import get_vision_interpolation_indices_and_weights, get_vision_position_ids
     manifest = json.loads((build / "manifest.json").read_text(encoding="utf-8"))
     source = json.loads((model / "config.json").read_text(encoding="utf-8"))
@@ -54,6 +54,8 @@ def package(build, model, tokenizer, output, height, width, max_new_tokens, app_
     output.mkdir(parents=True, exist_ok=True)
     graphs = []
     for entry in manifest["graphs"]:
+        if vision_only and entry["name"] != "vision_full":
+            continue
         path = Path(entry["omc"])
         artifact = build / path
         if not entry.get("pure_npu") or digest(artifact) != entry["omc_sha256"]:
@@ -104,7 +106,8 @@ def package(build, model, tokenizer, output, height, width, max_new_tokens, app_
         expected.update(("vision_pre", "vision_post"))
         expected.update("vision_blocks_" + str(i) for i in range((vision["depth"] + profile["vision_layers_per_chunk"] - 1) // profile["vision_layers_per_chunk"]))
     if {g["name"] for g in graphs} != expected:
-        raise ValueError("The build does not contain the complete VLM")
+        if not (vision_only and fused_vision and {g["name"] for g in graphs} == {"vision_full"}):
+            raise ValueError("The build does not contain the requested complete VLM or fused vision component")
     shutil.copyfile(tokenizer, output / "tokenizer.mtok")
     grid = torch.tensor([[1, height // patch, width // patch]])
     side = int(vision["num_position_embeddings"] ** .5)
@@ -138,7 +141,11 @@ def package(build, model, tokenizer, output, height, width, max_new_tokens, app_
     if fused_vision:
         runtime.update(vision_layers=vision["depth"], vision_deepstack_layers=vision["deepstack_visual_indexes"])
     version = "kirin_full_npu_runtime_v3" if fused_vision else ("kirin_full_npu_runtime_v2" if external or kv_dtype == "fp16" else "kirin_full_npu_runtime_v1")
+    if vision_only:
+        version = "kirin_fused_vision_staging_v1"
     save(output / "config.json", dict(format=version, platform=profile["platform"],
+         quantization={"weight_method": profile.get("weight_method", "rtn"), "weight_bits": 4,
+                       "group_size": profile["group_size"]},
          experimental=True, tokenizer_file="tokenizer.mtok", vision_constants="vision_constants.bin",
          runtime=runtime, graphs=graphs))
     save(output / "llm_config.json", dict(model_type="qwen3_vl", is_visual=True,
@@ -248,6 +255,10 @@ See `fused_vision_validation.json` for CPU equivalence against the split build.
 This change reduces visual graph transitions; decoder residency and external
 weight initialization can still dominate device latency. No device speedup is claimed.
 """
+    if vision_only:
+        readme = ("# Fused vision staging package\n\nOne W4A16 external-weight ViT graph. "
+                  "Use kirin_hybrid_offline/package_runtime.py to combine it with MNN language assets; "
+                  "this staging directory is not a standalone App model.\n")
     (output / "README.md").write_text(readme, encoding="utf-8")
     files = seal_release(output)
     print(json.dumps({"output": str(output), "graphs": len(graphs), "bytes": sum(f["size"] for f in files)}), flush=True)
@@ -261,9 +272,10 @@ def main():
     parser.add_argument("--image-width", type=int, default=256)
     parser.add_argument("--max-new-tokens", type=int, default=256)
     parser.add_argument("--app-validation", type=Path, help="Completed verify_app_runtime.py report.json")
+    parser.add_argument("--vision-only", action="store_true", help="Stage only fused ViT for the CPU-LLM hybrid packager")
     args = parser.parse_args()
     package(args.build, args.model, args.tokenizer, args.output, args.image_height, args.image_width, args.max_new_tokens,
-            args.app_validation)
+            args.app_validation, args.vision_only)
 
 
 if __name__ == "__main__":

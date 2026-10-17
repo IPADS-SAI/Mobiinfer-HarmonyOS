@@ -545,6 +545,8 @@ def parse_args(argv=None):
     parser.add_argument("--gptq-damping", type=float, default=0.01)
     parser.add_argument("--gptq-block-size", type=int, default=128)
     parser.add_argument("--calibration-images", type=Path)
+    parser.add_argument("--calibration-components", choices=("all", "vision"), default="all",
+                        help="Quantize only the NPU vision component for CPU-LLM hybrid packages")
     parser.add_argument("--calibration-texts", type=Path, help="Optional JSON list of {text: prompt} rows")
     parser.add_argument("--calibration-samples", type=int, default=16)
     parser.add_argument("--calibration-decode-steps", type=int, default=4)

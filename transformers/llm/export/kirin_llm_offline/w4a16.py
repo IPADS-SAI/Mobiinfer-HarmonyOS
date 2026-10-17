@@ -264,9 +264,10 @@ class W4Experiment(Experiment):
         a = self.args
         if not a.calibration_images or not a.calibration_images.is_dir():
             raise ValueError("--calibration-images is required for full VLM W4A16 calibration")
-        excluded = {a.image, *a.quality_images}
-        images = sorted(path for path in a.calibration_images.iterdir()
-                        if path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"} and path not in excluded)
+        excluded = {path.resolve() for path in (a.image, *a.quality_images) if path is not None}
+        images = [path.resolve() for path in sorted(a.calibration_images.iterdir())
+                  if path.is_file() and path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
+                  and path.resolve() not in excluded]
         if not images:
             raise ValueError("No calibration images (validation image is excluded)")
         texts = ["请说明如何整理一天的工作计划。", "用中文解释什么是机器学习。", "写一封简短的会议邀请。",
@@ -299,6 +300,8 @@ class W4Experiment(Experiment):
         config = json.loads(config_path.read_text(encoding="utf-8"))
         for name, entry in config["layer_strategy"].items():
             entry["quant_strategy"] = "float"
+            if self.args.calibration_components == "vision" and not name.startswith("model.visual."):
+                continue
             if entry["type"] != str(torch.nn.Linear) or (name == "lm_head" and self.args.head_bit == 16):
                 continue
             layer = original.get_submodule(name)
@@ -368,6 +371,7 @@ class W4Experiment(Experiment):
         state_path = self.quant_dir / "calibrated.pth"
         torch.save(model.state_dict(), state_path)
         record = {"method": "SDK plugin PTQ with " + self.args.weight_method + " weights; no QAT training",
+                  "components": self.args.calibration_components,
                   "weight_optimization": optimization, "config": str(config_path.relative_to(self.output)),
                   "config_sha256": sha256(config_path), "checkpoint": str(state_path.relative_to(self.output)),
                   "checkpoint_sha256": sha256(state_path), "samples": rows,
@@ -473,6 +477,9 @@ class W4Experiment(Experiment):
 
     @torch.no_grad()
     def export(self):
+        if (self.manifest.get("calibration", {}).get("components") == "vision"
+                and not self.args.components <= {"vision"}):
+            raise ValueError("Vision-only calibration cannot export quantized language/head graphs")
         from transformers import AutoTokenizer
         model = self.load_model()
         tokenizer = AutoTokenizer.from_pretrained(self.args.model, local_files_only=True)

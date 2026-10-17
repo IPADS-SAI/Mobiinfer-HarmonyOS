@@ -1,6 +1,9 @@
 #!/bin/bash
-cmake ../../../ \
--DCMAKE_TOOLCHAIN_FILE=$HARMONY_HOME/native/build/cmake/ohos.toolchain.cmake \
+set -euo pipefail
+MOBI_SOURCE_ROOT="${MOBI_ROOT:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)}"
+: "${HARMONY_HOME:?Set HARMONY_HOME to the SDK openharmony directory}"
+cmake -S "$MOBI_SOURCE_ROOT" -B "$PWD" \
+-DCMAKE_TOOLCHAIN_FILE="$HARMONY_HOME/native/build/cmake/ohos.toolchain.cmake" \
 -DCMAKE_BUILD_TYPE=Release \
 -DOHOS_ARCH="arm64-v8a" \
 -DOHOS_STL=c++_static \
@@ -22,6 +25,6 @@ cmake ../../../ \
 -DMNN_BUILD_SHARED_LIBS=ON \
 -DMOBIINFER_MNN=OFF \
 -DMNN_NPU:BOOL=true \
--DNATIVE_LIBRARY_OUTPUT=. -DNATIVE_INCLUDE_OUTPUT=. $1 $2 $3
+-DNATIVE_LIBRARY_OUTPUT=. -DNATIVE_INCLUDE_OUTPUT=. "$@"
 
-make -j64
+cmake --build "$PWD" --parallel "${MOBI_BUILD_JOBS:-8}"

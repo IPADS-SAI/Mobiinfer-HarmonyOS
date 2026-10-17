@@ -11,12 +11,14 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 
 from experiment import parse_args, save_json, sha256
 
 
 def arguments(source, output, model, ddk, layers=None, kv_group=None, kv_dtype="fp16",
-              activation_range_multiplier=1, output_range_multiplier=1, components=None, fuse_vision=False):
+              activation_range_multiplier=1, output_range_multiplier=1, components=None, fuse_vision=False,
+              compiler_work_dir=None):
     p = source["profile"]
     values = ["--model", str(model), "--output", str(output), "--ddk", str(ddk),
               "--precision", "w4a16", "--kv-dtype", kv_dtype, "--components",
@@ -35,6 +37,8 @@ def arguments(source, output, model, ddk, layers=None, kv_group=None, kv_dtype="
         values.extend(["--" + key, str(value)])
     if fuse_vision or p.get("fused_vision"):
         values.append("--fuse-vision")
+    if compiler_work_dir is not None:
+        values.extend(["--compiler-work-dir", str(compiler_work_dir)])
     return parse_args(values)
 
 
@@ -138,24 +142,48 @@ def compile_external(experiment):
         output = graph.parent / "external"
         output.mkdir(exist_ok=True)
         shape = ";".join(v["name"] + ":" + ",".join(map(str, v["shape"])) for v in entry["inputs"])
-        cmd = ["bash", "-c", 'source "$1"; shift; exec "$@"', "kirin-external",
-               str(ddk / "tools/tools_ascendc/set_ascendc_env.sh"), str(ddk / "tools/tools_omg/omg"),
-               "--model=" + str(graph), "--framework=5", "--output=" + str(output), "--input_shape=" + shape,
-               "--target=omc", "--platform=" + experiment.args.platform, "--save_weights_as_external_data=true",
-               "--weight_data_type=FP16"]
+        parameters = None
         if entry.get("quantization"):
             q = entry["quantization"]
             parameters = experiment.output / q["parameters"]
             if sha256(parameters) != q["parameters_sha256"]:
                 raise ValueError("Quantization parameters changed")
-            cmd.append("--compress_conf=" + str(parameters))
         print("compile external " + entry["name"], flush=True)
         log = graph.parent / "compile_external.log"
-        with log.open("w", encoding="utf-8") as stream:
-            result = subprocess.run(cmd, cwd=output, env=env, stdout=stream, stderr=subprocess.STDOUT)
-        if result.returncode:
-            raise RuntimeError("External OMC compilation failed: " + str(log))
-        validate_compile_log(log.read_text(errors="replace"))
+        # Match the regular compiler path: OMG rejects dots, whitespace and
+        # hyphens in input/output directories even when the filesystem accepts them.
+        staging_root = getattr(experiment.args, "compiler_work_dir", Path("/tmp"))
+        staging_root.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="kirin_external_", dir=staging_root) as directory:
+            staging = Path(directory)
+            staged_graph = staging / "onnx/model.onnx"
+            staged_graph.parent.mkdir()
+            shutil.copy2(graph, staged_graph)
+            for name in entry["external_data_sha256"]:
+                target = staged_graph.parent / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(graph.parent / name, target)
+            staged_output = staging / "external"
+            staged_output.mkdir()
+            cmd = ["bash", "-c", 'source "$1" && { shift; exec "$@"; }', "kirin-external",
+                   str(ddk / "tools/tools_ascendc/set_ascendc_env.sh"), str(ddk / "tools/tools_omg/omg"),
+                   "--model=" + str(staged_graph), "--framework=5", "--output=" + str(staged_output),
+                   "--input_shape=" + shape, "--target=omc", "--platform=" + experiment.args.platform,
+                   "--save_weights_as_external_data=true", "--weight_data_type=FP16"]
+            if parameters:
+                staged_parameters = staging / "quant_params_file"
+                shutil.copy2(parameters, staged_parameters)
+                cmd.append("--compress_conf=" + str(staged_parameters))
+            with log.open("w", encoding="utf-8") as stream:
+                result = subprocess.run(cmd, cwd=staged_output, env=env, stdout=stream, stderr=subprocess.STDOUT)
+            if result.returncode:
+                raise RuntimeError("External OMC compilation failed: " + str(log))
+            validate_compile_log(log.read_text(errors="replace"))
+            files = [staged_output / "external.omc", *sorted(staged_output.glob("*.weight"))]
+            if len(files) < 2 or any(not p.is_file() or not p.stat().st_size for p in files):
+                raise RuntimeError("Compiler did not create graph/weight pair: " + entry["name"])
+            for path in files:
+                shutil.copy2(path, output / path.name)
         artifact = output / "external.omc"
         weights = sorted(output.glob("*.weight"))
         if not artifact.is_file() or not artifact.stat().st_size or not weights:
@@ -180,6 +208,7 @@ def main():
     parser.add_argument("--activation-range-multiplier", type=float, default=1)
     parser.add_argument("--output-range-multiplier", type=float, default=1)
     parser.add_argument("--steps", default="prepare,export,compile")
+    parser.add_argument("--compiler-work-dir", type=Path, default=Path("/tmp"))
     options = parser.parse_args()
     source_dir, output, model, ddk = [getattr(options, name).resolve() for name in ("source_build", "output", "model", "ddk")]
     if output == source_dir or source_dir in output.parents or output in source_dir.parents:
@@ -189,7 +218,7 @@ def main():
     import torch
     experiment = W4Experiment(arguments(source, output, model, ddk, options.layers_per_chunk, options.kv_group,
                                        options.kv_dtype, options.activation_range_multiplier, options.output_range_multiplier,
-                                       options.components, options.fuse_vision))
+                                       options.components, options.fuse_vision, options.compiler_work_dir))
     torch.set_num_threads(experiment.args.threads)
     for step in options.steps.split(","):
         if step == "prepare":

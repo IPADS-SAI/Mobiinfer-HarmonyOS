@@ -105,7 +105,8 @@ def package(cpu, full, output, with_mnn_vision=False):
     (output / 'config.json').write_text(json.dumps(cfg, indent=2) + '\n')
     manifest = {'format': 'kirin_offline_npu2_manifest_v1', 'cpu_source': str(cpu),
                 'vision_source': str(full), 'assets': assets,
-                'quantization': {'vision': 'unchanged frozen W4A16/GPTQ group64 visual export',
+                'quantization': {'vision': 'unchanged frozen W4A16/' +
+                                 fc.get('quantization', {}).get('weight_method', 'gptq').upper() + ' group64 visual export',
                                  'language': 'unchanged source MNN quantization; not converted to W4',
                                  'kv': 'MNN CPU runtime cache; no NNRT language KV'},
                 'device_validation': False}
