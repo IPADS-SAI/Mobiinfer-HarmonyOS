@@ -10,6 +10,7 @@
 #include "NPUBackend.hpp"
 #include "../custom/LayerNormCustomOp.hpp"
 #include "core/FileLoader.hpp"
+#include <cmath>
 #include <sstream>
 
 // On this DDK, hiai::op::LayerNorm silently zeros the gamma input — output
